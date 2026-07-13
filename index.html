@@ -1,0 +1,201 @@
+<!doctype html>
+<html lang="ja">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover,user-scalable=no">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <title>あそびのにわ</title>
+  <style>
+    :root { --glow:.65; --cloud-time:18s; --spark-time:.9s; --pulse-time:2.2s; --coin-time:1.2s; --reveal-time:1s; --bg1:#fff7d6; --bg2:#ccefe4; }
+    * { box-sizing:border-box; -webkit-tap-highlight-color:transparent; }
+    html,body { margin:0; width:100%; height:100%; overflow:hidden; background:var(--bg2); }
+    body { font-family:system-ui,sans-serif; user-select:none; touch-action:manipulation; }
+    button { font:inherit; border:0; cursor:pointer; touch-action:manipulation; }
+    .screen { position:fixed; inset:0; min-height:100vh; min-height:100dvh; display:none; overflow:hidden;
+      background:radial-gradient(circle at 50% 15%,#fff 0 8%,transparent 35%),linear-gradient(155deg,var(--bg1),var(--bg2)); }
+    .screen.on { display:flex; }
+    .center { align-items:center; justify-content:center; flex-direction:column; gap:clamp(24px,5vh,52px); padding:env(safe-area-inset-top) 24px env(safe-area-inset-bottom); }
+    .choices { display:flex; flex-wrap:wrap; justify-content:center; align-items:center; gap:clamp(20px,4vw,48px); }
+    .picture { width:clamp(132px,19vw,210px); height:clamp(132px,19vw,210px); border-radius:36%;
+      background:rgba(255,255,255,.82); box-shadow:0 13px 0 rgba(66,112,93,.15),0 20px 38px rgba(49,96,80,.18);
+      display:grid; place-items:center; font-size:clamp(70px,11vw,126px); transition:transform .15s; }
+    .picture:active,.round:active { transform:scale(.92); }
+    .picture.selected { outline:12px solid rgba(255,205,62,.75); }
+    .round { width:clamp(88px,11vw,118px); height:clamp(88px,11vw,118px); border-radius:50%; display:grid; place-items:center;
+      background:rgba(255,255,255,.88); font-size:clamp(44px,6vw,68px); box-shadow:0 9px 0 rgba(66,112,93,.15); }
+    .topbar { position:absolute; z-index:20; top:max(16px,env(safe-area-inset-top)); left:18px; right:18px; display:flex; justify-content:space-between; pointer-events:none; }
+    .topbar>* { pointer-events:auto; }
+    #play { background:linear-gradient(#bdeaff,#eafaff); }
+    #playArea { position:absolute; inset:0; overflow:hidden; }
+    .cloud { position:absolute; font-size:clamp(70px,11vw,120px); opacity:.45; filter:blur(1px); animation:drift var(--cloud-time) linear infinite alternate; }
+    @keyframes drift { from{transform:translateX(-15vw)} to{transform:translateX(70vw)} }
+    .target { position:absolute; width:clamp(92px,13vw,136px); height:clamp(92px,13vw,136px); display:grid; place-items:center;
+      border-radius:50%; font-size:clamp(58px,9vw,94px); background:rgba(255,255,255,.3); filter:drop-shadow(0 12px 8px rgba(30,70,90,.18)); }
+    .fall { animation:fall var(--fall-time,9s) linear forwards; }
+    @keyframes fall { from{transform:translateY(-18vh) rotate(-8deg)} to{transform:translateY(112vh) rotate(16deg)} }
+    .float { animation:float var(--float-time,10s) ease-in-out forwards; }
+    @keyframes float { 0%{transform:translate(0,15vh) scale(.85)} 50%{transform:translate(var(--sway,10vw),-5vh) scale(1)} 100%{transform:translate(var(--sway-end,-5vw),-95vh) scale(.9)} }
+    .spark { position:absolute; z-index:12; pointer-events:none; font-size:48px; animation:spark var(--spark-time) ease-out forwards; }
+    @keyframes spark { from{transform:translate(-50%,-50%) scale(.4);opacity:calc(.35 * var(--glow))} to{transform:translate(-50%,-140%) scale(1.8);opacity:0} }
+    #rewardGo { position:absolute; z-index:18; right:max(20px,env(safe-area-inset-right)); bottom:max(24px,env(safe-area-inset-bottom)); display:none; }
+    #rewardGo.show { display:grid; animation:breathe var(--pulse-time) ease-in-out infinite; }
+    @keyframes breathe { 50%{transform:scale(calc(1 + .08 * var(--glow)))} }
+    .coin { font-size:clamp(86px,16vw,170px); filter:drop-shadow(0 14px 12px rgba(150,95,0,.2)); animation:coinIn var(--coin-time) ease-out both; }
+    @keyframes coinIn { from{transform:translateY(-40vh) rotate(-140deg) scale(.2);opacity:0} to{transform:none;opacity:1} }
+    #gacha { position:relative; overflow:visible; }
+    #gacha.flash::after { content:""; position:fixed; inset:-30%; z-index:-1; background:radial-gradient(circle,rgba(255,255,255,calc(.78 * var(--glow))),transparent 55%); animation:fade .9s ease-out; }
+    @keyframes fade { from{opacity:1} to{opacity:0} }
+    #card { width:clamp(210px,29vw,300px); height:clamp(280px,38vw,390px); border:12px solid #fff; border-radius:28px;
+      display:none; place-items:center; font-size:clamp(110px,17vw,180px); background:linear-gradient(145deg,#fff9c7,#d7f4ff); box-shadow:0 22px 45px rgba(40,80,95,.25); }
+    #card.show { display:grid; animation:reveal var(--reveal-time) cubic-bezier(.2,.8,.25,1.3); }
+    @keyframes reveal { from{transform:rotateY(90deg) scale(.4);opacity:0} to{transform:none;opacity:1} }
+    #bookGrid { width:min(920px,92vw); max-height:72vh; overflow:auto; display:grid; grid-template-columns:repeat(4,minmax(100px,1fr)); gap:18px; padding:14px; }
+    .bookCard { aspect-ratio:3/4; border-radius:20px; display:grid; place-items:center; background:rgba(255,255,255,.88); font-size:clamp(55px,8vw,90px); box-shadow:0 8px 18px rgba(50,90,75,.15); }
+    .bookCard.locked { color:transparent; background:rgba(255,255,255,.35); position:relative; }
+    .bookCard.locked::after { content:"?"; color:rgba(70,105,95,.22); font-size:70px; }
+    #staffHold { position:fixed; z-index:99; right:0; bottom:0; width:90px; height:90px; opacity:0; }
+    #settings { position:fixed; z-index:100; inset:0; display:none; align-items:center; justify-content:center; background:rgba(20,40,45,.7); padding:24px; }
+    #settings.open { display:flex; }
+    .panel { width:min(700px,94vw); max-height:92vh; overflow:auto; background:#fff; border-radius:28px; padding:28px; color:#183c3b; }
+    .panel h2 { margin:0 0 22px; font-size:30px; }
+    .setting { display:grid; grid-template-columns:110px 1fr; align-items:center; gap:12px; margin:18px 0; font-size:22px; }
+    .levels { display:grid; grid-template-columns:repeat(3,1fr); gap:10px; }
+    .level { min-height:80px; border-radius:18px; background:#e8f1ee; font-size:20px; font-weight:700; }
+    .level.active { background:#4c9d88; color:#fff; outline:4px solid #c8f0e5; }
+    .closeSettings { width:100%; min-height:80px; margin-top:18px; border-radius:18px; background:#244f4c; color:#fff; font-size:22px; }
+    @media (max-height:700px) { .picture{width:140px;height:140px;font-size:82px}.center{gap:20px}.coin{font-size:105px}#card{height:250px;width:190px} }
+    @media (max-width:700px) { #bookGrid{grid-template-columns:repeat(3,1fr)}.setting{grid-template-columns:1fr}.picture{width:112px;height:112px;font-size:66px} }
+  </style>
+</head>
+<body>
+  <main>
+    <section id="home" class="screen center on" aria-label="テーマ">
+      <div class="choices">
+        <button class="picture theme" data-theme="flower" aria-label="花">🌸</button>
+        <button class="picture theme" data-theme="animal" aria-label="動物">🐾</button>
+        <button class="picture theme" data-theme="vehicle" aria-label="乗り物">🚌</button>
+      </div>
+      <button class="round" id="openBook" aria-label="ずかん">📖</button>
+    </section>
+    <section id="games" class="screen center" aria-label="ゲーム">
+      <div class="topbar"><button class="round homeBtn" aria-label="ホーム">🏠</button><span></span></div>
+      <div class="choices">
+        <button class="picture game" data-game="catch" aria-label="キャッチ">🧺</button>
+        <button class="picture game" data-game="balloon" aria-label="ふうせん">🎈</button>
+      </div>
+    </section>
+    <section id="play" class="screen" aria-label="プレイ">
+      <div id="playArea"><div class="cloud" style="top:8%;left:5%">☁️</div></div>
+      <div class="topbar"><button class="round" id="backGames" aria-label="ゲーム選択">↩️</button><span></span></div>
+      <button class="round" id="rewardGo" aria-label="ごほうび">🎁</button>
+    </section>
+    <section id="reward" class="screen center" aria-label="ごほうび">
+      <div class="topbar"><button class="round homeBtn" aria-label="ホーム">🏠</button><button class="round" id="rewardBook" aria-label="ずかん">📖</button></div>
+      <div class="coin" id="coin">🪙</div>
+      <button class="picture" id="gacha" aria-label="ガチャ">🎁</button>
+      <div id="card" aria-label="カード"></div>
+    </section>
+    <section id="book" class="screen center" aria-label="ずかん">
+      <div class="topbar"><button class="round homeBtn" aria-label="ホーム">🏠</button><span></span></div>
+      <div id="bookGrid"></div>
+    </section>
+  </main>
+  <button id="staffHold" aria-label="職員用設定"></button>
+  <aside id="settings" role="dialog" aria-modal="true" aria-label="職員用設定">
+    <div class="panel">
+      <h2>職員用設定</h2>
+      <div class="setting"><span>音量</span><div class="levels" data-key="sound"></div></div>
+      <div class="setting"><span>動き</span><div class="levels" data-key="motion"></div></div>
+      <div class="setting"><span>光</span><div class="levels" data-key="light"></div></div>
+      <button class="closeSettings">閉じる</button>
+    </div>
+  </aside>
+  <script>
+    (() => {
+      const $ = s => document.querySelector(s), $$ = s => [...document.querySelectorAll(s)];
+      const STORE = 'asobi-niwa-v1';
+      const themes = {
+        flower:['🌸','🌼','🌺','🌷','🌻'], animal:['🐶','🐱','🐰','🐼','🐘'],
+        vehicle:['🚌','🚒','🚑','🚓','🚜','🚧','🚚']
+      };
+      const cards = ['🌸','🌼','🌺','🌷','🐶','🐱','🐰','🐼','🚌','🚒','🚜','🚑'];
+      let saved = { coins:0, cards:[], settings:{ sound:1, motion:1, light:1 } };
+      try { saved = Object.assign(saved, JSON.parse(localStorage.getItem(STORE)||'{}')); } catch(e) {}
+      saved.settings = Object.assign({sound:1,motion:1,light:1}, saved.settings||{});
+      let theme='flower', game='catch', active=false, participated=false, audio=null, timers=[];
+      const persist = () => { try { localStorage.setItem(STORE,JSON.stringify(saved)); } catch(e) {} };
+      const clearTimers = () => { timers.forEach(clearTimeout); timers=[]; active=false; $$('.target').forEach(x=>x.remove()); };
+      const show = id => { clearTimers(); $$('.screen').forEach(x=>x.classList.remove('on')); $('#'+id).classList.add('on'); };
+      function applySettings(){
+        const times=[{cloud:'28s',spark:'1.4s',pulse:'3.4s',coin:'1.8s',reveal:'1.6s'},{cloud:'18s',spark:'.9s',pulse:'2.2s',coin:'1.2s',reveal:'1s'},{cloud:'12s',spark:'.65s',pulse:'1.5s',coin:'.8s',reveal:'.7s'}][saved.settings.motion];
+        const l=[.2,.55,.9][saved.settings.light]; Object.entries(times).forEach(([k,v])=>document.documentElement.style.setProperty('--'+k+'-time',v));
+        document.documentElement.style.setProperty('--glow',l);
+        $$('.levels').forEach(group => [...group.children].forEach((b,i)=>b.classList.toggle('active',i===saved.settings[group.dataset.key])));
+      }
+      function tone(kind='catch'){
+        const vol=[.025,.065,.12][saved.settings.sound]; if(!vol) return;
+        try {
+          audio ||= new (window.AudioContext||window.webkitAudioContext)(); if(audio.state==='suspended') audio.resume();
+          const o=audio.createOscillator(), g=audio.createGain(), now=audio.currentTime;
+          o.type=kind==='pop'?'sine':'triangle'; o.frequency.setValueAtTime(kind==='pop'?420:520,now);
+          o.frequency.exponentialRampToValueAtTime(kind==='pop'?760:690,now+.16); g.gain.setValueAtTime(vol,now); g.gain.exponentialRampToValueAtTime(.001,now+.28);
+          o.connect(g).connect(audio.destination); o.start(now); o.stop(now+.3);
+        } catch(e) {}
+      }
+      function sparkle(x,y,icon='✨'){
+        const s=document.createElement('div'); s.className='spark'; s.textContent=icon; s.style.left=x+'px'; s.style.top=y+'px'; $('#playArea').append(s); setTimeout(()=>s.remove(),1400);
+      }
+      function caught(el,e,kind){
+        e.preventDefault(); if(!active) return; participated=true; $('#rewardGo').classList.add('show');
+        const r=el.getBoundingClientRect(); sparkle(r.left+r.width/2,r.top+r.height/2,kind==='pop'?'🫧':'✨'); tone(kind); el.remove();
+        if(kind==='pop') timers.push(setTimeout(spawnBalloon,350)); else timers.push(setTimeout(spawnCatch,500));
+      }
+      function spawnCatch(){
+        if(!active) return; const el=document.createElement('button'); el.className='target fall';
+        const list=themes[theme]; el.textContent=list[Math.floor(Math.random()*list.length)]; el.setAttribute('aria-label','キャッチ');
+        el.style.left=(8+Math.random()*78)+'vw'; el.style.setProperty('--fall-time',([14,10,7][saved.settings.motion]+Math.random()*3)+'s');
+        el.addEventListener('pointerdown',e=>caught(el,e,'catch')); $('#playArea').append(el);
+        el.addEventListener('animationend',()=>{el.remove(); timers.push(setTimeout(spawnCatch,400));},{once:true});
+      }
+      function spawnBalloon(){
+        if(!active) return; const el=document.createElement('button'); el.className='target float';
+        el.textContent=Math.random()>.48?'🎈':'🫧'; el.setAttribute('aria-label','タッチ'); el.style.left=(5+Math.random()*82)+'vw'; el.style.bottom='-18vh';
+        const sway=Math.random()*18-9; el.style.setProperty('--sway',sway+'vw'); el.style.setProperty('--sway-end',(sway*-.5)+'vw'); el.style.setProperty('--float-time',([16,11,7][saved.settings.motion]+Math.random()*4)+'s');
+        el.addEventListener('pointerdown',e=>caught(el,e,'pop')); $('#playArea').append(el);
+        el.addEventListener('animationend',()=>{el.remove(); timers.push(setTimeout(spawnBalloon,250));},{once:true});
+      }
+      function startPlay(){
+        show('play'); active=true; participated=false; $('#rewardGo').classList.remove('show');
+        if(game==='catch') spawnCatch(); else { for(let i=0;i<4;i++) timers.push(setTimeout(spawnBalloon,i*650)); }
+      }
+      function enterReward(){
+        if(!participated) return; show('reward'); saved.coins++; persist(); $('#coin').style.display='block'; $('#gacha').style.display='grid'; $('#card').classList.remove('show'); $('#card').textContent='';
+      }
+      function drawCard(){
+        const item=cards[Math.floor(Math.random()*cards.length)]; if(!saved.cards.includes(item)) saved.cards.push(item); persist();
+        $('#coin').style.display='none'; $('#gacha').classList.add('flash'); $('#gacha').style.display='none'; $('#card').textContent=item; $('#card').classList.add('show');
+        tone('catch'); setTimeout(()=>$('#gacha').classList.remove('flash'),1000);
+      }
+      function renderBook(){
+        $('#bookGrid').innerHTML=''; cards.forEach(item=>{ const d=document.createElement('div'); d.className='bookCard'+(saved.cards.includes(item)?'':' locked'); d.textContent=item; $('#bookGrid').append(d); });
+      }
+      $$('.theme').forEach(b=>b.onclick=()=>{theme=b.dataset.theme; show('games')});
+      $$('.game').forEach(b=>b.onclick=()=>{game=b.dataset.game; startPlay()});
+      $$('.homeBtn').forEach(b=>b.onclick=()=>show('home')); $('#backGames').onclick=()=>show('games');
+      $('#rewardGo').onclick=enterReward; $('#gacha').onclick=drawCard;
+      $('#openBook').onclick=$('#rewardBook').onclick=()=>{renderBook();show('book')};
+      ['sound','motion','light'].forEach(key=>{
+        const box=document.querySelector(`.levels[data-key="${key}"]`);
+        ['弱','中','強'].forEach((label,i)=>{const b=document.createElement('button');b.className='level';b.textContent=label;b.onclick=()=>{saved.settings[key]=i;persist();applySettings()};box.append(b)});
+      });
+      let holdTimer; const hold=$('#staffHold');
+      const stopHold=()=>clearTimeout(holdTimer); hold.addEventListener('pointerdown',()=>holdTimer=setTimeout(()=>$('#settings').classList.add('open'),3000));
+      ['pointerup','pointercancel','pointerleave'].forEach(x=>hold.addEventListener(x,stopHold));
+      $('.closeSettings').onclick=()=>$('#settings').classList.remove('open');
+      document.addEventListener('visibilitychange',()=>{ if(document.hidden) clearTimers() });
+      applySettings();
+    })();
+  </script>
+</body>
+</html>
