@@ -1,240 +1,1468 @@
 <!doctype html>
 <html lang="ja">
 <head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover,user-scalable=no">
-  <meta name="apple-mobile-web-app-capable" content="yes">
-  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-  <title>あそびのにわ</title>
-  <style>
-    :root { --glow:.65; --cloud-time:18s; --spark-time:.9s; --pulse-time:2.2s; --coin-time:1.2s; --reveal-time:1s; --bg1:#fff7d6; --bg2:#ccefe4; }
-    * { box-sizing:border-box; -webkit-tap-highlight-color:transparent; }
-    html,body { margin:0; width:100%; height:100%; overflow:hidden; background:var(--bg2); }
-    body { font-family:system-ui,sans-serif; user-select:none; touch-action:manipulation; }
-    button { font:inherit; border:0; cursor:pointer; touch-action:manipulation; }
-    .screen { position:fixed; inset:0; min-height:100vh; min-height:100dvh; display:none; overflow:hidden;
-      background:radial-gradient(circle at 50% 15%,#fff 0 8%,transparent 35%),linear-gradient(155deg,var(--bg1),var(--bg2)); }
-    .screen.on { display:flex; }
-    .center { align-items:center; justify-content:center; flex-direction:column; gap:clamp(24px,5vh,52px); padding:env(safe-area-inset-top) 24px env(safe-area-inset-bottom); }
-    .choices { display:flex; flex-wrap:wrap; justify-content:center; align-items:center; gap:clamp(20px,4vw,48px); }
-    #home::before { content:""; position:absolute; z-index:0; left:-12vw; right:-12vw; bottom:-25vh; height:52vh;
-      border-radius:50% 50% 0 0; background:linear-gradient(165deg,rgba(166,218,159,.48),rgba(105,190,158,.32));
-      box-shadow:inset 0 16px 32px rgba(255,255,255,.28); pointer-events:none; }
-    .home-stars { position:absolute; inset:0; z-index:1; pointer-events:none; overflow:hidden; }
-    .home-stars span { position:absolute; font-size:clamp(25px,4vw,48px); opacity:var(--glow);
-      animation:homeTwinkle var(--pulse-time) ease-in-out infinite alternate; }
-    .home-stars span:nth-child(1){left:10%;top:17%}.home-stars span:nth-child(2){right:12%;top:22%;animation-delay:.5s}
-    .home-stars span:nth-child(3){left:17%;bottom:16%;animation-delay:1s}.home-stars span:nth-child(4){right:18%;bottom:12%;animation-delay:1.4s}
-    @keyframes homeTwinkle { to { transform:scale(1.28) rotate(12deg); opacity:1; } }
-    .home-emblem { position:relative; z-index:3; width:clamp(126px,18vw,190px); height:clamp(92px,13vw,138px);
-      display:grid; place-items:center; border:8px solid rgba(255,255,255,.9); border-radius:42% 42% 48% 48%;
-      background:linear-gradient(145deg,#ffcf68,#ff8f73); font-size:clamp(62px,9vw,102px);
-      box-shadow:0 11px 0 rgba(180,100,69,.22),0 20px 38px rgba(73,113,96,.2);
-      animation:emblemFloat var(--pulse-time) ease-in-out infinite alternate; }
-    .home-emblem::before,.home-emblem::after { position:absolute; top:50%; font-size:clamp(26px,4vw,44px); }
-    .home-emblem::before { content:"⭐"; left:-42%; transform:rotate(-16deg); }
-    .home-emblem::after { content:"✨"; right:-42%; transform:rotate(16deg); }
-    @keyframes emblemFloat { to { transform:translateY(-7px) scale(1.025); } }
-    #home .choices { position:relative; z-index:3; }
-    .theme { position:relative; overflow:visible; border:5px solid rgba(255,255,255,.94); }
-    .theme[data-theme="flower"] { background:linear-gradient(150deg,#fff,#ffe6ee); }
-    .theme[data-theme="animal"] { background:linear-gradient(150deg,#fff,#e8f5df); }
-    .theme[data-theme="vehicle"] { background:linear-gradient(150deg,#fff,#dceeff); }
-    .theme::before { content:""; position:absolute; inset:10%; border-radius:32%; opacity:.38; z-index:0; }
-    .theme[data-theme="flower"]::before { background:radial-gradient(circle,#ffc4d7,transparent 68%); }
-    .theme[data-theme="animal"]::before { background:radial-gradient(circle,#bfe6a9,transparent 68%); }
-    .theme[data-theme="vehicle"]::before { background:radial-gradient(circle,#acd9ff,transparent 68%); }
-    .theme::after { content:"▶"; position:absolute; z-index:4; right:-10px; bottom:-10px; width:clamp(48px,6vw,66px); height:clamp(48px,6vw,66px);
-      display:grid; place-items:center; padding-left:4px; border:5px solid #fff; border-radius:50%; color:#fff;
-      background:linear-gradient(145deg,#ff9b70,#f16f65); font-size:clamp(21px,3vw,31px); box-shadow:0 6px 0 rgba(147,75,68,.2); }
-    .theme-icon { position:relative; z-index:2; filter:drop-shadow(0 7px 5px rgba(40,70,60,.2)); }
-    .home-guide { position:absolute; z-index:5; left:50%; transform:translateX(-50%); bottom:clamp(106px,15vh,142px);
-      display:flex; align-items:center; gap:9px; pointer-events:none; font-size:clamp(26px,4vw,42px); }
-    .home-guide .finger { animation:guideTap 1.25s ease-in-out infinite; }
-    @keyframes guideTap { 55% { transform:translateY(11px) scale(.9); } }
-    #home #openBook { position:relative; z-index:4; border:5px solid rgba(255,255,255,.94); }
-    .picture { width:clamp(132px,19vw,210px); height:clamp(132px,19vw,210px); border-radius:36%;
-      background:rgba(255,255,255,.82); box-shadow:0 13px 0 rgba(66,112,93,.15),0 20px 38px rgba(49,96,80,.18);
-      display:grid; place-items:center; font-size:clamp(70px,11vw,126px); transition:transform .15s; }
-    .picture:active,.round:active { transform:scale(.92); }
-    .picture.selected { outline:12px solid rgba(255,205,62,.75); }
-    .round { width:clamp(88px,11vw,118px); height:clamp(88px,11vw,118px); border-radius:50%; display:grid; place-items:center;
-      background:rgba(255,255,255,.88); font-size:clamp(44px,6vw,68px); box-shadow:0 9px 0 rgba(66,112,93,.15); }
-    .topbar { position:absolute; z-index:20; top:max(16px,env(safe-area-inset-top)); left:18px; right:18px; display:flex; justify-content:space-between; pointer-events:none; }
-    .topbar>* { pointer-events:auto; }
-    #play { background:linear-gradient(#bdeaff,#eafaff); }
-    #playArea { position:absolute; inset:0; overflow:hidden; }
-    .cloud { position:absolute; font-size:clamp(70px,11vw,120px); opacity:.45; filter:blur(1px); animation:drift var(--cloud-time) linear infinite alternate; }
-    @keyframes drift { from{transform:translateX(-15vw)} to{transform:translateX(70vw)} }
-    .target { position:absolute; width:clamp(92px,13vw,136px); height:clamp(92px,13vw,136px); display:grid; place-items:center;
-      border-radius:50%; font-size:clamp(58px,9vw,94px); background:rgba(255,255,255,.3); filter:drop-shadow(0 12px 8px rgba(30,70,90,.18)); }
-    .fall { animation:fall var(--fall-time,9s) linear forwards; }
-    @keyframes fall { from{transform:translateY(-18vh) rotate(-8deg)} to{transform:translateY(112vh) rotate(16deg)} }
-    .float { animation:float var(--float-time,10s) ease-in-out forwards; }
-    @keyframes float { 0%{transform:translate(0,15vh) scale(.85)} 50%{transform:translate(var(--sway,10vw),-5vh) scale(1)} 100%{transform:translate(var(--sway-end,-5vw),-95vh) scale(.9)} }
-    .spark { position:absolute; z-index:12; pointer-events:none; font-size:48px; animation:spark var(--spark-time) ease-out forwards; }
-    @keyframes spark { from{transform:translate(-50%,-50%) scale(.4);opacity:calc(.35 * var(--glow))} to{transform:translate(-50%,-140%) scale(1.8);opacity:0} }
-    #rewardGo { position:absolute; z-index:18; right:max(20px,env(safe-area-inset-right)); bottom:max(24px,env(safe-area-inset-bottom)); display:none; }
-    #rewardGo.show { display:grid; animation:breathe var(--pulse-time) ease-in-out infinite; }
-    @keyframes breathe { 50%{transform:scale(calc(1 + .08 * var(--glow)))} }
-    .coin { font-size:clamp(86px,16vw,170px); filter:drop-shadow(0 14px 12px rgba(150,95,0,.2)); animation:coinIn var(--coin-time) ease-out both; }
-    @keyframes coinIn { from{transform:translateY(-40vh) rotate(-140deg) scale(.2);opacity:0} to{transform:none;opacity:1} }
-    #gacha { position:relative; overflow:visible; }
-    #gacha.flash::after { content:""; position:fixed; inset:-30%; z-index:-1; background:radial-gradient(circle,rgba(255,255,255,calc(.78 * var(--glow))),transparent 55%); animation:fade .9s ease-out; }
-    @keyframes fade { from{opacity:1} to{opacity:0} }
-    #card { width:clamp(210px,29vw,300px); height:clamp(280px,38vw,390px); border:12px solid #fff; border-radius:28px;
-      display:none; place-items:center; font-size:clamp(110px,17vw,180px); background:linear-gradient(145deg,#fff9c7,#d7f4ff); box-shadow:0 22px 45px rgba(40,80,95,.25); }
-    #card.show { display:grid; animation:reveal var(--reveal-time) cubic-bezier(.2,.8,.25,1.3); }
-    @keyframes reveal { from{transform:rotateY(90deg) scale(.4);opacity:0} to{transform:none;opacity:1} }
-    #bookGrid { width:min(920px,92vw); max-height:72vh; overflow:auto; display:grid; grid-template-columns:repeat(4,minmax(100px,1fr)); gap:18px; padding:14px; }
-    .bookCard { aspect-ratio:3/4; border-radius:20px; display:grid; place-items:center; background:rgba(255,255,255,.88); font-size:clamp(55px,8vw,90px); box-shadow:0 8px 18px rgba(50,90,75,.15); }
-    .bookCard.locked { color:transparent; background:rgba(255,255,255,.35); position:relative; }
-    .bookCard.locked::after { content:"?"; color:rgba(70,105,95,.22); font-size:70px; }
-    #staffHold { position:fixed; z-index:99; left:0; bottom:0; width:90px; height:90px; opacity:0; }
-    #settings { position:fixed; z-index:100; inset:0; display:none; align-items:center; justify-content:center; background:rgba(20,40,45,.7); padding:24px; }
-    #settings.open { display:flex; }
-    .panel { width:min(700px,94vw); max-height:92vh; overflow:auto; background:#fff; border-radius:28px; padding:28px; color:#183c3b; }
-    .panel h2 { margin:0 0 22px; font-size:30px; }
-    .setting { display:grid; grid-template-columns:110px 1fr; align-items:center; gap:12px; margin:18px 0; font-size:22px; }
-    .levels { display:grid; grid-template-columns:repeat(3,1fr); gap:10px; }
-    .level { min-height:80px; border-radius:18px; background:#e8f1ee; font-size:20px; font-weight:700; }
-    .level.active { background:#4c9d88; color:#fff; outline:4px solid #c8f0e5; }
-    .closeSettings { width:100%; min-height:80px; margin-top:18px; border-radius:18px; background:#244f4c; color:#fff; font-size:22px; }
-    @media (max-height:700px) { .picture{width:140px;height:140px;font-size:82px}.center{gap:16px}.coin{font-size:105px}#card{height:250px;width:190px}.home-emblem{width:112px;height:80px;font-size:58px}.home-guide{bottom:92px} }
-    @media (max-width:700px) { #bookGrid{grid-template-columns:repeat(3,1fr)}.setting{grid-template-columns:1fr}.picture{width:112px;height:112px;font-size:66px}.home-emblem{width:116px;height:84px;font-size:60px}.home-guide{bottom:94px} }
-  </style>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover,user-scalable=no">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<title>あそびのにわ</title>
+<style>
+:root{
+  --spd:1; --glow:.6;
+  --cream:#FFF4DC; --mint:#CFEBD9; --coral:#FF8A70; --wood:#C98F4E; --ink:#2C5D55;
+  --mound1:#B98A52; --mound2:#8AC47E;
+  --shadow:0 10px 0 rgba(70,110,95,.16),0 18px 34px rgba(50,90,75,.2);
+}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent;margin:0;padding:0}
+html,body{width:100%;height:100%;overflow:hidden;background:var(--cream);
+  font-family:"Hiragino Maru Gothic ProN","Zen Maru Gothic",system-ui,sans-serif;
+  user-select:none;-webkit-user-select:none;touch-action:none}
+button{font:inherit;border:0;background:none;cursor:pointer;touch-action:manipulation;color:inherit;padding:0}
+
+.screen{position:fixed;inset:0;display:none;overflow:hidden}
+.screen.on{display:flex}
+.center{align-items:center;justify-content:center;flex-direction:column;
+  gap:clamp(18px,4vh,42px);padding:max(20px,env(safe-area-inset-top)) 18px max(20px,env(safe-area-inset-bottom))}
+
+.round{width:clamp(84px,10vw,110px);height:clamp(84px,10vw,110px);border-radius:50%;
+  display:grid;place-items:center;font-size:clamp(40px,5vw,56px);
+  background:rgba(255,255,255,.94);box-shadow:0 6px 0 rgba(70,110,95,.18),0 10px 20px rgba(50,90,75,.15);
+  transition:transform .12s}
+.round:active{transform:scale(.9)}
+.topbar{position:absolute;z-index:30;top:max(14px,env(safe-area-inset-top));left:16px;right:16px;
+  display:flex;justify-content:space-between;pointer-events:none}
+.topbar>*{pointer-events:auto}
+
+/* ===== ambient blobs (home / select) ===== */
+.amb{position:absolute;border-radius:50%;pointer-events:none;
+  opacity:calc(.25 * var(--glow) + .08);filter:blur(2px);
+  animation:ambFloat calc(9s/var(--spd)) ease-in-out infinite alternate}
+@keyframes ambFloat{to{transform:translateY(-7vh) translateX(3vw) scale(1.15)}}
+
+/* ===== titles & labels ===== */
+.appTitle{z-index:2;display:flex;align-items:center;gap:clamp(10px,2vw,24px);
+  font-size:clamp(44px,7.5vw,92px);font-weight:800;color:#3E8A77;letter-spacing:.05em;
+  text-shadow:0 3px 0 #fff,0 10px 16px rgba(70,110,95,.22)}
+.appTitle .tch{display:inline-block;animation:tbounce 2.6s ease-in-out infinite}
+@keyframes tbounce{50%{transform:translateY(calc(-9px * var(--glow) - 2px)) rotate(2deg)}}
+.appTitle .deco{font-size:.8em;filter:drop-shadow(0 4px 3px rgba(40,70,60,.25))}
+.screenTitle{z-index:2;font-size:clamp(28px,4.4vw,50px);font-weight:800;color:#3E8A77;
+  letter-spacing:.05em;text-shadow:0 3px 0 #fff,0 8px 12px rgba(70,110,95,.18)}
+.cardName{position:absolute;left:0;right:0;bottom:clamp(8px,1.4vw,16px);z-index:3;
+  text-align:center;font-weight:800;font-size:clamp(19px,2.6vw,30px);color:#456B5B;
+  text-shadow:0 2px 0 rgba(255,255,255,.9),0 -1px 0 rgba(255,255,255,.9);pointer-events:none}
+
+/* ===== home ===== */
+#home{background:linear-gradient(170deg,#FFF3D6 0%,#DFF3E3 60%,#CBEDDC 100%)}
+#home .sunbg{position:absolute;top:-20vmin;left:50%;transform:translateX(-50%);
+  width:76vmin;height:76vmin;border-radius:50%;
+  background:radial-gradient(circle,rgba(255,214,107,calc(.5*var(--glow)+.15)),rgba(255,214,107,0) 70%)}
+.cardRow{display:flex;flex-wrap:wrap;justify-content:center;gap:clamp(16px,3vw,38px);z-index:2}
+.bigCardBtn{position:relative;border-radius:34px;overflow:hidden;background:#fff;
+  box-shadow:var(--shadow);transition:transform .15s}
+.bigCardBtn:active{transform:scale(.94)}
+.bigCardBtn svg.bg{position:absolute;inset:0;width:100%;height:100%}
+.bigCardBtn .face{position:absolute;inset:0;display:grid;place-items:center;
+  filter:drop-shadow(0 6px 4px rgba(40,70,60,.25));animation:bob 3.4s ease-in-out infinite}
+@keyframes bob{50%{transform:translateY(calc(-12px * var(--glow) - 3px))}}
+.themeCard{width:clamp(176px,23vw,272px);height:clamp(208px,27vw,322px)}
+.themeCard .face{font-size:clamp(74px,11vw,128px);padding-bottom:14%}
+.cardRow>*:nth-child(2) .face{animation-delay:.5s}
+.cardRow>*:nth-child(3) .face{animation-delay:1s}
+
+/* ===== game select ===== */
+#games{background:linear-gradient(170deg,#FFF3D6,#D5EFF7)}
+.gameCard{width:clamp(168px,22vw,270px);height:clamp(168px,22vw,270px)}
+.gameCard .face{font-size:clamp(70px,10vw,120px);padding-bottom:16%}
+
+/* ===== play ===== */
+#play{background:#BEE7F5}
+#scene{position:absolute;inset:0}
+#scene svg{width:100%;height:100%;display:block}
+#stage{position:absolute;inset:0;z-index:5;overflow:hidden}
+.item{position:absolute;left:0;top:0;width:var(--sz,120px);height:var(--sz,120px);
+  display:grid;place-items:center;font-size:calc(var(--sz,120px)*.72);
+  filter:drop-shadow(0 8px 6px rgba(30,70,90,.22));will-change:transform}
+.item .hit{position:absolute;inset:-24%;border-radius:50%}
+.pop{position:absolute;left:0;top:0;z-index:12;pointer-events:none;font-size:34px;will-change:transform,opacity}
+/* 風船+ぶらさがりキャラ */
+.item.bItem{display:flex;flex-direction:column;align-items:center;justify-content:flex-start;
+  height:calc(var(--sz,120px)*1.5);gap:0}
+.bItem .bal{font-size:calc(var(--sz,120px)*.68);line-height:1}
+.bItem .bstr{width:3px;height:calc(var(--sz,120px)*.14);background:#9A7B4F;border-radius:2px}
+.bItem .bchr2{font-size:calc(var(--sz,120px)*.48);line-height:1}
+/* シャボン玉の中のキャラ */
+.bwrap{position:relative;display:grid;place-items:center}
+.bwrap .bchr{font-size:calc(var(--sz,120px)*.46);line-height:1}
+.bwrap .bbl{position:absolute;font-size:calc(var(--sz,120px)*.95);opacity:.85;line-height:1}
+#basket{position:absolute;z-index:8;bottom:2vh;width:clamp(150px,20vw,230px);
+  pointer-events:none;filter:drop-shadow(0 10px 8px rgba(40,70,60,.3));will-change:transform}
+#stars{position:absolute;z-index:25;top:max(20px,env(safe-area-inset-top));left:50%;
+  transform:translateX(-50%);display:flex;flex-wrap:wrap;justify-content:center;
+  gap:2px clamp(3px,.6vw,8px);
+  padding:8px 16px;border-radius:26px;background:rgba(255,255,255,.55);
+  backdrop-filter:blur(3px);filter:drop-shadow(0 3px 3px rgba(40,70,60,.2));
+  pointer-events:none}
+.star{filter:grayscale(1);opacity:.3;transition:all .35s cubic-bezier(.3,1.6,.5,1)}
+.star.onn{filter:none;opacity:1;transform:scale(1.18)}
+#bigGift{position:absolute;z-index:40;left:50%;top:42%;font-size:clamp(120px,22vw,220px);
+  display:none;filter:drop-shadow(0 16px 14px rgba(120,70,20,.35));will-change:transform}
+#bigGift.show{display:block;animation:giftDrop calc(.9s/var(--spd)) cubic-bezier(.3,1.5,.4,1) both,
+  giftPulse 1.7s calc(1s/var(--spd)) ease-in-out infinite}
+@keyframes giftDrop{from{transform:translate(-50%,-90vh) rotate(-24deg)}to{transform:translate(-50%,-50%)}}
+@keyframes giftPulse{0%,100%{transform:translate(-50%,-50%)}50%{transform:translate(-50%,-50%) scale(calc(1 + .12*var(--glow)))}}
+
+/* ---- race game ---- */
+#car{position:absolute;z-index:8;bottom:7vh;width:clamp(140px,18vw,225px);pointer-events:none;transform-origin:50% 92%;
+  filter:drop-shadow(0 5px 5px rgba(30,60,80,.4));will-change:transform,left}
+#car svg{width:100%;height:auto;display:block}
+.roadLine{position:absolute;top:0;bottom:0;width:9px;transform:translateX(-50%);z-index:4;opacity:.95;
+  background:repeating-linear-gradient(180deg,#FFF6DE 0 46px,transparent 46px 112px);
+  animation:roadMove calc(.5s/var(--spd)) linear infinite}
+@keyframes roadMove{to{background-position:0 112px}}
+
+/* ---- match game ---- */
+.mboard{position:absolute;transform:translate(-50%,-50%);z-index:5;pointer-events:none;
+  filter:drop-shadow(0 14px 18px rgba(60,35,10,.35))}
+.mboard svg{width:100%;height:100%;display:block}
+.slot{position:absolute;width:var(--ss,140px);height:var(--ss,140px);transform:translate(-50%,-50%);z-index:6;pointer-events:none}
+.slot svg{width:100%;height:100%}
+.piece{position:absolute;width:var(--ss,140px);height:var(--ss,140px);transform:translate(-50%,-50%);
+  z-index:8;background:none;touch-action:none;
+  transition:left calc(.35s/var(--spd)) cubic-bezier(.3,1.3,.5,1),top calc(.35s/var(--spd)) cubic-bezier(.3,1.3,.5,1);
+  filter:drop-shadow(0 8px 6px rgba(30,70,90,.25))}
+.piece.drag{transition:none;z-index:22;filter:drop-shadow(0 18px 14px rgba(30,70,90,.32))}
+.piece.placed{pointer-events:none}
+.piece svg{width:100%;height:100%;pointer-events:none}
+
+/* ---- mole holes ---- */
+.hole{position:absolute;width:clamp(120px,15vw,190px);transform:translate(-50%,-50%);z-index:6}
+.hole svg{display:block;width:100%;overflow:visible}
+.hole .back{position:relative;z-index:1}
+.hole .cwrap{position:absolute;left:-6%;right:-6%;bottom:30%;height:230%;
+  overflow:hidden;display:flex;align-items:flex-end;justify-content:center;z-index:2}
+.hole .char{font-size:clamp(70px,9.5vw,112px);line-height:1;padding:14px 22px;
+  filter:drop-shadow(0 6px 5px rgba(40,70,60,.3));
+  transform:translateY(115%);transition:transform calc(.3s/var(--spd)) cubic-bezier(.3,1.5,.5,1)}
+.hole.up .char{transform:translateY(-2%)}
+.hole.happy .char{animation:happyJump calc(.5s/var(--spd)) ease-out}
+@keyframes happyJump{30%{transform:translateY(-30%) scale(1.15)}100%{transform:translateY(115%)}}
+.hole .mound{position:absolute;left:0;right:0;bottom:0;z-index:3;pointer-events:none}
+
+/* ===== reward / gacha ===== */
+#reward{background:linear-gradient(170deg,#FFEFD0,#FBD9D2)}
+#machineWrap{position:relative;width:clamp(310px,44vw,500px)}
+#machineWrap svg.machine{width:100%;height:auto;display:block;filter:drop-shadow(0 16px 22px rgba(120,60,40,.25))}
+#machineBtn{position:absolute;inset:0;z-index:2}
+#machineBtn:active{transform:scale(.97)}
+#knob{transform-box:fill-box;transform-origin:center}
+#knob.turn{animation:knobSpin calc(.95s/var(--spd)) cubic-bezier(.5,.05,.3,1)}
+@keyframes knobSpin{to{transform:rotate(360deg)}}
+#capsule{position:absolute;left:50%;bottom:5%;width:31%;z-index:5;background:none;
+  transform:translateX(-50%) scale(0)}
+#capsule svg{display:block;width:100%;overflow:visible}
+#capsule svg g{transform-box:fill-box;transform-origin:center;transition:transform calc(.4s/var(--spd)),opacity calc(.4s/var(--spd))}
+#capsule.drop{animation:capDrop calc(.75s/var(--spd)) cubic-bezier(.34,1.55,.5,1) both}
+@keyframes capDrop{0%{transform:translateX(-50%) translateY(-320%) scale(.55)}
+  62%{transform:translateX(-50%) translateY(10%) scale(1.12,.82)}
+  82%{transform:translateX(-50%) translateY(-6%) scale(.94,1.08)}
+  100%{transform:translateX(-50%) scale(1)}}
+#capsule.wob{animation:wob .55s ease-in-out infinite}
+@keyframes wob{0%,100%{transform:translateX(-50%)}25%{transform:translateX(-50%) rotate(-10deg)}75%{transform:translateX(-50%) rotate(10deg)}}
+#capsule.zoom{animation:none;z-index:9;
+  transform:translateX(-50%) translateY(-125%) scale(2.4);
+  transition:transform calc(.55s/var(--spd)) cubic-bezier(.3,1.25,.4,1)}
+#capsule.open{animation:none}
+#capsule.open .capTop{transform:translate(-16px,-60px) rotate(-32deg);opacity:0}
+#capsule.open .capBottom{transform:translate(16px,36px) rotate(26deg);opacity:0}
+#hand{position:absolute;z-index:6;font-size:clamp(46px,7vw,74px);pointer-events:none;display:none;
+  filter:drop-shadow(0 6px 5px rgba(40,40,40,.35));animation:handBob .85s ease-in-out infinite}
+#hand.show{display:block}
+@keyframes handBob{50%{transform:translateY(-16px)}}
+#flyCoin{position:absolute;z-index:5;left:50%;top:-16vh;font-size:clamp(60px,9vw,90px);
+  transform:translateX(-50%);filter:drop-shadow(0 8px 6px rgba(150,95,0,.3));display:none}
+#flyCoin.go{display:block;animation:coinFly calc(1s/var(--spd)) cubic-bezier(.4,0,.6,1.2) forwards}
+@keyframes coinFly{to{top:34%;transform:translateX(-50%) rotate(360deg) scale(.55);opacity:0}}
+#cardBox{position:absolute;inset:0;z-index:40;display:none;align-items:center;justify-content:center;
+  flex-direction:column;gap:4vh;background:radial-gradient(circle,rgba(255,252,240,.96),rgba(255,238,214,.98))}
+#cardBox.on{display:flex}
+#bigCard{width:clamp(220px,30vw,320px);aspect-ratio:3/4;border-radius:30px;border:12px solid #fff;
+  display:grid;place-items:center;font-size:clamp(120px,18vw,190px);
+  background:linear-gradient(150deg,#FFF6C9,#CDEFFB);
+  box-shadow:0 0 0 6px rgba(255,201,77,.5),0 24px 50px rgba(120,80,30,.3);
+  animation:reveal calc(.8s/var(--spd)) cubic-bezier(.2,1,.3,1.25) both}
+@keyframes reveal{from{transform:rotateY(90deg) scale(.3);opacity:0}}
+#againRow{display:flex;gap:5vw}
+
+/* ===== book ===== */
+#book{background:linear-gradient(170deg,#FFF3D6,#E7E9F6)}
+#bookGrid{width:min(940px,92vw);max-height:70vh;overflow-y:auto;display:grid;
+  grid-template-columns:repeat(4,1fr);gap:clamp(12px,2vw,22px);padding:10px;
+  -webkit-overflow-scrolling:touch;touch-action:pan-y}
+.bookCard{aspect-ratio:3/4;border-radius:22px;display:grid;place-items:center;
+  font-size:clamp(50px,7vw,84px);background:#fff;box-shadow:var(--shadow)}
+.bookCard.locked{background:rgba(255,255,255,.4);box-shadow:none}
+.bookCard.locked span{filter:grayscale(1) brightness(2.6) contrast(.15)}
+
+/* ===== hero ===== */
+#heroHome{position:absolute;left:5%;bottom:8%;width:clamp(110px,15vw,190px);z-index:2;
+  filter:drop-shadow(0 10px 8px rgba(40,70,60,.25));transform-origin:50% 88%;
+  animation:heroTrick calc(4.8s/var(--spd)) ease-in-out infinite}
+@keyframes heroTrick{
+  0%{transform:translateY(0) rotate(0)}
+  6%{transform:translateY(-12px) rotate(0)}
+  11%{transform:translateY(0) scale(1.06,.93)}
+  16%{transform:translateY(-12px) scale(1)}
+  21%{transform:translateY(0) scale(1.06,.93)}
+  26%{transform:translateY(0) scale(1)}
+  38%{transform:translateY(-72px) rotate(200deg)}
+  50%{transform:translateY(0) rotate(360deg)}
+  54%{transform:translateY(0) rotate(360deg) scale(1.16,.82)}
+  60%{transform:translateY(-6px) rotate(360deg) scale(.95,1.06)}
+  65%{transform:translateY(0) rotate(360deg) scale(1)}
+  74%{transform:rotate(354deg)}
+  82%{transform:rotate(366deg)}
+  90%,100%{transform:rotate(360deg)}}
+#heroHome svg{width:100%;height:auto;display:block}
+#heroFly{position:absolute;z-index:38;left:0;top:24%;width:clamp(170px,24vw,280px);
+  display:none;pointer-events:none;filter:drop-shadow(0 10px 10px rgba(40,70,60,.3))}
+#heroFly svg{width:100%;height:auto;display:block}
+#heroFly.go{display:block;animation:heroDash calc(1.7s/var(--spd)) ease-in-out forwards}
+@keyframes heroDash{
+  0%{transform:translateX(-32vw) translateY(7vh) rotate(4deg)}
+  50%{transform:translateX(38vw) translateY(-3vh) rotate(-4deg)}
+  100%{transform:translateX(115vw) translateY(5vh) rotate(4deg)}}
+
+/* ===== staff ===== */
+#gearBtn{position:absolute;z-index:31;top:max(14px,env(safe-area-inset-top));right:16px;
+  width:clamp(64px,7.5vw,88px);height:clamp(64px,7.5vw,88px);border-radius:50%;
+  display:grid;place-items:center;font-size:clamp(30px,3.6vw,44px);
+  background:rgba(255,255,255,.75);box-shadow:0 4px 0 rgba(70,110,95,.14);opacity:.85}
+#gearBtn.holding{animation:gearSpin 2s linear}
+@keyframes gearSpin{to{transform:rotate(360deg)}}
+
+#staffHold{position:fixed;z-index:98;left:0;bottom:0;width:88px;height:88px;opacity:0}
+#settings{position:fixed;inset:0;z-index:100;display:none;align-items:center;justify-content:center;
+  background:rgba(25,50,46,.72);padding:20px}
+#settings.open{display:flex}
+.panel{width:min(660px,94vw);max-height:92vh;overflow-y:auto;background:#fff;border-radius:28px;
+  padding:30px;color:var(--ink);-webkit-overflow-scrolling:touch;touch-action:pan-y}
+.panel h2{font-size:26px;margin-bottom:18px}
+.setting{margin:18px 0}
+.setting p{font-size:20px;font-weight:700;margin-bottom:10px}
+.levels{display:grid;grid-template-columns:repeat(4,1fr);gap:10px}
+.levels.three{grid-template-columns:repeat(3,1fr)}
+.levels.two{grid-template-columns:repeat(2,1fr)}
+.level{min-height:76px;border-radius:16px;background:#EAF2EF;font-size:19px;font-weight:700}
+.level.active{background:#3E8A77;color:#fff}
+.closeSettings{width:100%;min-height:80px;margin-top:18px;border-radius:16px;
+  background:#24504B;color:#fff;font-size:22px}
+@media (max-width:760px){
+  #bookGrid{grid-template-columns:repeat(3,1fr)}
+  .themeCard{width:146px;height:176px}
+  .gameCard{width:146px;height:146px}
+}
+@media (prefers-reduced-motion:reduce){.face,.amb{animation:none}}
+</style>
 </head>
 <body>
-  <main>
-    <section id="home" class="screen center on" aria-label="テーマ">
-      <div class="home-stars" aria-hidden="true"><span>⭐</span><span>✨</span><span>🎈</span><span>⭐</span></div>
-      <div class="home-emblem" aria-hidden="true">🎮</div>
-      <div class="choices">
-        <button class="picture theme" data-theme="flower" aria-label="花"><span class="theme-icon">🌸</span></button>
-        <button class="picture theme" data-theme="animal" aria-label="動物"><span class="theme-icon">🐾</span></button>
-        <button class="picture theme" data-theme="vehicle" aria-label="乗り物"><span class="theme-icon">🚌</span></button>
-      </div>
-      <div class="home-guide" aria-hidden="true"><span>✨</span><span class="finger">👆</span><span>✨</span></div>
-      <button class="round" id="openBook" aria-label="ずかん">📖</button>
-    </section>
-    <section id="games" class="screen center" aria-label="ゲーム">
-      <div class="topbar"><button class="round homeBtn" aria-label="ホーム">🏠</button><span></span></div>
-      <div class="choices">
-        <button class="picture game" data-game="catch" aria-label="キャッチ">🧺</button>
-        <button class="picture game" data-game="balloon" aria-label="ふうせん">🎈</button>
-      </div>
-    </section>
-    <section id="play" class="screen" aria-label="プレイ">
-      <div id="playArea"><div class="cloud" style="top:8%;left:5%">☁️</div></div>
-      <div class="topbar"><button class="round" id="backGames" aria-label="ゲーム選択">↩️</button><span></span></div>
-      <button class="round" id="rewardGo" aria-label="ごほうび">🎁</button>
-    </section>
-    <section id="reward" class="screen center" aria-label="ごほうび">
-      <div class="topbar"><button class="round homeBtn" aria-label="ホーム">🏠</button><button class="round" id="rewardBook" aria-label="ずかん">📖</button></div>
-      <div class="coin" id="coin">🪙</div>
-      <button class="picture" id="gacha" aria-label="ガチャ">🎁</button>
-      <div id="card" aria-label="カード"></div>
-    </section>
-    <section id="book" class="screen center" aria-label="ずかん">
-      <div class="topbar"><button class="round homeBtn" aria-label="ホーム">🏠</button><span></span></div>
-      <div id="bookGrid"></div>
-    </section>
-  </main>
-  <button id="staffHold" aria-label="職員用設定"></button>
-  <aside id="settings" role="dialog" aria-modal="true" aria-label="職員用設定">
-    <div class="panel">
-      <h2>職員用設定</h2>
-      <div class="setting"><span>音量</span><div class="levels" data-key="sound"></div></div>
-      <div class="setting"><span>動き</span><div class="levels" data-key="motion"></div></div>
-      <div class="setting"><span>光</span><div class="levels" data-key="light"></div></div>
-      <button class="closeSettings">閉じる</button>
-    </div>
-  </aside>
-  <script>
-    (() => {
-      const $ = s => document.querySelector(s), $$ = s => [...document.querySelectorAll(s)];
-      const STORE = 'asobi-niwa-v1';
-      const themes = {
-        flower:['🌸','🌼','🌺','🌷','🌻'], animal:['🐶','🐱','🐰','🐼','🐘'],
-        vehicle:['🚌','🚒','🚑','🚓','🚜','🚧','🚚']
-      };
-      const cards = ['🌸','🌼','🌺','🌷','🐶','🐱','🐰','🐼','🚌','🚒','🚜','🚑'];
-      let saved = { coins:0, cards:[], settings:{ sound:1, motion:1, light:1 } };
-      try { saved = Object.assign(saved, JSON.parse(localStorage.getItem(STORE)||'{}')); } catch(e) {}
-      saved.settings = Object.assign({sound:1,motion:1,light:1}, saved.settings||{});
-      let theme='flower', game='catch', active=false, participated=false, audio=null, timers=[];
-      const persist = () => { try { localStorage.setItem(STORE,JSON.stringify(saved)); } catch(e) {} };
-      const clearTimers = () => { timers.forEach(clearTimeout); timers=[]; active=false; $$('.target').forEach(x=>x.remove()); };
-      const show = id => { clearTimers(); $$('.screen').forEach(x=>x.classList.remove('on')); $('#'+id).classList.add('on'); };
-      function applySettings(){
-        const times=[{cloud:'28s',spark:'1.4s',pulse:'3.4s',coin:'1.8s',reveal:'1.6s'},{cloud:'18s',spark:'.9s',pulse:'2.2s',coin:'1.2s',reveal:'1s'},{cloud:'12s',spark:'.65s',pulse:'1.5s',coin:'.8s',reveal:'.7s'}][saved.settings.motion];
-        const l=[.2,.55,.9][saved.settings.light]; Object.entries(times).forEach(([k,v])=>document.documentElement.style.setProperty('--'+k+'-time',v));
-        document.documentElement.style.setProperty('--glow',l);
-        $$('.levels').forEach(group => [...group.children].forEach((b,i)=>b.classList.toggle('active',i===saved.settings[group.dataset.key])));
+
+<section id="home" class="screen center on" aria-label="テーマをえらぶ">
+  <div class="sunbg"></div>
+  <button id="gearBtn" aria-label="職員用設定">⚙️</button>
+  <h1 class="appTitle"><span class="deco">🌸</span><span id="titleTxt">あそびのにわ</span><span class="deco">🎈</span></h1>
+  <div class="amb" style="width:26vmin;height:26vmin;left:6%;top:64%;background:#FFD6C4"></div>
+  <div class="amb" style="width:20vmin;height:20vmin;left:78%;top:18%;background:#BDE9C9;animation-delay:1.4s"></div>
+  <div class="amb" style="width:16vmin;height:16vmin;left:70%;top:70%;background:#C9E1FF;animation-delay:2.6s"></div>
+  <div class="cardRow">
+    <button class="bigCardBtn themeCard theme" data-theme="flower" aria-label="はな">
+      <svg class="bg" viewBox="0 0 100 120" preserveAspectRatio="none"><rect width="100" height="120" fill="#FFE9C2"/><circle cx="78" cy="20" r="14" fill="#FFD66B"/><ellipse cx="20" cy="118" rx="70" ry="38" fill="#A8D8A0"/><ellipse cx="92" cy="126" rx="66" ry="34" fill="#8FCB8A"/></svg>
+      <span class="face">🌸</span><span class="cardName">はな</span></button>
+    <button class="bigCardBtn themeCard theme" data-theme="animal" aria-label="どうぶつ">
+      <svg class="bg" viewBox="0 0 100 120" preserveAspectRatio="none"><rect width="100" height="120" fill="#DFF3E6"/><path d="M-5 70 L20 30 L45 70 Z" fill="#7FBF8E"/><path d="M35 78 L65 26 L95 78 Z" fill="#5FA878"/><path d="M70 74 L92 42 L114 74 Z" fill="#7FBF8E"/><rect y="70" width="100" height="50" fill="#9CCF8B"/></svg>
+      <span class="face">🐾</span><span class="cardName">どうぶつ</span></button>
+    <button class="bigCardBtn themeCard theme" data-theme="vehicle" aria-label="のりもの">
+      <svg class="bg" viewBox="0 0 100 120" preserveAspectRatio="none"><rect width="100" height="120" fill="#CFE9F8"/><rect x="8" y="34" width="18" height="46" fill="#B3CBE0"/><rect x="32" y="22" width="22" height="58" fill="#9FBAD4"/><rect x="60" y="40" width="16" height="40" fill="#B3CBE0"/><rect x="82" y="30" width="14" height="50" fill="#9FBAD4"/><rect y="80" width="100" height="40" fill="#8B98A8"/><rect x="6" y="97" width="14" height="4" rx="2" fill="#fff"/><rect x="34" y="97" width="14" height="4" rx="2" fill="#fff"/><rect x="62" y="97" width="14" height="4" rx="2" fill="#fff"/></svg>
+      <span class="face">🚌</span><span class="cardName">のりもの</span></button>
+  </div>
+  <div id="heroHome" aria-hidden="true"><svg viewBox="0 0 150 185">
+    <defs>
+      <linearGradient id="msCape" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#4FA38D"/><stop offset="100%" stop-color="#2E6E5F"/></linearGradient>
+      <radialGradient id="msBody" cx="38%" cy="30%" r="85%"><stop offset="0%" stop-color="#FFB199"/><stop offset="70%" stop-color="#F4694C"/><stop offset="100%" stop-color="#D94F36"/></radialGradient>
+    </defs>
+    <path d="M34 84 Q10 138 20 172 Q46 160 75 170 Q104 160 130 172 Q140 138 116 84 Z" fill="url(#msCape)"/>
+    <path d="M40 92 Q26 134 30 162" stroke="#7FC4AF" stroke-width="5" fill="none" opacity=".5" stroke-linecap="round"/>
+    <!-- アンテナ -->
+    <path d="M75 34 L75 16" stroke="#D94F36" stroke-width="5" stroke-linecap="round"/>
+    <polygon points="75,4 78,11 86,11 80,16 82,24 75,19 68,24 70,16 64,11 72,11" fill="#FFD34D"/>
+    <!-- まるい体 -->
+    <ellipse cx="75" cy="102" rx="53" ry="60" fill="url(#msBody)"/>
+    <!-- おなか+星 -->
+    <ellipse cx="75" cy="128" rx="30" ry="24" fill="#FFE3D2"/>
+    <polygon points="75,116 78,124 87,124 80,129 82,138 75,133 68,138 70,129 63,124 72,124" fill="#FFD34D"/>
+    <!-- ゴーグルマスク -->
+    <rect x="36" y="62" width="78" height="36" rx="18" fill="#2E6E5F"/>
+    <ellipse cx="57" cy="80" rx="15" ry="13" fill="#fff"/>
+    <ellipse cx="93" cy="80" rx="15" ry="13" fill="#fff"/>
+    <circle cx="59" cy="82" r="6" fill="#3A2C25"/><circle cx="61.5" cy="79.5" r="2.2" fill="#fff"/>
+    <circle cx="91" cy="82" r="6" fill="#3A2C25"/><circle cx="93.5" cy="79.5" r="2.2" fill="#fff"/>
+    <!-- くち -->
+    <path d="M66 106 q9 7 18 0" stroke="#B2402C" stroke-width="3.5" fill="none" stroke-linecap="round"/>
+    <circle cx="46" cy="102" r="5.5" fill="#FFB3A0" opacity=".75"/><circle cx="104" cy="102" r="5.5" fill="#FFB3A0" opacity=".75"/>
+    <!-- うで(かたほうガッツポーズ) -->
+    <path d="M28 106 L14 122" stroke="#F4694C" stroke-width="13" stroke-linecap="round"/>
+    <path d="M122 100 L136 74" stroke="#F4694C" stroke-width="13" stroke-linecap="round"/>
+    <circle cx="138" cy="68" r="10" fill="#D94F36"/>
+    <!-- あし -->
+    <ellipse cx="56" cy="166" rx="13" ry="8" fill="#B2402C"/>
+    <ellipse cx="94" cy="166" rx="13" ry="8" fill="#B2402C"/>
+  </svg></div>
+  <button class="round" id="openBook" aria-label="ずかん">📖</button>
+</section>
+
+<section id="games" class="screen center" aria-label="あそびをえらぶ">
+  <div class="topbar"><button class="round homeBtn" aria-label="ホーム">🏠</button><span></span></div>
+  <h2 class="screenTitle">どのあそびにする？</h2>
+  <div class="amb" style="width:22vmin;height:22vmin;left:8%;top:14%;background:#FFE3B8"></div>
+  <div class="amb" style="width:18vmin;height:18vmin;left:80%;top:66%;background:#C9E9FF;animation-delay:1.8s"></div>
+  <div class="cardRow">
+    <button class="bigCardBtn gameCard game" data-game="catch" aria-label="キャッチ">
+      <svg class="bg" viewBox="0 0 100 100" preserveAspectRatio="none"><rect width="100" height="100" fill="#E8F7FD"/><circle cx="26" cy="20" r="7" fill="#FFC9D8"/><circle cx="56" cy="10" r="7" fill="#FFE39B"/><circle cx="80" cy="26" r="7" fill="#C9E9FF"/><path d="M25 66 Q50 92 75 66 L70 60 Q50 78 30 60 Z" fill="#C98F4E"/></svg>
+      <span class="face" style="padding-bottom:22%">🧺</span><span class="cardName">キャッチ</span></button>
+    <button class="bigCardBtn gameCard game" data-game="balloon" aria-label="ふうせん">
+      <svg class="bg" viewBox="0 0 100 100" preserveAspectRatio="none"><rect width="100" height="100" fill="#EAF3FF"/><circle cx="24" cy="70" r="10" fill="#FFB3C1"/><circle cx="72" cy="52" r="12" fill="#B8E6FF"/><circle cx="46" cy="30" r="9" fill="#FFE39B"/></svg>
+      <span class="face">🎈</span><span class="cardName">ふうせん</span></button>
+    <button class="bigCardBtn gameCard game" data-game="mole" aria-label="ひょっこり">
+      <svg class="bg" viewBox="0 0 100 100" preserveAspectRatio="none"><rect width="100" height="100" fill="#EFF7E8"/><ellipse cx="30" cy="76" rx="22" ry="9" fill="#8A6238"/><ellipse cx="72" cy="86" rx="22" ry="9" fill="#8A6238"/><ellipse cx="30" cy="73" rx="22" ry="8" fill="#B98A52"/><ellipse cx="72" cy="83" rx="22" ry="8" fill="#B98A52"/></svg>
+      <span class="face" style="padding-bottom:22%">🐹</span><span class="cardName">ひょっこり</span></button>
+    <button class="bigCardBtn gameCard game" data-game="match" aria-label="かたちはめ">
+      <svg class="bg" viewBox="0 0 100 100" preserveAspectRatio="none"><rect width="100" height="100" fill="#FDF1E3"/><circle cx="28" cy="34" r="13" fill="none" stroke="#E7B87F" stroke-width="3" stroke-dasharray="6 5"/><rect x="56" y="22" width="26" height="26" rx="6" fill="none" stroke="#9FCBA8" stroke-width="3" stroke-dasharray="6 5"/><path d="M50 62 L66 88 L34 88 Z" fill="none" stroke="#9FB8E8" stroke-width="3" stroke-dasharray="6 5" stroke-linejoin="round"/></svg>
+      <span class="face" style="padding-bottom:22%">🧩</span><span class="cardName">かたちはめ</span></button>
+    <button class="bigCardBtn gameCard game" data-game="race" aria-label="レース">
+      <svg class="bg" viewBox="0 0 100 100" preserveAspectRatio="none"><rect width="100" height="100" fill="#DFF0DC"/><rect x="30" y="0" width="40" height="100" fill="#8B98A8"/><rect x="48" y="6" width="4" height="14" rx="2" fill="#FFF6DE"/><rect x="48" y="34" width="4" height="14" rx="2" fill="#FFF6DE"/><rect x="48" y="62" width="4" height="14" rx="2" fill="#FFF6DE"/><rect x="48" y="90" width="4" height="10" rx="2" fill="#FFF6DE"/></svg>
+      <span class="face" style="padding-bottom:22%">🏎️</span><span class="cardName">レース</span></button>
+    <button class="bigCardBtn gameCard game" data-game="color" aria-label="いろわけ">
+      <svg class="bg" viewBox="0 0 100 100" preserveAspectRatio="none"><rect width="100" height="100" fill="#F2EDE4"/><circle cx="26" cy="72" r="9" fill="#E8402A"/><circle cx="50" cy="76" r="9" fill="#3D7FD9"/><circle cx="74" cy="72" r="9" fill="#F5C518"/><path d="M16 24 L40 24 L36 46 L20 46 Z" fill="#E8402A" opacity=".8"/><path d="M60 24 L84 24 L80 46 L64 46 Z" fill="#3D7FD9" opacity=".8"/></svg>
+      <span class="face" style="padding-bottom:22%">🎨</span><span class="cardName">いろわけ</span></button>
+  </div>
+</section>
+
+<section id="play" class="screen" aria-label="あそぶ">
+  <div id="scene"></div>
+  <div id="stage"></div>
+  <div id="basket" hidden><svg viewBox="0 0 140 215">
+    <defs>
+      <linearGradient id="bkBody" x1="0" y1="0" x2="0" y2="1">
+        <stop offset="0%" stop-color="#D9A05B"/><stop offset="100%" stop-color="#A9743C"/>
+      </linearGradient>
+      <radialGradient id="bkHero" cx="38%" cy="30%" r="85%"><stop offset="0%" stop-color="#FFB199"/><stop offset="70%" stop-color="#F4694C"/><stop offset="100%" stop-color="#D94F36"/></radialGradient>
+    </defs>
+    <!-- マント -->
+    <path d="M36 122 Q18 168 26 204 Q48 194 70 202 Q92 194 114 204 Q122 168 104 122 Z" fill="#3E8A77"/>
+    <!-- 両うで(頭上へ) -->
+    <path d="M42 140 Q26 108 32 76" stroke="#F4694C" stroke-width="13" fill="none" stroke-linecap="round"/>
+    <path d="M98 140 Q114 108 108 76" stroke="#F4694C" stroke-width="13" fill="none" stroke-linecap="round"/>
+    <!-- まるい体 -->
+    <ellipse cx="70" cy="145" rx="46" ry="52" fill="url(#bkHero)"/>
+    <!-- アンテナ -->
+    <path d="M70 94 L70 84" stroke="#D94F36" stroke-width="4.5" stroke-linecap="round" opacity="0"/>
+    <!-- おなか星 -->
+    <ellipse cx="70" cy="168" rx="26" ry="20" fill="#FFE3D2"/>
+    <polygon points="70,158 73,165 81,165 75,170 77,178 70,173 63,178 65,170 59,165 67,165" fill="#FFD34D"/>
+    <!-- ゴーグルマスク -->
+    <rect x="36" y="112" width="68" height="32" rx="16" fill="#2E6E5F"/>
+    <ellipse cx="54" cy="128" rx="13" ry="11" fill="#fff"/>
+    <ellipse cx="86" cy="128" rx="13" ry="11" fill="#fff"/>
+    <circle cx="56" cy="130" r="5.5" fill="#3A2C25"/><circle cx="58" cy="127.5" r="2" fill="#fff"/>
+    <circle cx="84" cy="130" r="5.5" fill="#3A2C25"/><circle cx="86" cy="127.5" r="2" fill="#fff"/>
+    <path d="M62 150 q8 6 16 0" stroke="#B2402C" stroke-width="3.2" fill="none" stroke-linecap="round"/>
+    <circle cx="42" cy="146" r="5" fill="#FFB3A0" opacity=".75"/><circle cx="98" cy="146" r="5" fill="#FFB3A0" opacity=".75"/>
+    <!-- あし -->
+    <ellipse cx="54" cy="199" rx="12" ry="7" fill="#B2402C"/>
+    <ellipse cx="86" cy="199" rx="12" ry="7" fill="#B2402C"/>
+    <!-- カゴ(頭上・編みカゴ) -->
+    <g>
+      <path d="M18 22 L122 22 L108 70 Q70 80 32 70 Z" fill="url(#bkBody)"/>
+      <path d="M21 34 Q70 42 119 34" stroke="#8F6134" stroke-width="3.5" fill="none" opacity=".8"/>
+      <path d="M25 46 Q70 54 115 46" stroke="#8F6134" stroke-width="3.5" fill="none" opacity=".8"/>
+      <path d="M29 58 Q70 66 111 58" stroke="#8F6134" stroke-width="3.5" fill="none" opacity=".8"/>
+      <path d="M38 24 L44 70 M58 24 L61 74 M82 24 L79 74 M102 24 L96 70" stroke="#8F6134" stroke-width="3" opacity=".55"/>
+      <path d="M23 28 Q70 36 117 28" stroke="#F2C88A" stroke-width="2.5" fill="none" opacity=".8"/>
+      <ellipse cx="70" cy="22" rx="52" ry="10" fill="#6E4B28"/>
+      <ellipse cx="70" cy="20" rx="52" ry="10" fill="#8A6238"/>
+      <path d="M18 22 a52 11 0 0 1 104 0" fill="none" stroke="#E0AB6A" stroke-width="7" stroke-linecap="round"/>
+      <path d="M18 22 a52 11 0 0 1 104 0" fill="none" stroke="#B98A52" stroke-width="7" stroke-linecap="round" stroke-dasharray="9 7"/>
+    </g>
+  </svg></div>
+  <div id="car" hidden><svg viewBox="0 0 190 135">
+    <defs>
+      <linearGradient id="carB" x1="0" y1="0" x2="1" y2="0">
+        <stop offset="0%" stop-color="#B02E15"/><stop offset="22%" stop-color="#E8502F"/>
+        <stop offset="50%" stop-color="#FF7E5A"/><stop offset="78%" stop-color="#E8502F"/><stop offset="100%" stop-color="#B02E15"/></linearGradient>
+      <linearGradient id="carRoof" x1="0" y1="0" x2="0" y2="1">
+        <stop offset="0%" stop-color="#FF8A66"/><stop offset="100%" stop-color="#D8431F"/></linearGradient>
+      <linearGradient id="carG" x1="0" y1="0" x2="0" y2="1">
+        <stop offset="0%" stop-color="#DFF3FC"/><stop offset="45%" stop-color="#9CC8E0"/><stop offset="100%" stop-color="#5A87A3"/></linearGradient>
+      <linearGradient id="carTail" x1="0" y1="0" x2="0" y2="1">
+        <stop offset="0%" stop-color="#FF5A3C"/><stop offset="100%" stop-color="#C21F0A"/></linearGradient>
+    </defs>
+    <!-- 接地影 -->
+    <ellipse cx="95" cy="128" rx="82" ry="6.5" fill="rgba(0,0,0,.32)"/>
+    <!-- タイヤ(トレッドつき) -->
+    <g>
+      <rect x="6" y="88" width="36" height="38" rx="10" fill="#15110E"/>
+      <rect x="148" y="88" width="36" height="38" rx="10" fill="#15110E"/>
+      <rect x="12" y="94" width="24" height="26" rx="8" fill="#2E2A26"/>
+      <rect x="154" y="94" width="24" height="26" rx="8" fill="#2E2A26"/>
+      <circle cx="24" cy="107" r="7" fill="#8D8D95"/><circle cx="24" cy="107" r="3" fill="#55555E"/>
+      <circle cx="166" cy="107" r="7" fill="#8D8D95"/><circle cx="166" cy="107" r="3" fill="#55555E"/>
+    </g>
+    <!-- スポイラー -->
+    <rect x="52" y="30" width="9" height="16" rx="3" fill="#7E1F0C"/>
+    <rect x="129" y="30" width="9" height="16" rx="3" fill="#7E1F0C"/>
+    <path d="M28 22 Q95 14 162 22 L162 32 Q95 24 28 32 Z" fill="#C0341A"/>
+    <path d="M32 23.5 Q95 16.5 158 23.5" stroke="#FF9E82" stroke-width="3" fill="none" opacity=".8"/>
+    <rect x="24" y="20" width="8" height="14" rx="3" fill="#8C2412"/>
+    <rect x="158" y="20" width="8" height="14" rx="3" fill="#8C2412"/>
+    <!-- キャビン -->
+    <path d="M52 76 L60 40 Q95 32 130 40 L138 76 Z" fill="url(#carRoof)"/>
+    <path d="M60 72 L66 46 Q95 40 124 46 L130 72 Z" fill="url(#carG)"/>
+    <path d="M64 68 L69 50 Q80 46 92 45 L88 69 Z" fill="#fff" opacity=".28"/>
+    <!-- ボディ(左右に丸く陰影) -->
+    <path d="M24 74 Q95 62 166 74 L176 104 Q177 118 162 118 L28 118 Q13 118 14 104 Z" fill="url(#carB)"/>
+    <!-- フェンダーのふくらみ -->
+    <path d="M16 100 Q24 78 44 78 L44 86 Q30 86 24 104 Z" fill="#8C2412" opacity=".65"/>
+    <path d="M174 100 Q166 78 146 78 L146 86 Q160 86 166 104 Z" fill="#8C2412" opacity=".65"/>
+    <!-- テールライトバー(一直線に光る) -->
+    <rect x="32" y="82" width="126" height="10" rx="5" fill="url(#carTail)"/>
+    <rect x="36" y="84" width="118" height="3" rx="1.5" fill="#FFB59E" opacity=".9"/>
+    <!-- バンパー+ディフューザー+マフラー -->
+    <path d="M22 102 L168 102 L166 116 Q95 122 24 116 Z" fill="#7E1F0C"/>
+    <rect x="56" y="106" width="6" height="9" rx="2" fill="#4A130A"/>
+    <rect x="92" y="106" width="6" height="9" rx="2" fill="#4A130A"/>
+    <rect x="128" y="106" width="6" height="9" rx="2" fill="#4A130A"/>
+    <circle cx="40" cy="112" r="5.5" fill="#3B3B41" stroke="#8D8D95" stroke-width="2.5"/>
+    <circle cx="150" cy="112" r="5.5" fill="#3B3B41" stroke="#8D8D95" stroke-width="2.5"/>
+    <!-- ナンバープレート -->
+    <rect x="76" y="96" width="38" height="14" rx="3" fill="#FFF6DE" stroke="#C9B08B" stroke-width="1.5"/>
+    <circle cx="86" cy="103" r="2.2" fill="#8FB8EF"/><circle cx="95" cy="103" r="2.2" fill="#8FB8EF"/><circle cx="104" cy="103" r="2.2" fill="#8FB8EF"/>
+    <!-- ボディの照り -->
+    <path d="M30 78 Q95 67 160 78" stroke="#FFB59E" stroke-width="4" fill="none" opacity=".8" stroke-linecap="round"/>
+  </svg></div>
+  <div class="topbar"><button class="round" id="backGames" aria-label="もどる">↩️</button><span></span></div>
+  <div id="stars"></div>
+  <div id="heroFly" aria-hidden="true"><svg viewBox="0 0 240 140">
+    <defs>
+      <linearGradient id="mfCape" x1="0" y1="0" x2="1" y2="0"><stop offset="0%" stop-color="#2E6E5F"/><stop offset="100%" stop-color="#4FA38D"/></linearGradient>
+      <radialGradient id="mfBody" cx="60%" cy="30%" r="85%"><stop offset="0%" stop-color="#FFB199"/><stop offset="70%" stop-color="#F4694C"/><stop offset="100%" stop-color="#D94F36"/></radialGradient>
+    </defs>
+    <path d="M104 52 Q54 24 8 40 Q32 58 16 84 Q60 96 106 80 Z" fill="url(#mfCape)"/>
+    <path d="M92 58 Q58 44 30 48" stroke="#7FC4AF" stroke-width="5" fill="none" opacity=".5" stroke-linecap="round"/>
+    <!-- あし(うしろ) -->
+    <ellipse cx="88" cy="96" rx="11" ry="7" fill="#B2402C"/>
+    <ellipse cx="80" cy="76" rx="11" ry="7" fill="#B2402C"/>
+    <!-- まるい体 -->
+    <ellipse cx="146" cy="66" rx="56" ry="48" fill="url(#mfBody)"/>
+    <!-- アンテナ -->
+    <path d="M150 20 L154 6" stroke="#D94F36" stroke-width="5" stroke-linecap="round"/>
+    <polygon points="156,0 158,5 164,5 159,9 161,15 156,11 151,15 153,9 148,5 154,5" fill="#FFD34D"/>
+    <!-- おなか星 -->
+    <polygon points="132,82 135,90 144,90 137,95 139,104 132,99 125,104 127,95 120,90 129,90" fill="#FFD34D"/>
+    <!-- ゴーグルマスク -->
+    <rect x="128" y="42" width="72" height="34" rx="17" fill="#2E6E5F"/>
+    <ellipse cx="150" cy="59" rx="14" ry="12" fill="#fff"/>
+    <ellipse cx="182" cy="59" rx="14" ry="12" fill="#fff"/>
+    <circle cx="154" cy="60" r="5.5" fill="#3A2C25"/><circle cx="156" cy="57.5" r="2" fill="#fff"/>
+    <circle cx="186" cy="60" r="5.5" fill="#3A2C25"/><circle cx="188" cy="57.5" r="2" fill="#fff"/>
+    <path d="M164 86 q9 6 17 -1" stroke="#B2402C" stroke-width="3.2" fill="none" stroke-linecap="round"/>
+    <!-- 前につきだしたうで -->
+    <path d="M190 74 L226 66" stroke="#F4694C" stroke-width="12" stroke-linecap="round"/>
+    <circle cx="232" cy="64" r="10" fill="#D94F36"/>
+    <!-- スピード線 -->
+    <path d="M4 60 h20 M0 76 h15 M8 92 h18" stroke="#BFE6DA" stroke-width="4" stroke-linecap="round" opacity=".8"/>
+  </svg></div>
+  <button id="bigGift" aria-label="ごほうびをひらく">🎁</button>
+</section>
+
+<section id="reward" class="screen center" aria-label="ごほうび">
+  <div class="topbar"><button class="round homeBtn" aria-label="ホーム">🏠</button><button class="round" id="rewardBook" aria-label="ずかん">📖</button></div>
+  <div id="flyCoin">🪙</div>
+  <div id="machineWrap">
+    <svg class="machine" viewBox="0 0 200 270">
+      <defs>
+        <radialGradient id="gmGlobe" cx="38%" cy="30%" r="80%">
+          <stop offset="0%" stop-color="#ffffff"/><stop offset="55%" stop-color="#e8f6ff"/><stop offset="100%" stop-color="#b9d9ec"/>
+        </radialGradient>
+        <linearGradient id="gmBody" x1="0" y1="0" x2="1" y2="0">
+          <stop offset="0%" stop-color="#ff9d80"/><stop offset="45%" stop-color="#f4694c"/><stop offset="100%" stop-color="#d94f36"/>
+        </linearGradient>
+        <radialGradient id="gmKnob" cx="35%" cy="30%" r="80%">
+          <stop offset="0%" stop-color="#fff8e6"/><stop offset="100%" stop-color="#d3a95f"/>
+        </radialGradient>
+        <radialGradient id="gmC1" cx="35%" cy="30%" r="75%"><stop offset="0%" stop-color="#ffe3ec"/><stop offset="100%" stop-color="#ff8fb4"/></radialGradient>
+        <radialGradient id="gmC2" cx="35%" cy="30%" r="75%"><stop offset="0%" stop-color="#fff6d8"/><stop offset="100%" stop-color="#ffd056"/></radialGradient>
+        <radialGradient id="gmC3" cx="35%" cy="30%" r="75%"><stop offset="0%" stop-color="#e0f6e6"/><stop offset="100%" stop-color="#7fce96"/></radialGradient>
+        <radialGradient id="gmC4" cx="35%" cy="30%" r="75%"><stop offset="0%" stop-color="#e2eeff"/><stop offset="100%" stop-color="#8fb8ef"/></radialGradient>
+        <radialGradient id="gmC5" cx="35%" cy="30%" r="75%"><stop offset="0%" stop-color="#f3e4ff"/><stop offset="100%" stop-color="#c39aec"/></radialGradient>
+      </defs>
+      <!-- 脚 -->
+      <rect x="40" y="252" width="34" height="12" rx="5" fill="#8c3a28"/>
+      <rect x="126" y="252" width="34" height="12" rx="5" fill="#8c3a28"/>
+      <!-- 本体 -->
+      <rect x="28" y="120" width="144" height="136" rx="18" fill="url(#gmBody)"/>
+      <rect x="28" y="120" width="144" height="16" rx="8" fill="#c94b33"/>
+      <rect x="36" y="128" width="10" height="120" rx="5" fill="#ffffff" opacity=".18"/>
+      <!-- ガラスドーム -->
+      <circle cx="100" cy="78" r="70" fill="url(#gmGlobe)" stroke="#fff" stroke-width="7"/>
+      <!-- 中のカプセル(立体) -->
+      <g>
+        <circle cx="72" cy="96" r="17" fill="url(#gmC3)"/><path d="M55 96 a17 17 0 0 1 34 0 Z" fill="#fff" opacity=".55"/>
+        <circle cx="104" cy="102" r="17" fill="url(#gmC4)"/><path d="M87 102 a17 17 0 0 1 34 0 Z" fill="#fff" opacity=".55"/>
+        <circle cx="133" cy="92" r="16" fill="url(#gmC2)"/><path d="M117 92 a16 16 0 0 1 32 0 Z" fill="#fff" opacity=".55"/>
+        <circle cx="60" cy="70" r="15" fill="url(#gmC5)"/><path d="M45 70 a15 15 0 0 1 30 0 Z" fill="#fff" opacity=".55"/>
+        <circle cx="90" cy="66" r="16" fill="url(#gmC1)"/><path d="M74 66 a16 16 0 0 1 32 0 Z" fill="#fff" opacity=".55"/>
+        <circle cx="121" cy="60" r="14" fill="url(#gmC3)"/><path d="M107 60 a14 14 0 0 1 28 0 Z" fill="#fff" opacity=".55"/>
+      </g>
+      <!-- ガラスの反射 -->
+      <ellipse cx="72" cy="44" rx="26" ry="14" fill="#fff" opacity=".55" transform="rotate(-24 72 44)"/>
+      <path d="M40 100 a62 62 0 0 0 24 34" stroke="#fff" stroke-width="5" fill="none" opacity=".35" stroke-linecap="round"/>
+      <!-- 金属カラー -->
+      <rect x="52" y="140" width="96" height="10" rx="5" fill="#e9edf2"/>
+      <rect x="52" y="146" width="96" height="5" rx="2.5" fill="#aab4bf"/>
+      <!-- コイン投入口 -->
+      <rect x="132" y="162" width="24" height="16" rx="4" fill="#b2402c"/>
+      <rect x="141" y="165" width="6" height="10" rx="2" fill="#5c1d12"/>
+      <!-- ハンドル(立体) -->
+      <g id="knob">
+        <circle cx="100" cy="172" r="24" fill="url(#gmKnob)" stroke="#b98a3f" stroke-width="4"/>
+        <rect x="78" y="165" width="44" height="14" rx="7" fill="#c79a4c"/>
+        <rect x="81" y="168" width="38" height="4" rx="2" fill="#fff" opacity=".45"/>
+        <circle cx="100" cy="172" r="5" fill="#8f6b2e"/>
+      </g>
+      <!-- 取り出し口 -->
+      <rect x="66" y="208" width="68" height="42" rx="10" fill="#a03a26"/>
+      <rect x="72" y="214" width="56" height="30" rx="8" fill="#4a170d"/>
+      <path d="M72 214 h56 v8 a28 6 0 0 1 -56 0 Z" fill="#000" opacity=".35"/>
+    </svg>
+    <button id="machineBtn" aria-label="ガチャをまわす"></button>
+    <button id="capsule" aria-label="カプセルをあける"><svg viewBox="0 0 60 64">
+      <defs>
+        <radialGradient id="cpT" cx="35%" cy="25%" r="85%"><stop offset="0%" stop-color="#ffd7e4"/><stop offset="60%" stop-color="#ff9ebd"/><stop offset="100%" stop-color="#e86f96"/></radialGradient>
+        <radialGradient id="cpB" cx="40%" cy="20%" r="90%"><stop offset="0%" stop-color="#ffffff"/><stop offset="75%" stop-color="#eef0f4"/><stop offset="100%" stop-color="#c9cdd6"/></radialGradient>
+      </defs>
+      <ellipse cx="30" cy="58" rx="22" ry="5" fill="#000" opacity=".16"/>
+      <g class="capTop">
+        <path d="M4 30 a26 26 0 0 1 52 0 Z" fill="url(#cpT)"/>
+        <ellipse cx="20" cy="15" rx="9" ry="5.5" fill="#fff" opacity=".75" transform="rotate(-28 20 15)"/>
+      </g>
+      <g class="capBottom">
+        <path d="M4 30 a26 26 0 0 0 52 0 Z" fill="url(#cpB)"/>
+        <path d="M8 38 a26 20 0 0 0 44 0" stroke="#aab0bc" stroke-width="2.5" fill="none" opacity=".5"/>
+        <rect x="4" y="28.6" width="52" height="2.8" rx="1.4" fill="#c76e8d" opacity=".65"/>
+      </g>
+    </svg></button>
+    <div id="hand">👆</div>
+  </div>
+  <div id="cardBox"><div id="bigCard"></div><div id="againRow">
+    <button class="round" id="againPlay" aria-label="もういちど">🔁</button>
+    <button class="round" id="cardBookBtn" aria-label="ずかん">📖</button>
+    <button class="round homeBtn" aria-label="ホーム">🏠</button>
+  </div></div>
+</section>
+
+<section id="book" class="screen center" aria-label="ずかん">
+  <div class="topbar"><button class="round homeBtn" aria-label="ホーム">🏠</button><span></span></div>
+  <h2 class="screenTitle">📖 ずかん</h2>
+  <div id="bookGrid"></div>
+</section>
+
+<button id="staffHold" aria-label="職員用設定"></button>
+<aside id="settings" role="dialog" aria-modal="true" aria-label="職員用設定">
+  <div class="panel">
+    <h2>職員用設定</h2>
+    <div class="setting"><p>音</p><div class="levels" data-key="sound" data-labels="なし,小,中,大"></div></div>
+    <div class="setting"><p>うごき（速さ）</p><div class="levels three" data-key="motion" data-labels="ゆっくり,ふつう,はやい"></div></div>
+    <div class="setting"><p>光・演出の強さ</p><div class="levels three" data-key="light" data-labels="弱,中,強"></div></div>
+    <div class="setting"><p>おんがく（BGM）</p><div class="levels three" data-key="bgm" data-labels="なし,小,中"></div></div>
+    <div class="setting"><p>むずかしさ</p><div class="levels three" data-key="diff" data-labels="やさしい,ふつう,むずかしい"></div></div>
+    <div class="setting"><p>レースのほかの車（追い抜き）</p><div class="levels two" data-key="npc" data-labels="なし,あり"></div></div>
+    <div class="setting"><p>プレゼントまでの⭐の数</p><div class="levels" data-key="goal" data-labels="5こ,8こ,12こ,20こ"></div></div>
+    <p style="text-align:center;color:#8AA79B;font-size:15px;margin:14px 0 4px">あそびのにわ v29</p>
+    <button class="closeSettings">閉じる</button>
+  </div>
+</aside>
+
+<script>
+(() => {
+const $=s=>document.querySelector(s), $$=s=>[...document.querySelectorAll(s)];
+const STORE='asobi-niwa-v2';
+const GOALS=[5,8,12,20];
+const THEMES={
+  flower:{items:['🌸','🌼','🌺','🌷','🌻'],pop:'✨',mound:['#B98A52','#8AC47E']},
+  animal:{items:['🐶','🐱','🐰','🐼','🐹'],pop:'💛',mound:['#B98A52','#97CD87']},
+  vehicle:{items:['🚌','🚒','🚑','🚓','🚂','🚜','🚚'],pop:'⭐',mound:['#6E7B8B','#9AA7B6']}
+};
+const CARDS=['🌸','🌷','🌻','🦋','🐶','🐱','🐰','🐼','🚌','🚒','🚜','🚂'];
+const SCENES={
+flower:`<svg viewBox="0 0 1000 700" preserveAspectRatio="xMidYMax slice">
+<defs><linearGradient id="fsky" x1="0" y1="0" x2="0" y2="1">
+<stop offset="0" stop-color="#FFE9C2"/><stop offset=".6" stop-color="#FFF6DE"/><stop offset="1" stop-color="#EAF7E2"/></linearGradient></defs>
+<rect width="1000" height="700" fill="url(#fsky)"/>
+<circle cx="810" cy="120" r="70" fill="#FFD66B" opacity=".9"/>
+<circle cx="810" cy="120" r="110" fill="#FFD66B" opacity=".22"/>
+<ellipse cx="200" cy="740" rx="640" ry="240" fill="#B5DFA0"/>
+<ellipse cx="880" cy="780" rx="620" ry="230" fill="#9CCF8B"/>
+<ellipse cx="520" cy="820" rx="720" ry="220" fill="#8AC47E"/>
+<g stroke="#6FA963" stroke-width="7" stroke-linecap="round" opacity=".7">
+<path d="M120 640 q6 -40 -6 -66"/><path d="M148 648 q-2 -34 12 -58"/>
+<path d="M820 660 q6 -42 -8 -70"/><path d="M852 664 q-2 -36 14 -60"/></g>
+<circle cx="130" cy="560" r="10" fill="#FF9EBB"/><circle cx="845" cy="580" r="10" fill="#FFC9D8"/>
+</svg>`,
+animal:`<svg viewBox="0 0 1000 700" preserveAspectRatio="xMidYMax slice">
+<defs><linearGradient id="asky" x1="0" y1="0" x2="0" y2="1">
+<stop offset="0" stop-color="#D8F2E4"/><stop offset="1" stop-color="#F2FBEE"/></linearGradient></defs>
+<rect width="1000" height="700" fill="url(#asky)"/>
+<circle cx="180" cy="110" r="55" fill="#FFF6C9" opacity=".9"/>
+<path d="M-40 560 L140 300 L320 560 Z" fill="#8FC79B" opacity=".85"/>
+<path d="M220 580 L430 240 L640 580 Z" fill="#6DB283"/>
+<path d="M560 570 L760 290 L960 570 Z" fill="#8FC79B" opacity=".9"/>
+<path d="M780 590 L920 400 L1060 590 Z" fill="#6DB283"/>
+<rect y="540" width="1000" height="160" fill="#A9D89A"/>
+<ellipse cx="500" cy="560" rx="560" ry="60" fill="#97CD87"/>
+<circle cx="300" cy="620" r="8" fill="#FFE39B"/><circle cx="700" cy="640" r="8" fill="#FFC9D8"/>
+</svg>`,
+vehicle:`<svg viewBox="0 0 1000 700" preserveAspectRatio="xMidYMax slice">
+<defs><linearGradient id="vsky" x1="0" y1="0" x2="0" y2="1">
+<stop offset="0" stop-color="#CFE9F8"/><stop offset="1" stop-color="#EAF5FC"/></linearGradient></defs>
+<rect width="1000" height="700" fill="url(#vsky)"/>
+<circle cx="840" cy="110" r="55" fill="#FFF3C4"/>
+<g fill="#AFC7DC"><rect x="40" y="300" width="120" height="240"/><rect x="420" y="330" width="110" height="210"/><rect x="800" y="290" width="130" height="250"/></g>
+<g fill="#93B1CC"><rect x="190" y="240" width="150" height="300"/><rect x="570" y="260" width="150" height="280"/></g>
+<g fill="#FFF6DE"><rect x="215" y="270" width="26" height="26" rx="4"/><rect x="262" y="270" width="26" height="26" rx="4"/><rect x="215" y="320" width="26" height="26" rx="4"/><rect x="262" y="320" width="26" height="26" rx="4"/><rect x="595" y="290" width="26" height="26" rx="4"/><rect x="642" y="290" width="26" height="26" rx="4"/><rect x="595" y="340" width="26" height="26" rx="4"/><rect x="70" y="330" width="22" height="22" rx="4"/><rect x="110" y="330" width="22" height="22" rx="4"/><rect x="830" y="320" width="24" height="24" rx="4"/><rect x="870" y="320" width="24" height="24" rx="4"/></g>
+<rect y="540" width="1000" height="160" fill="#7E8B9B"/>
+<g fill="#FFF6DE"><rect x="30" y="606" width="90" height="14" rx="7"/><rect x="230" y="606" width="90" height="14" rx="7"/><rect x="430" y="606" width="90" height="14" rx="7"/><rect x="630" y="606" width="90" height="14" rx="7"/><rect x="830" y="606" width="90" height="14" rx="7"/></g>
+</svg>`
+};
+
+/* ================= state ================= */
+let saved={coins:0,cards:[],settings:{sound:2,motion:1,light:1,goal:1,diff:1,bgm:1,npc:1}};
+try{saved=Object.assign(saved,JSON.parse(localStorage.getItem(STORE)||'{}'))}catch(e){}
+saved.settings=Object.assign({sound:2,motion:1,light:1,goal:1,diff:1,bgm:1,npc:1},saved.settings||{});
+const persist=()=>{try{localStorage.setItem(STORE,JSON.stringify(saved))}catch(e){}};
+
+let theme='flower',game='catch',running=false,roundOver=false,score=0;
+let ents=[],timers=[],holes=[],lastT=0;
+const stage=$('#stage'),basket=$('#basket');
+let W=innerWidth,H=innerHeight,basketX=W/2,basketTX=W/2;
+addEventListener('resize',()=>{W=innerWidth;H=innerHeight;if(running&&game==='mole')layoutHoles()});
+
+const SPEED=[.55,1,1.5], VOL=[0,.045,.09,.16], GLOW=[.25,.6,1];
+const spd=()=>SPEED[saved.settings.motion];
+const glow=()=>GLOW[saved.settings.light];
+const goal=()=>GOALS[saved.settings.goal];
+/* クリア難易度: [やさしい, ふつう, むずかしい] */
+const DIFF={spdM:[.72,1,1.35], szM:[1.28,1,.82], dwellM:[1.7,1,.6], catchW:[.7,.55,.45], gold:[.2,.12,.07]};
+const dif=()=>saved.settings.diff;
+function applySettings(){
+  document.documentElement.style.setProperty('--spd',spd());
+  document.documentElement.style.setProperty('--glow',glow());
+  if(bgm&&bgm.g)bgm.g.gain.value=BGMVOL[saved.settings.bgm];
+  if(typeof bgm!=='undefined'){
+    if(BGMVOL[saved.settings.bgm]===0)stopBGM();
+    else if(!bgm.on)startBGM();
+  }
+  $$('.levels').forEach(g=>[...g.children].forEach((b,i)=>b.classList.toggle('active',i===saved.settings[g.dataset.key])));
+}
+
+/* ================= sound ================= */
+let AC=null;
+const NOTES=[523.25,587.33,659.25,783.99,880,1046.5];
+function ensureAC(){try{AC||=new (window.AudioContext||window.webkitAudioContext)();if(AC.state==='suspended')AC.resume()}catch(e){}}
+function tone(freq,{delay=0,dur=.3,type='triangle',v=1,to=null}={}){
+  const vol=VOL[saved.settings.sound]*v; if(!vol||!AC)return;
+  const t=AC.currentTime+delay,o=AC.createOscillator(),g=AC.createGain();
+  o.type=type;o.frequency.setValueAtTime(freq,t);
+  if(to)o.frequency.exponentialRampToValueAtTime(to,t+dur*.85);
+  g.gain.setValueAtTime(0,t);g.gain.linearRampToValueAtTime(vol,t+.015);
+  g.gain.exponentialRampToValueAtTime(.0008,t+dur);
+  o.connect(g).connect(AC.destination);o.start(t);o.stop(t+dur+.05);
+}
+/* エンジン「ブーン」：ローパスを通したのこぎり波 */
+function vroom(pitch=1){
+  const vol=VOL[saved.settings.sound]; if(!vol||!AC)return;
+  const t=AC.currentTime;
+  const o=AC.createOscillator(),o2=AC.createOscillator(),f=AC.createBiquadFilter(),g=AC.createGain();
+  o.type='sawtooth';o.frequency.setValueAtTime(62*pitch,t);o.frequency.exponentialRampToValueAtTime(150*pitch,t+.32);
+  o2.type='square';o2.frequency.setValueAtTime(124*pitch,t);o2.frequency.exponentialRampToValueAtTime(300*pitch,t+.32);
+  f.type='lowpass';f.frequency.setValueAtTime(320,t);f.frequency.linearRampToValueAtTime(760,t+.3);f.Q.value=2;
+  g.gain.setValueAtTime(0,t);g.gain.linearRampToValueAtTime(vol*1.15,t+.05);
+  g.gain.exponentialRampToValueAtTime(.001,t+.55);
+  o.connect(f);o2.connect(f);f.connect(g).connect(AC.destination);
+  o.start(t);o2.start(t);o.stop(t+.6);o2.stop(t+.6);
+}
+function tapSound(){
+  ensureAC();const i=score%NOTES.length;
+  if(theme==='flower'){
+    tone(NOTES[i]);tone(NOTES[i]*2,{dur:.22,type:'sine',v:.35});
+  }else if(theme==='animal'){
+    tone(320,{dur:.22,type:'sine',v:.9,to:640});
+    tone(640,{delay:.12,dur:.18,type:'sine',v:.5,to:430});
+  }else{
+    vroom(.9+ (i%3)*.18);   // ブーン（回ごとに少しピッチ違い）
+  }
+}
+function popSound(bubble){
+  ensureAC();
+  if(bubble)tone(950,{dur:.14,type:'sine',v:.8,to:380});
+  else tapSound();
+}
+function peekSound(){ensureAC();tone(500,{dur:.12,type:'sine',v:.6,to:760})}
+function thunk(){ensureAC();tone(196,{dur:.16,type:'sine',v:.9});tone(147,{delay:.05,dur:.18,type:'sine',v:.7})}
+function fanfare(){ensureAC();[0,2,4,5].forEach((n,k)=>tone(NOTES[n],{delay:k*.12,dur:.5}));tone(NOTES[5]*2,{delay:.5,dur:.7,type:'sine',v:.5})}
+function bigFanfare(){ensureAC();[0,2,4,5,4,5].forEach((n,k)=>tone(NOTES[n],{delay:k*.13,dur:.45}));
+  [0,4].forEach(n=>tone(NOTES[n]*2,{delay:.8,dur:.9,type:'sine',v:.4}))}
+function ratchet(){ensureAC();for(let k=0;k<5;k++)tone(170+k*12,{delay:k*.09,dur:.05,type:'square',v:.5})}
+function poyon(){ensureAC();tone(420,{dur:.18,type:'sine',v:.95,to:940});tone(940,{delay:.14,dur:.16,type:'sine',v:.5,to:620})}
+function crack(){ensureAC();tone(1400,{dur:.08,type:'square',v:.4,to:900});tone(700,{delay:.05,dur:.12,type:'triangle',v:.6,to:1200})}
+function whoosh(){ensureAC();tone(280,{dur:.42,type:'sine',v:.9,to:920});tone(560,{delay:.06,dur:.36,type:'triangle',v:.4,to:1400})}
+function sparkleUp(){ensureAC();[3,4,5].forEach((n,k)=>tone(NOTES[n]*2,{delay:k*.07,dur:.2,type:'sine',v:.4}))}
+
+/* ---------- BGM: 4曲構成(タイトル+ゲーム3種) ---------- */
+const BGMVOL=[0,.02,.042];
+const fq=n=>261.63*Math.pow(2,n/12);
+/* bass: 数字=コード構成音(0=ルート,1=3度,2=5度を低音で), 'c'=和音スタブ, null=休符
+   mel : 数字=構成音(1オクターブ上), 3=ルート2オクターブ上, null=休符 */
+const TRACKS={
+  title:{  /* やさしいワルツ(3拍子) */
+    bpm:100,L:6,wave:'sine',stac:1.7,bdur:1.9,
+    chords:[[0,4,7],[5,9,12],[0,4,7],[7,11,14]],
+    bass:[0,null,'c',null,'c',null], mel:[2,null,0,null,1,null]},
+  catch:{  /* ゆったり流れるドゥーワップ調 */
+    bpm:120,L:8,wave:'triangle',stac:1.15,bdur:1.7,
+    chords:[[0,4,7],[-3,0,4],[5,9,12],[7,11,14]],
+    bass:[0,null,2,null,0,null,2,null], mel:[0,1,2,3,2,1,0,1]},
+  balloon:{ /* 軽快なポルカ調 */
+    bpm:138,L:8,wave:'triangle',stac:.62,bdur:.9,
+    chords:[[0,4,7],[5,9,12],[7,11,14],[0,4,7]],
+    bass:[0,'c',2,'c',0,'c',2,'c'], mel:[2,null,3,null,2,1,0,null]},
+  mole:{   /* スピード感のある追いかけっこ調 */
+    bpm:150,L:8,wave:'triangle',stac:.5,bdur:.45,
+    chords:[[0,4,7],[5,9,12],[0,4,7],[7,11,14]],
+    bass:[0,1,2,1,0,1,2,1], mel:[0,null,2,0,3,null,2,1]},
+  match:{  /* ゆったり考えごと調(明るいボサノバ風) */
+    bpm:112,L:8,wave:'sine',stac:1.25,bdur:1.8,
+    chords:[[0,4,7],[-3,0,4],[5,9,12],[7,11,14]],
+    bass:[0,null,2,null,0,null,2,null], mel:[2,null,1,0,3,null,1,null]},
+  race:{   /* 疾走ドライビング調 */
+    bpm:152,L:8,wave:'triangle',stac:.55,bdur:.5,
+    chords:[[0,4,7],[5,9,12],[7,11,14],[5,9,12]],
+    bass:[0,2,0,2,0,2,0,2], mel:[0,2,3,2,0,2,3,null]}
+};
+TRACKS.color=TRACKS.match;  /* いろわけはかたちはめと同じ曲 */
+let bgm={on:false,t:null,step:0,g:null,trk:'title'};
+function bgmNote(freq,dur,type,v,delay=0){
+  if(!AC||!bgm.g)return;
+  const t=AC.currentTime+delay,o=AC.createOscillator(),g=AC.createGain();
+  o.type=type;o.frequency.value=freq;
+  g.gain.setValueAtTime(0,t);g.gain.linearRampToValueAtTime(v,t+.012);
+  g.gain.linearRampToValueAtTime(0,t+dur);
+  o.connect(g).connect(bgm.g);o.start(t);o.stop(t+dur+.05);
+}
+function bgmTick(){
+  if(!bgm.on)return;
+  const T=TRACKS[bgm.trk]||TRACKS.title;
+  const st=60/T.bpm/2;
+  const bar=Math.floor(bgm.step/T.L),s=bgm.step%T.L;
+  const ch=T.chords[bar%T.chords.length];
+  const b=T.bass[s];
+  if(b==='c'){ch.forEach(n=>bgmNote(fq(n+12),st*.8,'sine',.28))}
+  else if(b!==null&&b!==undefined){bgmNote(fq(ch[b]-12),st*T.bdur,'sine',1)}
+  const m=T.mel[s];
+  if(m!==null&&m!==undefined){
+    const f=m===3?fq(ch[0]+24):fq(ch[m]+12);
+    bgmNote(f,st*T.stac,T.wave,.85);
+    if(bgm.trk==='balloon')bgmNote(f*2,st*T.stac,'sine',.22);  /* 高音キラキラ重ね */
+  }
+  if(bar%4===3&&s===T.L-1)[0,4,7,12].forEach((n,k)=>bgmNote(fq(n+24),st*.9,'sine',.4,k*st*.5));
+  bgm.step++;
+  bgm.t=setTimeout(bgmTick,st*1000);
+}
+function setTrack(name){if(bgm.trk===name)return;bgm.trk=name;bgm.step=0}
+function startBGM(){
+  ensureAC();if(!AC)return;
+  if(!bgm.g){bgm.g=AC.createGain();bgm.g.connect(AC.destination)}
+  bgm.g.gain.value=BGMVOL[saved.settings.bgm];
+  if(bgm.on||BGMVOL[saved.settings.bgm]===0)return;
+  bgm.on=true;bgm.step=0;bgmTick();
+}
+function stopBGM(){bgm.on=false;clearTimeout(bgm.t)}
+
+/* ================= fx ================= */
+function burst(x,y,icon,n=7,parent=stage){
+  n=Math.max(3,Math.round(n*(.4+glow())));
+  for(let i=0;i<n;i++){
+    const p=document.createElement('div');p.className='pop';p.textContent=icon;
+    const a=Math.random()*Math.PI*2,d=60+Math.random()*90,s=.5+Math.random()*.8;
+    p.style.transform=`translate(${x}px,${y}px) scale(.3)`;p.style.opacity=.4+glow()*.6;
+    parent.append(p);
+    requestAnimationFrame(()=>{
+      p.style.transition=`transform ${.7/spd()}s cubic-bezier(.2,.7,.4,1), opacity ${.7/spd()}s`;
+      p.style.transform=`translate(${x+Math.cos(a)*d}px,${y+Math.sin(a)*d-40}px) scale(${s}) rotate(${(Math.random()*120-60)}deg)`;
+      p.style.opacity=0;
+    });
+    setTimeout(()=>p.remove(),900/spd());
+  }
+}
+function celebrate(){
+  const icons=THEMES[theme].items;
+  for(let i=0;i<6;i++)setTimeout(()=>burst(W*(.15+Math.random()*.7),H*(.2+Math.random()*.4),icons[i%icons.length],6),i*120/spd());
+}
+
+/* ================= stars ================= */
+function renderStars(){
+  const box=$('#stars');box.innerHTML='';
+  const g=goal();
+  const perRow=g>12?Math.ceil(g/2):g;          /* 13個以上は2段に折り返し */
+  const btn=Math.min(110,Math.max(84,W*.1));   /* 左右の丸ボタンを避ける */
+  const avail=Math.max(200,W-(btn+20)*2-36);
+  const size=Math.max(14,Math.min(40,avail/perRow-7));
+  box.style.fontSize=size+'px';
+  box.style.maxWidth=(perRow*(size+8)+34)+'px';
+  for(let i=0;i<g;i++){const s=document.createElement('span');s.className='star';s.textContent='⭐';box.append(s)}
+}
+function fillStar(k){const s=$('#stars').children[k-1];if(s)s.classList.add('onn')}
+
+/* ================= screens ================= */
+function stopPlay(){running=false;roundOver=false;timers.forEach(clearTimeout);timers=[];
+  ents=[];holes=[];mslots=[];cslots=[];stage.innerHTML='';$('#bigGift').classList.remove('show')}
+function show(id){stopPlay();$$('.screen').forEach(s=>s.classList.remove('on'));$('#'+id).classList.add('on');
+  setTrack(id==='play'?game:'title');startBGM()}
+
+/* ================= catch & balloon entities ================= */
+function itemSize(){return Math.max(96,Math.min(150,W*.13))}
+function makeItem(icon,scale=1){
+  const el=document.createElement('button');el.className='item';
+  el.style.setProperty('--sz',itemSize()*scale+'px');
+  el.innerHTML=`<span class="hit"></span>${icon}`;
+  stage.append(el);return el;
+}
+function spawnCatch(){
+  if(!running)return;
+  const list=THEMES[theme].items,sz=itemSize();
+  const sc=DIFF.szM[dif()];
+  const e={kind:'fall',el:makeItem(list[Math.floor(Math.random()*list.length)],sc),sc,
+    x:sz/2+Math.random()*(W-sz),y:-sz-20,vy:(H*.10+Math.random()*H*.05)*DIFF.spdM[dif()],
+    ph:Math.random()*6,amp:20+Math.random()*30,alive:true};
+  e.el.addEventListener('pointerdown',ev=>{ev.stopPropagation();catchIt(e,true)});
+  ents.push(e);
+}
+function makeBalloonEl(kind,chr,scale){
+  const el=document.createElement('button');el.className='item bItem';
+  el.style.setProperty('--sz',itemSize()*scale+'px');
+  if(kind==='gold')el.innerHTML='<span class="hit"></span>🌟';
+  else if(kind==='bubble')el.innerHTML=
+    `<span class="hit"></span><span class="bwrap"><span class="bchr">${chr}</span><span class="bbl">🫧</span></span>`;
+  else el.innerHTML=
+    `<span class="hit"></span><span class="bal">🎈</span><span class="bstr"></span><span class="bchr2">${chr}</span>`;
+  stage.append(el);return el;
+}
+function spawnBalloon(){
+  if(!running)return;
+  const gold=Math.random()<DIFF.gold[dif()];
+  const kind=gold?'gold':(Math.random()>.42?'balloon':'bubble');
+  const list=THEMES[theme].items;
+  const chr=list[Math.floor(Math.random()*list.length)];
+  const sc=(gold?1:(.72+Math.random()*.4))*DIFF.szM[dif()];
+  const sz=itemSize()*sc;
+  const e={kind:'rise',gold,sc,chr,
+    el:makeBalloonEl(kind,chr,sc),
+    x:sz/2+Math.random()*(W-sz),y:H+sz*1.6,
+    vy:(H*.12+Math.random()*H*.08)*DIFF.spdM[dif()],
+    ph:Math.random()*6,amp:36+Math.random()*50,alive:true};
+  e.el.addEventListener('pointerdown',ev=>{ev.stopPropagation();popIt(e)});
+  ents.push(e);
+}
+function removeEnt(e){e.alive=false;e.el.remove();ents=ents.filter(x=>x!==e)}
+function gotOne(n=1){
+  for(let i=0;i<n;i++){score++;fillStar(score)}
+  if(score>=goal())finishRound();
+}
+function catchIt(e,tapped){
+  if(!e.alive||roundOver)return;
+  burst(e.x,e.y,THEMES[theme].pop,6);
+  if(!tapped)thunk();tapSound();
+  removeEnt(e);gotOne();
+  if(!roundOver)timers.push(setTimeout(spawnCatch,500/spd()));
+}
+function popIt(e){
+  if(!e.alive||roundOver)return;
+  const bubble=e.el.querySelector('.bbl')!==null;
+  burst(e.x,e.y,e.gold?'🌟':(bubble?'💧':THEMES[theme].pop),e.gold?12:8);
+  if(!e.gold&&e.chr)burst(e.x,e.y,e.chr,3);
+  if(e.gold){sparkleUp()}else{popSound(bubble)}
+  removeEnt(e);gotOne(e.gold?2:1);                   // 金の星は⭐2つぶん
+  if(!roundOver)timers.push(setTimeout(spawnBalloon,380/spd()));
+}
+
+/* ================= mole (ひょっこりゲーム) ================= */
+const HOLE_POS=[[18,42],[50,40],[82,42],[18,64],[50,66],[82,64],[18,86],[50,88],[82,86]];  // 3x3の9穴 [x%, y%]
+function buildHoles(){
+  const [m1,m2]=THEMES[theme].mound;
+  HOLE_POS.forEach(()=>{});
+  holes=HOLE_POS.map(([hx,hy])=>{
+    const d=document.createElement('div');d.className='hole';
+    d.innerHTML=`
+      <svg class="back" viewBox="0 0 120 46"><ellipse cx="60" cy="23" rx="52" ry="18" fill="#4A3521"/><ellipse cx="60" cy="20" rx="52" ry="17" fill="#5C4229"/></svg>
+      <div class="cwrap"><button class="char" aria-label="タッチ"></button></div>
+      <svg class="mound" viewBox="0 0 120 34"><path d="M4 34 Q10 12 60 12 Q110 12 116 34 Z" fill="${m1}"/><path d="M4 34 Q10 20 60 20 Q110 20 116 34 Z" fill="${m2}" opacity=".9"/></svg>`;
+    stage.append(d);
+    const hole={el:d,char:d.querySelector('.char'),busy:false,upNow:false,downTimer:null};
+    hole.char.addEventListener('pointerdown',ev=>{ev.stopPropagation();whack(hole)});
+    return hole;
+  });
+  layoutHoles();
+}
+function layoutHoles(){
+  holes.forEach((h,i)=>{const[x,y]=HOLE_POS[i];h.el.style.left=x+'%';h.el.style.top=y+'%'});
+}
+function moleUp(){
+  if(!running||roundOver)return;
+  const free=holes.filter(h=>!h.busy);
+  const active=holes.filter(h=>h.upNow).length;
+  if(free.length&&active<3){
+    const h=free[Math.floor(Math.random()*free.length)];
+    h.busy=true;h.upNow=true;
+    const list=THEMES[theme].items;
+    h.char.textContent=list[Math.floor(Math.random()*list.length)];
+    h.el.classList.remove('happy');h.el.classList.add('up');peekSound();
+    h.downTimer=setTimeout(()=>moleDown(h),(1500+Math.random()*700)*DIFF.dwellM[dif()]/spd());
+  }
+  timers.push(setTimeout(moleUp,(850+Math.random()*450)/spd()));
+}
+function moleDown(h){
+  h.upNow=false;h.el.classList.remove('up');
+  setTimeout(()=>h.busy=false,350/spd());
+}
+function whack(h){
+  if(!h.upNow||roundOver)return;
+  clearTimeout(h.downTimer);h.upNow=false;
+  const r=h.char.getBoundingClientRect();
+  burst(r.left+r.width/2,r.top+r.height/2,THEMES[theme].pop,7);
+  tapSound();
+  h.el.classList.remove('up');h.el.classList.add('happy');   // うれしそうにジャンプして帰る
+  setTimeout(()=>{h.el.classList.remove('happy');h.busy=false},550/spd());
+  gotOne();
+}
+
+/* ================= race (疑似3Dレース) ================= */
+const car=$('#car');
+let rcnv=null,rctx=null,camZ=0,playerX=0,rstars=[];
+const RROWS=230,MINT=.048,ZSC=40;
+const curveFn=z=>3.3*Math.sin(z*.006)+2.3*Math.sin(z*.013)+1.1*Math.sin(z*.021);
+function newStar(rel){return{rel,lane:[-1,0,1][Math.floor(Math.random()*3)],gold:Math.random()<DIFF.gold[dif()]}}
+const NPC_COLORS=[['#4A90D9','#2E6394'],['#F0B429','#B8860B'],['#7FCE96','#4E9A69'],['#C39AEC','#8B5FC7']];
+let rnpc=[];
+function newNpc(rel){
+  return{rel,lane:[-1,0,1][Math.floor(Math.random()*3)],
+    c:NPC_COLORS[Math.floor(Math.random()*NPC_COLORS.length)],
+    sp:.5+Math.random()*.15,passed:false};
+}
+function drawNpc(ctx,x,y,w,c){
+  const h=w*.6;
+  ctx.fillStyle='rgba(0,0,0,.25)';ctx.beginPath();ctx.ellipse(x,y,w*.5,Math.max(1.5,h*.08),0,0,7);ctx.fill();
+  ctx.fillStyle='#1E1A17';
+  ctx.fillRect(x-w*.5,y-h*.34,w*.16,h*.34);
+  ctx.fillRect(x+w*.34,y-h*.34,w*.16,h*.34);
+  ctx.fillStyle=c[1];ctx.fillRect(x-w*.3,y-h*.95,w*.6,h*.45);
+  ctx.fillStyle='#9CC8E0';ctx.fillRect(x-w*.24,y-h*.88,w*.48,h*.3);
+  ctx.fillStyle=c[0];ctx.fillRect(x-w*.44,y-h*.58,w*.88,h*.52);
+  ctx.fillStyle='#FFD34D';
+  ctx.fillRect(x-w*.4,y-h*.44,w*.12,h*.12);
+  ctx.fillRect(x+w*.28,y-h*.44,w*.12,h*.12);
+  ctx.fillStyle='#FFF6DE';ctx.fillRect(x-w*.1,y-h*.28,w*.2,h*.12);
+}
+function passHorn(){ensureAC();tone(392,{dur:.12,type:'square',v:.4});tone(494,{delay:.11,dur:.18,type:'square',v:.4});
+  tone(300,{dur:.3,type:'sine',v:.5,to:900})}
+function setupRace(){
+  camZ=0;playerX=0;
+  rcnv=document.createElement('canvas');
+  rcnv.width=W;rcnv.height=H;
+  rcnv.style.cssText='position:absolute;left:0;top:0;z-index:4';
+  stage.append(rcnv);rctx=rcnv.getContext('2d');
+  rstars=[];for(let i=0;i<5;i++)rstars.push(newStar(8+i*7));
+  rnpc=[newNpc(14),newNpc(30)];
+  car.style.left='50%';car.style.transform='translateX(-50%)';
+}
+function drawRace(dt){
+  if(rcnv.width!==W||rcnv.height!==H){rcnv.width=W;rcnv.height=H}
+  const v=(85+18*dif())*spd();
+  camZ+=v*dt;
+  const ptx=Math.max(-1.25,Math.min(1.25,(basketTX-W/2)/(W*.3)));
+  playerX+=(ptx-playerX)*Math.min(1,dt*6);
+  const ctx=rctx,horizon=H*.4,roadHalf=W*.36,cNow=curveFn(camZ);
+  /* 空・太陽・山(カーブと逆に流れるパララックス) */
+  ctx.fillStyle='#CFE9F8';ctx.fillRect(0,0,W,horizon+2);
+  ctx.fillStyle='#FFF3C4';ctx.beginPath();ctx.arc(W*.72-cNow*26,horizon*.42,H*.055,0,7);ctx.fill();
+  ctx.fillStyle='#B5DFA0';
+  ctx.beginPath();ctx.ellipse(W*.2-cNow*60,horizon+2,W*.42,H*.095,0,Math.PI,0);ctx.fill();
+  ctx.beginPath();ctx.ellipse(W*.8-cNow*60,horizon+2,W*.44,H*.12,0,Math.PI,0);ctx.fill();
+  /* 道路(下→地平線へスキャンライン描画) */
+  const rows=[];let dx=0,xoff=0;
+  const K=W*0.0000016;
+  const rowH=(H-horizon)/RROWS+1.5;
+  for(let i=0;i<RROWS;i++){
+    const t=1-(i/RROWS)*(1-MINT);
+    const y=horizon+(H-horizon)*t;
+    const rel=1/t,zW=camZ+rel*ZSC;
+    dx+=curveFn(zW)*K;xoff+=dx;
+    const center=W/2+xoff;
+    const half=roadHalf*t+3;
+    const band=Math.floor(zW/(ZSC*.9))%2;
+    ctx.fillStyle=band?'#9CCF8B':'#8AC47E';ctx.fillRect(0,y,W,rowH);
+    ctx.fillStyle=band?'#E85E4A':'#FFF6DE';ctx.fillRect(center-half,y,half*2,rowH);
+    const ih=half*.9;
+    ctx.fillStyle=band?'#8B98A8':'#84919F';ctx.fillRect(center-ih,y,ih*2,rowH);
+    if(band){ctx.fillStyle='#FFF6DE';
+      ctx.fillRect(center-ih*.34-3*t,y,6*t,rowH);
+      ctx.fillRect(center+ih*.34-3*t,y,6*t,rowH);}
+    rows[i]={y,center,half:ih,t};
+  }
+  /* 車の位置(高さは画面下から7vh) */
+  const carY=H-H*.07-car.offsetHeight*.5;
+  const tCar=Math.min(1,Math.max(MINT,(carY-horizon)/(H-horizon)));
+  const iCar=Math.min(RROWS-1,Math.max(0,Math.round(((1-tCar)/(1-MINT))*RROWS)));
+  const carRow=rows[iCar];
+  const carX=carRow.center+playerX*carRow.half*.6;
+  /* 遅い車(追い抜き)。設定でON/OFF */
+  if(saved.settings.npc){
+    const wBase=Math.max(140,Math.min(225,W*.18));
+    for(const nc of rnpc){
+      nc.rel-=v*(1-nc.sp)*dt/ZSC;
+      if(!nc.passed&&nc.rel<=1/tCar){
+        nc.passed=true;passHorn();
+        const sx=carRow.center+nc.lane*carRow.half*.55;
+        burst(sx,carY,'💨',5);
       }
-      function tone(kind='catch'){
-        const vol=[.025,.065,.12][saved.settings.sound]; if(!vol) return;
-        try {
-          audio ||= new (window.AudioContext||window.webkitAudioContext)(); if(audio.state==='suspended') audio.resume();
-          const o=audio.createOscillator(), g=audio.createGain(), now=audio.currentTime;
-          o.type=kind==='pop'?'sine':'triangle'; o.frequency.setValueAtTime(kind==='pop'?420:520,now);
-          o.frequency.exponentialRampToValueAtTime(kind==='pop'?760:690,now+.16); g.gain.setValueAtTime(vol,now); g.gain.exponentialRampToValueAtTime(.001,now+.28);
-          o.connect(g).connect(audio.destination); o.start(now); o.stop(now+.3);
-        } catch(e) {}
+      if(nc.rel<=.7){
+        nc.rel=22+Math.random()*18;nc.lane=[-1,0,1][Math.floor(Math.random()*3)];
+        nc.c=NPC_COLORS[Math.floor(Math.random()*NPC_COLORS.length)];
+        nc.sp=.5+Math.random()*.15;nc.passed=false;
+        continue;
       }
-      function sparkle(x,y,icon='✨'){
-        const s=document.createElement('div'); s.className='spark'; s.textContent=icon; s.style.left=x+'px'; s.style.top=y+'px'; $('#playArea').append(s); setTimeout(()=>s.remove(),1400);
+      const t=1/nc.rel;
+      if(t<.075||t>1)continue;
+      const i=Math.min(RROWS-1,Math.max(0,Math.round(((1-t)/(1-MINT))*RROWS)));
+      const r=rows[i];
+      drawNpc(rctx,r.center+nc.lane*r.half*.55,r.y,wBase*t,nc.c);
+    }
+  }
+  /* 星(奥から迫ってくる・車の高さで判定) */
+  ctx.textAlign='center';ctx.textBaseline='middle';
+  for(const st of rstars){
+    st.rel-=v*dt/ZSC;
+    if(st.rel<=1/tCar+.02){
+      const sx=carRow.center+st.lane*carRow.half*.55;
+      if(!roundOver&&Math.abs(sx-carX)<car.offsetWidth*[.9,.72,.56][dif()]){
+        burst(sx,carY,'✨',st.gold?12:7);
+        ensureAC();vroom(1.05);tone(NOTES[score%6]*2,{dur:.2,type:'sine',v:.5});
+        if(st.gold)sparkleUp();
+        gotOne(st.gold?2:1);
       }
-      function caught(el,e,kind){
-        e.preventDefault(); if(!active) return; participated=true; $('#rewardGo').classList.add('show');
-        const r=el.getBoundingClientRect(); sparkle(r.left+r.width/2,r.top+r.height/2,kind==='pop'?'🫧':'✨'); tone(kind); el.remove();
-        if(kind==='pop') timers.push(setTimeout(spawnBalloon,350)); else timers.push(setTimeout(spawnCatch,500));
-      }
-      function spawnCatch(){
-        if(!active) return; const el=document.createElement('button'); el.className='target fall';
-        const list=themes[theme]; el.textContent=list[Math.floor(Math.random()*list.length)]; el.setAttribute('aria-label','キャッチ');
-        el.style.left=(8+Math.random()*78)+'vw'; el.style.setProperty('--fall-time',([14,10,7][saved.settings.motion]+Math.random()*3)+'s');
-        el.addEventListener('pointerdown',e=>caught(el,e,'catch')); $('#playArea').append(el);
-        el.addEventListener('animationend',()=>{el.remove(); timers.push(setTimeout(spawnCatch,400));},{once:true});
-      }
-      function spawnBalloon(){
-        if(!active) return; const el=document.createElement('button'); el.className='target float';
-        el.textContent=Math.random()>.48?'🎈':'🫧'; el.setAttribute('aria-label','タッチ'); el.style.left=(5+Math.random()*82)+'vw'; el.style.bottom='-18vh';
-        const sway=Math.random()*18-9; el.style.setProperty('--sway',sway+'vw'); el.style.setProperty('--sway-end',(sway*-.5)+'vw'); el.style.setProperty('--float-time',([16,11,7][saved.settings.motion]+Math.random()*4)+'s');
-        el.addEventListener('pointerdown',e=>caught(el,e,'pop')); $('#playArea').append(el);
-        el.addEventListener('animationend',()=>{el.remove(); timers.push(setTimeout(spawnBalloon,250));},{once:true});
-      }
-      function startPlay(){
-        show('play'); active=true; participated=false; $('#rewardGo').classList.remove('show');
-        if(game==='catch') spawnCatch(); else { for(let i=0;i<4;i++) timers.push(setTimeout(spawnBalloon,i*650)); }
-      }
-      function enterReward(){
-        if(!participated) return; show('reward'); saved.coins++; persist(); $('#coin').style.display='block'; $('#gacha').style.display='grid'; $('#card').classList.remove('show'); $('#card').textContent='';
-      }
-      function drawCard(){
-        const item=cards[Math.floor(Math.random()*cards.length)]; if(!saved.cards.includes(item)) saved.cards.push(item); persist();
-        $('#coin').style.display='none'; $('#gacha').classList.add('flash'); $('#gacha').style.display='none'; $('#card').textContent=item; $('#card').classList.add('show');
-        tone('catch'); setTimeout(()=>$('#gacha').classList.remove('flash'),1000);
-      }
-      function renderBook(){
-        $('#bookGrid').innerHTML=''; cards.forEach(item=>{ const d=document.createElement('div'); d.className='bookCard'+(saved.cards.includes(item)?'':' locked'); d.textContent=item; $('#bookGrid').append(d); });
-      }
-      $$('.theme').forEach(b=>b.onclick=()=>{theme=b.dataset.theme; show('games')});
-      $$('.game').forEach(b=>b.onclick=()=>{game=b.dataset.game; startPlay()});
-      $$('.homeBtn').forEach(b=>b.onclick=()=>show('home')); $('#backGames').onclick=()=>show('games');
-      $('#rewardGo').onclick=enterReward; $('#gacha').onclick=drawCard;
-      $('#openBook').onclick=$('#rewardBook').onclick=()=>{renderBook();show('book')};
-      ['sound','motion','light'].forEach(key=>{
-        const box=document.querySelector(`.levels[data-key="${key}"]`);
-        ['弱','中','強'].forEach((label,i)=>{const b=document.createElement('button');b.className='level';b.textContent=label;b.onclick=()=>{saved.settings[key]=i;persist();applySettings()};box.append(b)});
-      });
-      let holdTimer; const hold=$('#staffHold');
-      const stopHold=()=>clearTimeout(holdTimer); hold.addEventListener('pointerdown',()=>holdTimer=setTimeout(()=>$('#settings').classList.add('open'),3000));
-      ['pointerup','pointercancel','pointerleave'].forEach(x=>hold.addEventListener(x,stopHold));
-      $('.closeSettings').onclick=()=>$('#settings').classList.remove('open');
-      document.addEventListener('visibilitychange',()=>{ if(document.hidden) clearTimers() });
-      applySettings();
-    })();
-  </script>
+      st.rel=18+Math.random()*22;st.lane=[-1,0,1][Math.floor(Math.random()*3)];
+      st.gold=Math.random()<DIFF.gold[dif()];
+      continue;
+    }
+    const t=1/st.rel;
+    if(t<.075)continue;  /* 遠すぎる星は描かない(地平線で重なるのを防止) */
+    const i=Math.min(RROWS-1,Math.max(0,Math.round(((1-t)/(1-MINT))*RROWS)));
+    const r=rows[i];
+    const sx=r.center+st.lane*r.half*.55;
+    ctx.font=`${Math.max(14,itemSize()*t*1.15)}px sans-serif`;
+    ctx.fillText(st.gold?'🌟':'⭐',sx,r.y);
+  }
+  /* 車を道路の上に配置(路面に沿う+走行振動) */
+  const bob=Math.sin(camZ*.55)*1.6+Math.sin(camZ*1.3)*.8;
+  car.style.left=carX+'px';
+  car.style.transform=`translateX(-50%) translateY(${bob}px) rotate(${(ptx-playerX)*14+cNow*1.6}deg)`;
+}
+
+/* ================= match (かたちはめ・木製パズル) ================= */
+const SHAPES=['circle','square','triangle','star','heart'];
+const SHAPE_COLORS=['#FF8A70','#FFD34D','#7FCE96','#8FB8EF','#C39AEC'];
+let mslots=[],mSize=140,mUid=0;
+function darker(hex,f){const n=parseInt(hex.slice(1),16);
+  return `rgb(${Math.round(((n>>16)&255)*f)},${Math.round(((n>>8)&255)*f)},${Math.round((n&255)*f)})`}
+function shapeEl(t,attrs){
+  if(t==='circle')return `<circle cx="50" cy="47" r="37" ${attrs}/>`;
+  if(t==='square')return `<rect x="15" y="12" width="70" height="70" rx="13" ${attrs}/>`;
+  if(t==='triangle')return `<path d="M50 9 L89 81 L11 81 Z" stroke-linejoin="round" ${attrs}/>`;
+  if(t==='star')return `<polygon points="50,7 60.5,37 92,37 67,56 76,88 50,68 24,88 33,56 8,37 39.5,37" stroke-linejoin="round" ${attrs}/>`;
+  return `<path d="M50 85 C22 62 11 44 22 29 C31 17 46 21 50 32 C54 21 69 17 78 29 C89 44 78 62 50 85 Z" ${attrs}/>`;
+}
+function pieceSVG(t,color){
+  const dk=darker(color,.6);
+  return `<svg viewBox="0 0 100 100">
+    ${shapeEl(t,`fill="${dk}" transform="translate(0,7)"`)}
+    ${shapeEl(t,`fill="${color}"`)}
+    <ellipse cx="37" cy="27" rx="14" ry="7" fill="#fff" opacity=".45" transform="rotate(-18 37 27)"/>
+    <ellipse cx="50" cy="52" rx="12" ry="5" fill="rgba(0,0,0,.22)"/>
+    <circle cx="50" cy="46" r="10.5" fill="#F5E7CC" stroke="#C7A97E" stroke-width="2"/>
+    <circle cx="47" cy="43" r="3.5" fill="#fff" opacity=".85"/>
+  </svg>`;
+}
+function holeSVG(t){
+  return `<svg viewBox="0 0 100 100">
+    ${shapeEl(t,'fill="#3B2510"')}
+    ${shapeEl(t,'fill="none" stroke="#241505" stroke-width="5" transform="translate(0,-1.5)" opacity=".9"')}
+    ${shapeEl(t,'fill="none" stroke="#DFA968" stroke-width="3" transform="translate(0,2.5)" opacity=".55"')}
+  </svg>`;
+}
+function woodSVG(w,h,light){
+  const id='wd'+(++mUid);
+  const c1=light?'#E4BA82':'#CE9857', c2=light?'#C08D51':'#A06B33';
+  let grain='';
+  for(let i=1;i<=3;i++){
+    const y=h*i/4;
+    grain+=`<path d="M${w*.05} ${y} Q${w*.3} ${y-8} ${w*.5} ${y} T${w*.95} ${y}" stroke="rgba(90,55,20,.25)" stroke-width="3" fill="none"/>`;
+  }
+  return `<svg viewBox="0 0 ${w} ${h}" preserveAspectRatio="none">
+    <defs><linearGradient id="${id}" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="${c1}"/><stop offset="100%" stop-color="${c2}"/></linearGradient></defs>
+    <rect width="${w}" height="${h}" rx="20" fill="url(#${id})"/>
+    ${grain}
+    <ellipse cx="${w*.82}" cy="${h*.3}" rx="9" ry="5" fill="rgba(90,55,20,.3)"/>
+    <rect x="4" y="4" width="${w-8}" height="8" rx="4" fill="rgba(255,255,255,.3)"/>
+    <rect x="4" y="${h-12}" width="${w-8}" height="8" rx="4" fill="rgba(0,0,0,.22)"/>
+  </svg>`;
+}
+function addBoard(x,y,w,h,light){
+  const d=document.createElement('div');d.className='mboard';
+  d.style.left=x+'px';d.style.top=y+'px';d.style.width=w+'px';d.style.height=h+'px';
+  d.innerHTML=woodSVG(Math.round(w),Math.round(h),light);
+  stage.append(d);
+}
+function buildMatchRound(){
+  if(roundOver||!running)return;
+  stage.querySelectorAll('.slot,.piece,.mboard').forEach(e=>e.remove());
+  const n=[3,5,5][dif()];
+  mSize=Math.max(76,Math.min(168,W/(n+1.8),H*.2));
+  const bw=Math.min(W*.94,n*mSize*1.28+mSize*.5), bh=mSize*1.6;
+  const by=H*.32, ty=H*.77;
+  addBoard(W/2,by,bw,bh,false);           /* 穴のあいた板 */
+  addBoard(W/2,ty,bw,mSize*1.45,true);    /* ピース置き場のトレー */
+  const types=SHAPES.slice().sort(()=>Math.random()-.5).slice(0,n);
+  const colors=SHAPE_COLORS.slice().sort(()=>Math.random()-.5);
+  const spacing=bw/n, x0=W/2-bw/2+spacing*.5;
+  mslots=types.map((t,i)=>{
+    const x=x0+spacing*i,y=by;
+    const el=document.createElement('div');el.className='slot';
+    el.style.setProperty('--ss',mSize+'px');
+    el.innerHTML=holeSVG(t);
+    el.style.left=x+'px';el.style.top=y+'px';stage.append(el);
+    return{type:t,x,y,el,filled:false};
+  });
+  types.slice().sort(()=>Math.random()-.5).forEach((t,i)=>{
+    const x=x0+spacing*i,y=ty;
+    const el=document.createElement('button');el.className='piece';
+    el.style.setProperty('--ss',mSize+'px');
+    el.innerHTML=pieceSVG(t,colors[i%colors.length]);
+    el.style.left=x+'px';el.style.top=y+'px';stage.append(el);
+    attachDrag(el,t,x,y);
+  });
+}
+function attachDrag(el,type,homeX,homeY){
+  let dragging=false;
+  el.addEventListener('pointerdown',ev=>{
+    if(roundOver||el.classList.contains('placed'))return;
+    dragging=true;el.classList.add('drag');
+    try{el.setPointerCapture(ev.pointerId)}catch(e){}
+    ev.stopPropagation();
+  });
+  el.addEventListener('pointermove',ev=>{
+    if(!dragging)return;
+    el.style.left=ev.clientX+'px';el.style.top=ev.clientY+'px';
+  });
+  const drop=()=>{
+    if(!dragging)return;dragging=false;el.classList.remove('drag');
+    const px=parseFloat(el.style.left),py=parseFloat(el.style.top);
+    const th=mSize*[.85,.62,.5][dif()];
+    const s=mslots.find(s=>!s.filled&&s.type===type&&Math.hypot(s.x-px,s.y-py)<th);
+    if(s){
+      s.filled=true;el.style.left=s.x+'px';el.style.top=s.y+'px';el.classList.add('placed');
+      burst(s.x,s.y,THEMES[theme].pop,7);tapSound();thunk();
+      gotOne();
+      if(!roundOver&&mslots.every(x=>x.filled))timers.push(setTimeout(buildMatchRound,900/spd()));
+    }else{
+      el.style.left=homeX+'px';el.style.top=homeY+'px';  /* まちがいはそっと元の場所へ */
+    }
+  };
+  el.addEventListener('pointerup',drop);el.addEventListener('pointercancel',drop);
+}
+
+/* ================= color (いろわけ) ================= */
+const CGAME_COLORS=['#E8402A','#3D7FD9','#F5C518','#4CAF6D'];
+let cslots=[],cRemaining=0;
+function ballSVG(color){
+  const id='bl'+(++mUid);
+  return `<svg viewBox="0 0 100 100">
+    <defs><radialGradient id="${id}" cx="35%" cy="28%" r="80%">
+      <stop offset="0%" stop-color="#fff" stop-opacity=".95"/>
+      <stop offset="18%" stop-color="${color}" stop-opacity=".55"/>
+      <stop offset="70%" stop-color="${color}"/>
+      <stop offset="100%" stop-color="${darker(color,.6)}"/></radialGradient></defs>
+    <ellipse cx="50" cy="88" rx="30" ry="7" fill="rgba(0,0,0,.2)"/>
+    <circle cx="50" cy="50" r="38" fill="url(#${id})"/>
+    <ellipse cx="37" cy="32" rx="12" ry="7" fill="#fff" opacity=".8" transform="rotate(-24 37 32)"/>
+  </svg>`;
+}
+function bucketSVG(color){
+  const id='bk'+(++mUid);
+  return `<svg viewBox="0 0 100 100">
+    <defs><linearGradient id="${id}" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0%" stop-color="${darker(color,.72)}"/>
+      <stop offset="45%" stop-color="${color}"/>
+      <stop offset="100%" stop-color="${darker(color,.62)}"/></linearGradient></defs>
+    <ellipse cx="50" cy="93" rx="32" ry="6" fill="rgba(0,0,0,.2)"/>
+    <path d="M17 26 L83 26 L74 90 Q50 96 26 90 Z" fill="url(#${id})"/>
+    <path d="M24 32 L30 84" stroke="#fff" stroke-width="5" opacity=".3" stroke-linecap="round"/>
+    <ellipse cx="50" cy="26" rx="33" ry="11" fill="${darker(color,.42)}"/>
+    <ellipse cx="50" cy="24" rx="33" ry="11" fill="none" stroke="${color}" stroke-width="5"/>
+    <ellipse cx="50" cy="24" rx="33" ry="11" fill="none" stroke="#fff" stroke-width="2" opacity=".5"/>
+  </svg>`;
+}
+function buildColorRound(){
+  if(roundOver||!running)return;
+  stage.querySelectorAll('.slot,.piece,.mboard').forEach(e=>e.remove());
+  const n=[2,3,4][dif()];
+  const bs=Math.max(90,Math.min(175,W/(n+1.6),H*.22));       /* バケツ */
+  const ps=Math.max(64,Math.min(120,W/(2*n+2.2),H*.15));      /* ボール */
+  const colors=CGAME_COLORS.slice().sort(()=>Math.random()-.5).slice(0,n);
+  const bw=Math.min(W*.94,Math.max(n*bs*1.3,2*n*ps*1.15)+bs*.4);
+  const by=H*.3, ty=H*.78;
+  addBoard(W/2,by+bs*.18,bw,bs*1.55,false);
+  addBoard(W/2,ty,bw,ps*1.5,true);
+  const bsp=bw/n, bx0=W/2-bw/2+bsp*.5;
+  cslots=colors.map((c,i)=>{
+    const x=bx0+bsp*i,y=by;
+    const el=document.createElement('div');el.className='slot';
+    el.style.setProperty('--ss',bs+'px');
+    el.innerHTML=bucketSVG(c);
+    el.style.left=x+'px';el.style.top=y+'px';stage.append(el);
+    return{color:c,x,y,cnt:0,cap:2,el};
+  });
+  const balls=colors.concat(colors).sort(()=>Math.random()-.5);  /* 各色2個 */
+  cRemaining=balls.length;
+  const psp=bw/balls.length, px0=W/2-bw/2+psp*.5;
+  balls.forEach((c,i)=>{
+    const x=px0+psp*i,y=ty;
+    const el=document.createElement('button');el.className='piece';
+    el.style.setProperty('--ss',ps+'px');
+    el.innerHTML=ballSVG(c);
+    el.style.left=x+'px';el.style.top=y+'px';stage.append(el);
+    attachColorDrag(el,c,x,y,bs);
+  });
+}
+function attachColorDrag(el,color,homeX,homeY,bs){
+  let dragging=false;
+  el.addEventListener('pointerdown',ev=>{
+    if(roundOver||el.classList.contains('placed'))return;
+    dragging=true;el.classList.add('drag');
+    try{el.setPointerCapture(ev.pointerId)}catch(e){}
+    ev.stopPropagation();
+  });
+  el.addEventListener('pointermove',ev=>{
+    if(!dragging)return;
+    el.style.left=ev.clientX+'px';el.style.top=ev.clientY+'px';
+  });
+  const drop=()=>{
+    if(!dragging)return;dragging=false;el.classList.remove('drag');
+    const px=parseFloat(el.style.left),py=parseFloat(el.style.top);
+    const th=bs*[.95,.72,.55][dif()];
+    const s=cslots.find(s=>s.color===color&&s.cnt<s.cap&&Math.hypot(s.x-px,s.y-py)<th);
+    if(s){
+      s.cnt++;
+      el.classList.add('placed');
+      el.style.left=(s.x+(s.cnt===1?-1:1)*bs*.13)+'px';
+      el.style.top=(s.y-bs*.06)+'px';
+      el.style.transform='translate(-50%,-50%) scale(.58)';   /* バケツにぽとん */
+      burst(s.x,s.y-bs*.2,'✨',7);poyon();tapSound();
+      gotOne();cRemaining--;
+      if(!roundOver&&cRemaining===0)timers.push(setTimeout(buildColorRound,900/spd()));
+    }else{
+      el.style.left=homeX+'px';el.style.top=homeY+'px';
+    }
+  };
+  el.addEventListener('pointerup',drop);el.addEventListener('pointercancel',drop);
+}
+
+/* ================= round end ================= */
+function finishRound(){
+  roundOver=true;running=false;
+  ents.forEach(e=>{e.el.style.transition='opacity .6s';e.el.style.opacity=0;setTimeout(()=>e.el.remove(),650)});
+  ents=[];
+  holes.forEach(h=>{clearTimeout(h.downTimer);h.el.classList.remove('up')});
+  celebrate();bigFanfare();
+  const hf=$('#heroFly');hf.classList.remove('go');void hf.offsetWidth;hf.classList.add('go');
+  timers.push(setTimeout(()=>hf.classList.remove('go'),1800/spd()));
+  timers.push(setTimeout(()=>{$('#bigGift').classList.add('show');poyon()},1600/spd()));
+}
+$('#bigGift').addEventListener('pointerdown',()=>{burst(W/2,H*.42,'✨',10);enterReward()});
+
+/* ================= main loop ================= */
+function loop(t){
+  requestAnimationFrame(loop);
+  const dt=Math.min(.05,(t-lastT)/1000||0);lastT=t;
+  if(!running)return;
+  const s=spd();
+  if(game==='catch'){
+    basketX+=(basketTX-basketX)*Math.min(1,dt*10);
+    const bw=basket.offsetWidth;
+    basket.style.transform=`translateX(${basketX-bw/2}px)`;
+    const topY=H-basket.offsetHeight-H*.02;
+    for(const e of [...ents]){
+      const csz=itemSize()*e.sc;
+      e.y+=e.vy*s*dt;e.ph+=dt*2;
+      const x=e.x+Math.sin(e.ph)*e.amp*.4;
+      e.el.style.transform=`translate(${x-csz/2}px,${e.y-csz/2}px) rotate(${Math.sin(e.ph)*10}deg)`;
+      if(e.y>topY&&e.y<topY+H*.12&&Math.abs(x-basketX)<bw*DIFF.catchW[dif()]){catchIt(e,false);continue}
+      if(e.y>H+itemSize()){removeEnt(e);timers.push(setTimeout(spawnCatch,600/s))}
+    }
+  }else if(game==='race'){
+    if(rcnv&&rcnv.isConnected)drawRace(dt);
+  }else if(game==='balloon'){
+    for(const e of ents){
+      const sz=itemSize()*e.sc;
+      e.y-=e.vy*s*dt;e.ph+=dt*1.8;
+      const x=e.x+Math.sin(e.ph)*e.amp*.5;
+      e.el.style.transform=`translate(${x-sz/2}px,${e.y-sz/2}px) rotate(${Math.sin(e.ph)*8}deg)`;
+      if(e.y<-sz){e.y=H+sz;e.x=sz/2+Math.random()*(W-sz)}
+    }
+  }
+}
+requestAnimationFrame(loop);
+
+function startPlay(){
+  show('play');ensureAC();
+  $('#scene').innerHTML=(game==='race')?'':SCENES[theme];
+  score=0;renderStars();roundOver=false;running=true;
+  basket.hidden=true;car.hidden=true;
+  if(game==='race'){
+    car.hidden=false;basketX=basketTX=W/2;
+    setupRace();
+  }else if(game==='catch'){
+    basket.hidden=false;basketX=basketTX=W/2;
+    for(let i=0;i<3;i++)timers.push(setTimeout(spawnCatch,i*700/spd()));
+  }else if(game==='race'){
+    if(rcnv&&rcnv.isConnected)drawRace(dt);
+  }else if(game==='balloon'){
+    for(let i=0;i<4;i++)timers.push(setTimeout(spawnBalloon,i*420/spd()));
+  }else if(game==='mole'){
+    buildHoles();timers.push(setTimeout(moleUp,500/spd()));
+  }else if(game==='color'){
+    buildColorRound();
+  }else{
+    buildMatchRound();
+  }
+}
+const moveBasket=ev=>{if(running&&(game==='catch'||game==='race'))basketTX=Math.max(60,Math.min(W-60,ev.clientX))};
+stage.addEventListener('pointerdown',moveBasket);
+stage.addEventListener('pointermove',ev=>{if(ev.pressure>0||ev.pointerType==='touch')moveBasket(ev)});
+
+/* ================= reward / gacha ================= */
+let gachaPhase='idle';
+const hand=$('#hand'),capsule=$('#capsule');
+function placeHand(where){
+  if(where==='knob'){hand.style.left='56%';hand.style.top='60%'}
+  else{hand.style.left='58%';hand.style.top='78%'}
+  hand.classList.add('show');
+}
+function enterReward(){
+  saved.coins++;persist();
+  show('reward');gachaPhase='idle';
+  $('#cardBox').classList.remove('on');
+  capsule.className='';$('#knob').classList.remove('turn');
+  placeHand('knob');
+  const c=$('#flyCoin');c.classList.remove('go');void c.offsetWidth;c.classList.add('go');
+  ensureAC();tone(NOTES[2],{dur:.3});tone(NOTES[4],{delay:.15,dur:.35});
+}
+$('#machineBtn').addEventListener('pointerdown',()=>{
+  if(gachaPhase!=='idle')return;gachaPhase='turning';
+  hand.classList.remove('show');ensureAC();
+  const m=1/spd();
+  $('#knob').classList.add('turn');ratchet();
+  timers.push(setTimeout(()=>{
+    capsule.classList.add('drop');poyon();
+    const r=capsule.getBoundingClientRect(),w=$('#machineWrap').getBoundingClientRect();
+    burst(r.left-w.left+r.width/2,r.top-w.top+r.height/2,'✨',8,$('#machineWrap'));
+  },600*m));
+  timers.push(setTimeout(()=>{
+    capsule.classList.add('wob');gachaPhase='capsule';placeHand('capsule');
+    timers.push(setTimeout(()=>{if(gachaPhase==='capsule')openCapsule()},4200*m));
+  },1450*m));
+});
+capsule.addEventListener('pointerdown',ev=>{ev.stopPropagation();if(gachaPhase==='capsule')openCapsule()});
+function openCapsule(){
+  gachaPhase='opened';hand.classList.remove('show');
+  /* 1. カプセルが手前にわーんと拡大 */
+  capsule.classList.remove('wob');capsule.classList.add('zoom');whoosh();
+  timers.push(setTimeout(()=>{
+    /* 2. 大きくなったところでパカッと開く */
+    capsule.classList.add('open');crack();
+    const r=capsule.getBoundingClientRect(),w=$('#machineWrap').getBoundingClientRect();
+    burst(r.left-w.left+r.width/2,r.top-w.top+r.height/2,'🎊',12,$('#machineWrap'));
+    timers.push(setTimeout(()=>{
+      const item=CARDS[Math.floor(Math.random()*CARDS.length)];
+      if(!saved.cards.includes(item))saved.cards.push(item);persist();
+      $('#bigCard').textContent=item;$('#cardBox').classList.add('on');fanfare();
+    },520/spd()));
+  },600/spd()));
+}
+$('#againPlay').onclick=()=>startPlay();
+$('#cardBookBtn').onclick=()=>{renderBook();show('book')};
+
+/* ================= book ================= */
+function renderBook(){
+  const g=$('#bookGrid');g.innerHTML='';
+  CARDS.forEach(item=>{
+    const d=document.createElement('div');
+    d.className='bookCard'+(saved.cards.includes(item)?'':' locked');
+    d.innerHTML=`<span>${item}</span>`;g.append(d);
+  });
+}
+
+/* ================= wiring ================= */
+$$('.theme').forEach(b=>b.onclick=()=>{theme=b.dataset.theme;ensureAC();tapSound();show('games')});
+$$('.game').forEach(b=>b.onclick=()=>{game=b.dataset.game;startPlay()});
+$$('.homeBtn').forEach(b=>b.onclick=()=>show('home'));
+$('#backGames').onclick=()=>show('games');
+$('#openBook').onclick=$('#rewardBook').onclick=()=>{renderBook();show('book')};
+
+$$('.levels').forEach(box=>{
+  box.dataset.labels.split(',').forEach((label,i)=>{
+    const b=document.createElement('button');b.className='level';b.textContent=label;
+    b.onclick=()=>{saved.settings[box.dataset.key]=i;persist();applySettings();ensureAC();tone(NOTES[i%6])};
+    box.append(b);
+  });
+});
+/* ⚙️ボタン: タップで職員用設定 */
+$('#gearBtn').addEventListener('pointerdown',()=>$('#settings').classList.add('open'));
+let holdTimer;const holdBtn=$('#staffHold');
+holdBtn.addEventListener('pointerdown',()=>holdTimer=setTimeout(()=>$('#settings').classList.add('open'),3000));
+['pointerup','pointercancel','pointerleave'].forEach(x=>holdBtn.addEventListener(x,()=>clearTimeout(holdTimer)));
+$('.closeSettings').onclick=()=>$('#settings').classList.remove('open');
+document.addEventListener('visibilitychange',()=>{
+  if(document.hidden){running=false;stopBGM()}
+  else{
+    if($('#play').classList.contains('on')&&!roundOver)running=true;
+    startBGM();
+  }
+});
+/* タイトルの1文字ずつゆれ */
+(()=>{const t=$('#titleTxt');if(!t)return;const s=t.textContent;t.textContent='';
+  [...s].forEach((ch,i)=>{const sp=document.createElement('span');sp.className='tch';
+    sp.textContent=ch;sp.style.animationDelay=(i*.14)+'s';t.append(sp)})})();
+document.addEventListener('pointerdown',()=>startBGM());
+applySettings();
+})();
+</script>
 </body>
 </html>
