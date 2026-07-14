@@ -54,10 +54,18 @@ button{font:inherit;border:0;background:none;cursor:pointer;touch-action:manipul
   text-shadow:0 2px 0 rgba(255,255,255,.9),0 -1px 0 rgba(255,255,255,.9);pointer-events:none}
 
 /* ===== home ===== */
-#home{background:linear-gradient(170deg,#FFF3D6 0%,#DFF3E3 60%,#CBEDDC 100%)}
-#home .sunbg{position:absolute;top:-20vmin;left:50%;transform:translateX(-50%);
+#start,#character{background:linear-gradient(170deg,#FFF3D6 0%,#DFF3E3 60%,#CBEDDC 100%)}
+#start .sunbg,#character .sunbg{position:absolute;top:-20vmin;left:50%;transform:translateX(-50%);
   width:76vmin;height:76vmin;border-radius:50%;
   background:radial-gradient(circle,rgba(255,214,107,calc(.5*var(--glow)+.15)),rgba(255,214,107,0) 70%)}
+.startIcon{z-index:2;width:clamp(170px,24vw,260px);height:clamp(170px,24vw,260px);object-fit:cover;border-radius:30%;
+  box-shadow:0 12px 0 rgba(66,112,93,.16),0 22px 40px rgba(49,96,80,.22);animation:startFloat 2.8s ease-in-out infinite alternate}
+@keyframes startFloat{to{transform:translateY(-8px) rotate(2deg) scale(1.02)}}
+.startButton{z-index:2;min-width:clamp(220px,32vw,360px);min-height:clamp(88px,11vw,120px);padding:0 32px;border-radius:999px;
+  background:linear-gradient(145deg,#FF9B70,#F16F65);color:#fff;font-size:clamp(32px,4.8vw,58px);font-weight:800;
+  letter-spacing:.08em;box-shadow:0 10px 0 rgba(147,75,68,.22),0 18px 30px rgba(120,70,60,.2);text-shadow:0 3px 0 rgba(150,70,60,.24)}
+.startButton:active{transform:translateY(6px);box-shadow:0 4px 0 rgba(147,75,68,.22)}
+#character .topbar{z-index:30}
 .cardRow{display:flex;flex-wrap:wrap;justify-content:center;gap:clamp(16px,3vw,38px);z-index:2}
 .bigCardBtn{position:relative;border-radius:34px;overflow:hidden;background:#fff;
   box-shadow:var(--shadow);transition:transform .15s}
@@ -268,10 +276,20 @@ button{font:inherit;border:0;background:none;cursor:pointer;touch-action:manipul
 </head>
 <body>
 
-<section id="home" class="screen center on" aria-label="テーマをえらぶ">
+<section id="start" class="screen center on" aria-label="スタート">
   <div class="sunbg"></div>
-  <button id="gearBtn" aria-label="職員用設定">⚙️</button>
+  <div class="amb" style="width:22vmin;height:22vmin;left:8%;top:16%;background:#FFD6C4"></div>
+  <div class="amb" style="width:18vmin;height:18vmin;left:78%;top:64%;background:#BDE9C9;animation-delay:1.4s"></div>
+  <img class="startIcon" src="icon.png?v=30" alt="あそびのにわ">
   <h1 class="appTitle"><span class="deco">🌸</span><span id="titleTxt">あそびのにわ</span><span class="deco">🎈</span></h1>
+  <button id="startBtn" class="startButton" aria-label="スタート">スタート</button>
+  <button class="round" id="startBook" aria-label="ずかん">📖</button>
+</section>
+
+<section id="character" class="screen center" aria-label="キャラクターをえらぶ">
+  <div class="sunbg"></div>
+  <div class="topbar"><button class="round" id="backGamesFromCharacter" aria-label="ゲーム選択">↩️</button><button id="gearBtn" aria-label="職員用設定">⚙️</button></div>
+  <h2 class="screenTitle">キャラクターをえらぶ</h2>
   <div class="amb" style="width:26vmin;height:26vmin;left:6%;top:64%;background:#FFD6C4"></div>
   <div class="amb" style="width:20vmin;height:20vmin;left:78%;top:18%;background:#BDE9C9;animation-delay:1.4s"></div>
   <div class="amb" style="width:16vmin;height:16vmin;left:70%;top:70%;background:#C9E1FF;animation-delay:2.6s"></div>
@@ -1432,10 +1450,13 @@ function renderBook(){
 }
 
 /* ================= wiring ================= */
-$$('.theme').forEach(b=>b.onclick=()=>{theme=b.dataset.theme;ensureAC();tapSound();show('games')});
-$$('.game').forEach(b=>b.onclick=()=>{game=b.dataset.game;startPlay()});
-$$('.homeBtn').forEach(b=>b.onclick=()=>show('home'));
+$('#startBtn').onclick=()=>show('games');
+$('#startBook').onclick=()=>{renderBook();show('book')};
+$$('.theme').forEach(b=>b.onclick=()=>{theme=b.dataset.theme;ensureAC();tapSound();startPlay()});
+$$('.game').forEach(b=>b.onclick=()=>{game=b.dataset.game;if(['catch','balloon','mole'].includes(game))show('character');else startPlay()});
+$$('.homeBtn').forEach(b=>b.onclick=()=>show('start'));
 $('#backGames').onclick=()=>show('games');
+$('#backGamesFromCharacter').onclick=()=>show('games');
 $('#openBook').onclick=$('#rewardBook').onclick=()=>{renderBook();show('book')};
 
 $$('.levels').forEach(box=>{
