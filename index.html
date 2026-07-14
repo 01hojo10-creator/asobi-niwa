@@ -122,7 +122,7 @@ button{font:inherit;border:0;background:none;cursor:pointer;touch-action:manipul
 @keyframes giftPulse{0%,100%{transform:translate(-50%,-50%)}50%{transform:translate(-50%,-50%) scale(calc(1 + .12*var(--glow)))}}
 
 /* ---- race game ---- */
-#car{position:absolute;z-index:8;bottom:7vh;width:clamp(140px,18vw,225px);pointer-events:none;transform-origin:50% 92%;
+#car{position:absolute;z-index:8;bottom:7vh;width:clamp(120px,14vw,180px);pointer-events:none;transform-origin:50% 92%;
   filter:drop-shadow(0 5px 5px rgba(30,60,80,.4));will-change:transform,left}
 #car svg{width:100%;height:auto;display:block}
 .roadLine{position:absolute;top:0;bottom:0;width:9px;transform:translateX(-50%);z-index:4;opacity:.95;
@@ -1026,7 +1026,7 @@ function drawRace(dt){
   camZ+=v*dt;
   const ptx=Math.max(-1.25,Math.min(1.25,(basketTX-W/2)/(W*.3)));
   playerX+=(ptx-playerX)*Math.min(1,dt*6);
-  const ctx=rctx,horizon=H*.4,roadHalf=W*.36,cNow=curveFn(camZ);
+  const ctx=rctx,horizon=H*.4,roadHalf=W*.40,cNow=curveFn(camZ);
   /* 空・太陽・山(カーブと逆に流れるパララックス) */
   ctx.fillStyle='#CFE9F8';ctx.fillRect(0,0,W,horizon+2);
   ctx.fillStyle='#FFF3C4';ctx.beginPath();ctx.arc(W*.72-cNow*26,horizon*.42,H*.055,0,7);ctx.fill();
