@@ -614,7 +614,7 @@ button{font:inherit;border:0;background:none;cursor:pointer;touch-action:manipul
     <div class="setting"><p>むずかしさ</p><div class="levels three" data-key="diff" data-labels="やさしい,ふつう,むずかしい"></div></div>
     <div class="setting"><p>レースのほかの車（追い抜き）</p><div class="levels two" data-key="npc" data-labels="なし,あり"></div></div>
     <div class="setting"><p>プレゼントまでの⭐の数</p><div class="levels" data-key="goal" data-labels="5こ,8こ,12こ,20こ"></div></div>
-    <p style="text-align:center;color:#8AA79B;font-size:15px;margin:14px 0 4px">あそびのにわ v33</p>
+    <p style="text-align:center;color:#8AA79B;font-size:15px;margin:14px 0 4px">あそびのにわ v35</p>
     <button class="closeSettings">閉じる</button>
   </div>
 </aside>
@@ -1026,7 +1026,7 @@ function drawRace(dt){
   camZ+=v*dt;
   const ptx=Math.max(-1.25,Math.min(1.25,(basketTX-W/2)/(W*.3)));
   playerX+=(ptx-playerX)*Math.min(1,dt*6);
-  const ctx=rctx,horizon=H*.4,roadHalf=W*.40,cNow=curveFn(camZ);
+  const ctx=rctx,horizon=H*.4,roadHalf=W*.52,cNow=curveFn(camZ);
   /* 空・太陽・山(カーブと逆に流れるパララックス) */
   ctx.fillStyle='#CFE9F8';ctx.fillRect(0,0,W,horizon+2);
   ctx.fillStyle='#FFF3C4';ctx.beginPath();ctx.arc(W*.72-cNow*26,horizon*.42,H*.055,0,7);ctx.fill();
@@ -1065,6 +1065,14 @@ function drawRace(dt){
     const wBase=Math.max(140,Math.min(225,W*.18));
     for(const nc of rnpc){
       nc.rel-=v*(1-nc.sp)*dt/ZSC;
+      /* 追い抜き中はプレイヤーの走行レーンを避け、車同士が重ならないようにする */
+      if(nc.rel<=1/tCar+1.15){
+        const nearLane=Math.max(-1,Math.min(1,Math.round(playerX*1.35)));
+        if(nc.lane===nearLane){
+          const choices=[-1,0,1].filter(l=>l!==nearLane);
+          nc.lane=choices[Math.floor(Math.random()*choices.length)];
+        }
+      }
       if(!nc.passed&&nc.rel<=1/tCar){
         nc.passed=true;passHorn();
         const sx=carRow.center+nc.lane*carRow.half*.55;
