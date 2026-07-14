@@ -206,7 +206,7 @@ button{font:inherit;border:0;background:none;cursor:pointer;touch-action:manipul
 /* ===== book ===== */
 #book{background:linear-gradient(170deg,#FFF3D6,#E7E9F6)}
 #bookGrid{width:min(940px,92vw);max-height:70vh;overflow-y:auto;display:grid;
-  grid-template-columns:repeat(4,1fr);gap:clamp(12px,2vw,22px);padding:10px;
+  grid-template-columns:repeat(4,1fr);gap:clamp(12px,2vw,22px);padding:10px 10px 100px;
   -webkit-overflow-scrolling:touch;touch-action:pan-y}
 .bookCard{aspect-ratio:3/4;border-radius:22px;display:grid;place-items:center;
   font-size:clamp(50px,7vw,84px);background:#fff;box-shadow:var(--shadow)}
@@ -266,6 +266,11 @@ button{font:inherit;border:0;background:none;cursor:pointer;touch-action:manipul
 .level.active{background:#3E8A77;color:#fff}
 .closeSettings{width:100%;min-height:80px;margin-top:18px;border-radius:16px;
   background:#24504B;color:#fff;font-size:22px}
+.clearBookBtn{position:absolute;z-index:24;right:max(18px,env(safe-area-inset-right));bottom:max(18px,env(safe-area-inset-bottom));
+  min-width:clamp(150px,20vw,210px);min-height:76px;padding:10px 18px;border-radius:18px;
+  background:#EAF2EF;color:#315F57;font-size:19px;font-weight:800;transition:transform .12s,background .2s,color .2s}
+.clearBookBtn:active{transform:scale(.97)}
+.clearBookBtn.armed{background:#C85F55;color:#fff}
 @media (max-width:760px){
   #bookGrid{grid-template-columns:repeat(3,1fr)}
   .themeCard{width:146px;height:176px}
@@ -593,6 +598,7 @@ button{font:inherit;border:0;background:none;cursor:pointer;touch-action:manipul
   <div class="topbar"><button class="round homeBtn" aria-label="ホーム">🏠</button><span></span></div>
   <h2 class="screenTitle">📖 ずかん</h2>
   <div id="bookGrid"></div>
+  <button id="clearBookBtn" class="clearBookBtn" aria-label="図鑑をクリア">🗑️ クリア</button>
 </section>
 
 <button id="staffHold" aria-label="職員用設定"></button>
@@ -606,7 +612,7 @@ button{font:inherit;border:0;background:none;cursor:pointer;touch-action:manipul
     <div class="setting"><p>むずかしさ</p><div class="levels three" data-key="diff" data-labels="やさしい,ふつう,むずかしい"></div></div>
     <div class="setting"><p>レースのほかの車（追い抜き）</p><div class="levels two" data-key="npc" data-labels="なし,あり"></div></div>
     <div class="setting"><p>プレゼントまでの⭐の数</p><div class="levels" data-key="goal" data-labels="5こ,8こ,12こ,20こ"></div></div>
-    <p style="text-align:center;color:#8AA79B;font-size:15px;margin:14px 0 4px">あそびのにわ v29</p>
+    <p style="text-align:center;color:#8AA79B;font-size:15px;margin:14px 0 4px">あそびのにわ v32</p>
     <button class="closeSettings">閉じる</button>
   </div>
 </aside>
@@ -1466,12 +1472,27 @@ $$('.levels').forEach(box=>{
     box.append(b);
   });
 });
+let clearBookArmed=false,clearBookTimer=0;
+function resetClearBookButton(){
+  clearTimeout(clearBookTimer);clearBookArmed=false;
+  const b=$('#clearBookBtn');b.classList.remove('armed');b.textContent='🗑️ クリア';
+}
+$('#clearBookBtn').onclick=()=>{
+  const b=$('#clearBookBtn');
+  if(!clearBookArmed){
+    clearBookArmed=true;b.classList.add('armed');b.textContent='もう一度押すとクリア';
+    clearBookTimer=setTimeout(resetClearBookButton,4000);return;
+  }
+  clearTimeout(clearBookTimer);clearBookArmed=false;b.classList.remove('armed');
+  saved.cards=[];persist();renderBook();ensureAC();sparkleUp();
+  b.textContent='クリアしました';clearBookTimer=setTimeout(resetClearBookButton,2200);
+};
 /* ⚙️ボタン: タップで職員用設定 */
 $('#gearBtn').addEventListener('pointerdown',()=>$('#settings').classList.add('open'));
 let holdTimer;const holdBtn=$('#staffHold');
 holdBtn.addEventListener('pointerdown',()=>holdTimer=setTimeout(()=>$('#settings').classList.add('open'),3000));
 ['pointerup','pointercancel','pointerleave'].forEach(x=>holdBtn.addEventListener(x,()=>clearTimeout(holdTimer)));
-$('.closeSettings').onclick=()=>$('#settings').classList.remove('open');
+$('.closeSettings').onclick=()=>{resetClearBookButton();$('#settings').classList.remove('open')};
 document.addEventListener('visibilitychange',()=>{
   if(document.hidden){running=false;stopBGM()}
   else{
