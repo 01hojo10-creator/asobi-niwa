@@ -279,6 +279,10 @@ button{font:inherit;border:0;background:none;cursor:pointer;touch-action:manipul
 .bwrap .bbl{position:absolute;font-size:calc(var(--sz,120px)*.95);opacity:.85;line-height:1}
 #basket{position:absolute;z-index:8;bottom:2vh;width:clamp(150px,20vw,230px);
   pointer-events:none;filter:drop-shadow(0 10px 8px rgba(40,70,60,.3));will-change:transform}
+/* カゴに入った瞬間のはずみ。かごの口を軸に少しつぶれる */
+#basket svg{transform-origin:50% 10%}
+#basket svg.catchPop{animation:bkCatch .3s ease-out}
+@keyframes bkCatch{0%{transform:scale(1,1)}30%{transform:scale(1.07,.93)}62%{transform:scale(.98,1.02)}100%{transform:scale(1,1)}}
 #stars{position:absolute;z-index:25;top:max(20px,env(safe-area-inset-top));left:50%;
   transform:translateX(-50%);display:flex;flex-wrap:wrap;justify-content:center;
   gap:2px clamp(3px,.6vw,8px);
@@ -773,7 +777,7 @@ button{font:inherit;border:0;background:none;cursor:pointer;touch-action:manipul
       <path d="M38 24 L44 70 M58 24 L61 74 M82 24 L79 74 M102 24 L96 70" stroke="#8F6134" stroke-width="3" opacity=".55"/>
       <path d="M23 28 Q70 36 117 28" stroke="#F2C88A" stroke-width="2.5" fill="none" opacity=".8"/>
       <ellipse cx="70" cy="22" rx="52" ry="10" fill="#6E4B28"/>
-      <ellipse cx="70" cy="20" rx="52" ry="10" fill="#8A6238"/>
+      <ellipse id="bkMouth" cx="70" cy="20" rx="52" ry="10" fill="#8A6238"/>
       <path d="M18 22 a52 11 0 0 1 104 0" fill="none" stroke="#E0AB6A" stroke-width="7" stroke-linecap="round"/>
       <path d="M18 22 a52 11 0 0 1 104 0" fill="none" stroke="#B98A52" stroke-width="7" stroke-linecap="round" stroke-dasharray="9 7"/>
     </g>
@@ -972,7 +976,7 @@ button{font:inherit;border:0;background:none;cursor:pointer;touch-action:manipul
     <div class="setting"><p>むずかしさ</p><div class="levels three" data-key="diff" data-labels="やさしい,ふつう,むずかしい"></div></div>
     <div class="setting"><p>レースのほかの車（追い抜き）</p><div class="levels two" data-key="npc" data-labels="なし,あり"></div></div>
     <div class="setting"><p>プレゼントまでの⭐の数</p><div class="levels" data-key="goal" data-labels="5こ,8こ,12こ,20こ"></div></div>
-    <p style="text-align:center;color:#8AA79B;font-size:15px;margin:14px 0 4px">あそびのにわ v54</p>
+    <p style="text-align:center;color:#8AA79B;font-size:15px;margin:14px 0 4px">あそびのにわ v55</p>
     <button class="closeSettings">閉じる</button>
   </div>
 </aside>
@@ -1477,11 +1481,31 @@ function gotOne(n=1){
   for(let i=0;i<n;i++){score++;fillStar(score)}
   if(score>=goal())finishRound();
 }
+/* カゴの口の位置（画面座標）。SVG内の口の楕円をそのまま測る */
+function basketMouth(){
+  const m=$('#bkMouth');
+  if(!m)return{x:basketX,y:H*.7,depth:40};
+  const r=m.getBoundingClientRect();
+  return {x:r.left+r.width/2,y:r.top+r.height/2,depth:r.width*(30/104)};  /* 口の直径104に対し30ぶん沈める */
+}
 function catchIt(e,tapped){
   if(!e.alive||roundOver)return;
-  burst(e.x,e.y,THEMES[theme].pop,6);
-  if(!tapped)thunk();tapSound();
-  removeEnt(e);gotOne();
+  const el=e.el,csz=itemSize()*e.sc,m=basketMouth(),dur=tapped?.34:.24;
+  /* カゴへ吸い込まれる動きを見せたいので、要素は残したままループの対象から外す。
+     カゴ(z-index 8)は#stage(5)より手前なので、沈むと自然にカゴの中へ隠れる */
+  e.alive=false;ents=ents.filter(x=>x!==e);
+  el.style.pointerEvents='none';
+  el.style.transition=`transform ${dur}s cubic-bezier(.35,.05,.6,1),opacity ${dur}s ease-in`;
+  el.style.transform=`translate(${m.x-csz/2}px,${m.y+m.depth-csz/2}px) scale(.55)`;
+  el.style.opacity='.15';
+  timers.push(setTimeout(()=>el.remove(),dur*1000+60));
+  timers.push(setTimeout(()=>{
+    const svg=basket.firstElementChild;
+    if(svg){svg.classList.remove('catchPop');void svg.offsetWidth;svg.classList.add('catchPop')}
+    burst(basketMouth().x,m.y,THEMES[theme].pop,6);
+    if(!tapped)thunk();
+  },dur*1000*.72));
+  tapSound();gotOne();
   if(!roundOver)timers.push(setTimeout(spawnCatch,500/spd()));
 }
 function popIt(e){
