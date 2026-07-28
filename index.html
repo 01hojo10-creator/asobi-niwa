@@ -971,7 +971,7 @@ button{font:inherit;border:0;background:none;cursor:pointer;touch-action:manipul
     <div class="setting"><p>むずかしさ</p><div class="levels three" data-key="diff" data-labels="やさしい,ふつう,むずかしい"></div></div>
     <div class="setting"><p>レースのほかの車（追い抜き）</p><div class="levels two" data-key="npc" data-labels="なし,あり"></div></div>
     <div class="setting"><p>プレゼントまでの⭐の数</p><div class="levels" data-key="goal" data-labels="5こ,8こ,12こ,20こ"></div></div>
-    <p style="text-align:center;color:#8AA79B;font-size:15px;margin:14px 0 4px">あそびのにわ v52</p>
+    <p style="text-align:center;color:#8AA79B;font-size:15px;margin:14px 0 4px">あそびのにわ v53</p>
     <button class="closeSettings">閉じる</button>
   </div>
 </aside>
@@ -1708,7 +1708,10 @@ let pinFlippers=null,pinPointers={left:new Set(),right:new Set()},pinCanvasPoint
 let pinKeys={left:false,right:false},pinLaunchBtn=null,pinTime=0,pinLastRail=-10,pinKeyDown=null,pinKeyUp=null;
 function pinBallRadius(){return[17,15,13][dif()]}
 function makePinFlippers(){
-  const len=[122,112,102][dif()];
+  /* 休んでいるときに左右の先端がほぼ触れる長さ。
+     先端どうしのすき間からフリッパーの太さ(半径17×2)を引いた通り道が
+     ボールの直径より狭くなるので、まん中からは落ちない */
+  const len=[140,135,130][dif()];
   return{
     left:{side:'left',x:160,y:840,len,rest:.34,active:-.4,angle:.34,omega:0,lastHit:-10},
     right:{side:'right',x:460,y:840,len,rest:Math.PI-.34,active:Math.PI+.4,angle:Math.PI-.34,omega:0,lastHit:-10}
@@ -1726,7 +1729,7 @@ function pinScreenY(y){return pinView.y+y*pinView.s}
 function resetPinball(){
   if(!pinBall)pinBall={};
   pinBall.x=535;pinBall.y=885;pinBall.vx=0;pinBall.vy=0;pinBall.r=pinBallRadius();
-  pinBall.ready=true;pinBall.wait=0;pinBall.stuck=0;pinBall.trail=[];
+  pinBall.ready=true;pinBall.wait=0;pinBall.stuck=0;pinBall.low=0;pinBall.trail=[];
   if(pinLaunchBtn)pinLaunchBtn.classList.add('ready');
 }
 function launchPinball(){
@@ -1835,6 +1838,12 @@ function updatePinball(dt){
   const speed=Math.hypot(pinBall.vx,pinBall.vy);
   pinBall.stuck=speed<52&&pinBall.y<910?pinBall.stuck+stepDt:0;
   if(pinBall.stuck>2.1){pinBall.vx+=(Math.random()>.5?1:-1)*130;pinBall.vy-=230;pinBall.stuck=0}
+  /* フリッパーの上に乗ったまま止まらないよう、下に居続けたら台の上へ打ち返す */
+  pinBall.low=(pinBall.y>745&&pinBall.x>110&&pinBall.x<510)?(pinBall.low||0)+stepDt:0;
+  if(pinBall.low>1.6){
+    pinBall.low=0;pinBall.vx=(Math.random()>.5?1:-1)*(110+Math.random()*100);
+    pinBall.vy=-(760+Math.random()*140);poyon();
+  }
   pinBall.trail.push({x:pinBall.x,y:pinBall.y});
   const maxTrail=[3,7,12][saved.settings.light];while(pinBall.trail.length>maxTrail)pinBall.trail.shift();
 }
