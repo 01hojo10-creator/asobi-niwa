@@ -400,7 +400,10 @@ button{font:inherit;border:0;background:none;cursor:pointer;touch-action:manipul
 .hole.up .char{transform:translateY(-2%)}
 .hole.happy .char{animation:happyJump calc(.5s/var(--spd)) ease-out}
 @keyframes happyJump{30%{transform:translateY(-30%) scale(1.15)}100%{transform:translateY(115%)}}
-.hole .mound{position:absolute;left:0;right:0;bottom:0;z-index:3;pointer-events:none}
+.hole .fore{position:absolute;left:0;right:0;bottom:0;z-index:3;pointer-events:none}
+/* ひょっこりの舞台（道路・林・花壇）。穴より奥に敷く */
+.moleField{position:absolute;inset:0;z-index:1;pointer-events:none}
+.moleField svg{width:100%;height:100%;display:block}
 
 /* ===== reward / gacha ===== */
 #reward{background:linear-gradient(170deg,#FFEFD0,#FBD9D2)}
@@ -983,7 +986,7 @@ button{font:inherit;border:0;background:none;cursor:pointer;touch-action:manipul
     <div class="setting"><p>むずかしさ</p><div class="levels three" data-key="diff" data-labels="やさしい,ふつう,むずかしい"></div></div>
     <div class="setting"><p>レースのほかの車（追い抜き）</p><div class="levels two" data-key="npc" data-labels="なし,あり"></div></div>
     <div class="setting"><p>プレゼントまでの⭐の数</p><div class="levels" data-key="goal" data-labels="5こ,8こ,12こ,20こ"></div></div>
-    <p style="text-align:center;color:#8AA79B;font-size:15px;margin:14px 0 4px">あそびのにわ v58</p>
+    <p style="text-align:center;color:#8AA79B;font-size:15px;margin:14px 0 4px">あそびのにわ v59</p>
     <button class="closeSettings">閉じる</button>
   </div>
 </aside>
@@ -994,9 +997,9 @@ const $=s=>document.querySelector(s), $$=s=>[...document.querySelectorAll(s)];
 const STORE='asobi-niwa-v2';
 const GOALS=[5,8,12,20];
 const THEMES={
-  flower:{items:['🌸','🌼','🌺','🌷','🌻'],pop:'✨',mound:['#B98A52','#8AC47E']},
-  animal:{items:['🐶','🐱','🐰','🐼','🐹'],pop:'💛',mound:['#B98A52','#97CD87']},
-  vehicle:{items:['🚌','🚒','🚑','🚓','🚂','🚜','🚚'],pop:'⭐',mound:['#6E7B8B','#9AA7B6']}
+  flower:{items:['🌸','🌼','🌺','🌷','🌻'],pop:'✨'},
+  animal:{items:['🐶','🐱','🐰','🐼','🐹'],pop:'💛'},
+  vehicle:{items:['🚌','🚒','🚑','🚓','🚂','🚜','🚚'],pop:'⭐'}
 };
 const CARDS=['🌸','🌷','🌻','🦋','🐶','🐱','🐰','🐼','🚌','🚒','🚜','🚂'];
 const SCENES={
@@ -1529,15 +1532,79 @@ function popIt(e){
 
 /* ================= mole (ひょっこりゲーム) ================= */
 const HOLE_POS=[[18,42],[50,40],[82,42],[18,64],[50,66],[82,64],[18,86],[50,88],[82,86]];  // 3x3の9穴 [x%, y%]
+/* 出てくる場所をテーマごとに変える。
+   back=キャラの奥に描くもの / fore=キャラの手前に描いて下半分を隠すもの */
+const MOLE_ART={
+  flower:{ /* 花壇 */
+    back:`<svg class="back" viewBox="0 0 120 46">
+      <ellipse cx="60" cy="27" rx="50" ry="16" fill="#6B4B2E"/>
+      <ellipse cx="60" cy="25" rx="50" ry="15" fill="#815C39"/>
+      <ellipse cx="60" cy="24" rx="38" ry="9" fill="#5E4127" opacity=".5"/></svg>`,
+    fore:`<svg class="fore" viewBox="0 0 120 40">
+      <path d="M8 12 L112 12 L106 34 Q60 40 14 34 Z" fill="#CE8F66"/>
+      <rect x="4" y="6" width="112" height="10" rx="5" fill="#E7AE84"/>
+      <g fill="#B87A57" opacity=".7">
+        <rect x="16" y="20" width="24" height="6" rx="3"/><rect x="48" y="20" width="24" height="6" rx="3"/><rect x="80" y="20" width="24" height="6" rx="3"/>
+        <rect x="32" y="29" width="24" height="5" rx="2.5"/><rect x="64" y="29" width="24" height="5" rx="2.5"/></g>
+      <g fill="#7DBE72"><ellipse cx="22" cy="8" rx="11" ry="6"/><ellipse cx="98" cy="8" rx="11" ry="6"/></g></svg>`},
+  animal:{ /* 林の茂み */
+    back:`<svg class="back" viewBox="0 0 120 46">
+      <ellipse cx="60" cy="26" rx="50" ry="16" fill="#2E5138"/>
+      <ellipse cx="60" cy="24" rx="50" ry="15" fill="#3D6647"/></svg>`,
+    fore:`<svg class="fore" viewBox="0 0 120 40">
+      <g fill="#4E8B5C"><ellipse cx="24" cy="24" rx="26" ry="17"/><ellipse cx="60" cy="19" rx="30" ry="19"/><ellipse cx="96" cy="24" rx="26" ry="17"/></g>
+      <g fill="#69AC74"><ellipse cx="28" cy="19" rx="16" ry="9"/><ellipse cx="62" cy="14" rx="18" ry="10"/><ellipse cx="92" cy="19" rx="15" ry="8"/></g>
+      <g fill="#8CC98F" opacity=".8"><ellipse cx="34" cy="15" rx="8" ry="4"/><ellipse cx="86" cy="15" rx="7" ry="4"/></g></svg>`},
+  vehicle:{ /* 道路のマンホール */
+    back:`<svg class="back" viewBox="0 0 120 46">
+      <ellipse cx="60" cy="26" rx="56" ry="19" fill="#77848F"/>
+      <ellipse cx="60" cy="25" rx="47" ry="15" fill="#A9B5C2"/>
+      <ellipse cx="60" cy="25" rx="40" ry="12" fill="#2B333D"/></svg>`,
+    fore:`<svg class="fore" viewBox="0 0 120 38">
+      <path d="M2 38 L118 38 L118 14 Q60 30 2 14 Z" fill="#7A8794"/>
+      <path d="M2 14 Q60 30 118 14" stroke="#9FACB9" stroke-width="6" fill="none"/>
+      <path d="M13 17 Q60 30 107 17" stroke="#C3CFDA" stroke-width="4" fill="none"/>
+      <g fill="#8D9AA7"><circle cx="24" cy="27" r="3"/><circle cx="60" cy="31" r="3"/><circle cx="96" cy="27" r="3"/></g></svg>`}
+};
+/* 舞台の背景。穴より奥に敷いて場所が分かるようにする */
+const MOLE_FIELD={
+  flower:`<svg viewBox="0 0 1000 700" preserveAspectRatio="none">
+    <rect y="120" width="1000" height="580" fill="#AEDCA0"/>
+    <rect y="120" width="1000" height="16" fill="#93CC8A"/>
+    <g fill="#9ED292" opacity=".7">
+      <ellipse cx="120" cy="200" rx="150" ry="26"/><ellipse cx="880" cy="215" rx="150" ry="26"/></g>
+    <g stroke="#7FB874" stroke-width="7" stroke-linecap="round" opacity=".55">
+      <path d="M40 660 q6 -32 -6 -54"/><path d="M74 666 q-2 -28 10 -48"/>
+      <path d="M930 664 q6 -30 -6 -50"/><path d="M962 670 q-2 -28 12 -46"/></g>
+    <g fill="#FFC9D8" opacity=".8"><circle cx="56" cy="612" r="9"/><circle cx="948" cy="618" r="9"/></g></svg>`,
+  animal:`<svg viewBox="0 0 1000 700" preserveAspectRatio="none">
+    <rect y="120" width="1000" height="580" fill="#9ACF97"/>
+    <rect y="120" width="1000" height="18" fill="#7FBB85"/>
+    <g fill="#8A6A45"><rect x="42" y="150" width="40" height="150" rx="15"/><rect x="918" y="140" width="42" height="160" rx="16"/></g>
+    <g fill="#4E8B5C"><ellipse cx="62" cy="158" rx="112" ry="66"/><ellipse cx="939" cy="148" rx="118" ry="70"/></g>
+    <g fill="#69AC74"><ellipse cx="40" cy="140" rx="66" ry="36"/><ellipse cx="960" cy="128" rx="70" ry="38"/></g>
+    <g fill="#7FBB85" opacity=".8"><ellipse cx="350" cy="190" rx="70" ry="22"/><ellipse cx="660" cy="200" rx="74" ry="22"/></g></svg>`,
+  vehicle:`<svg viewBox="0 0 1000 700" preserveAspectRatio="none">
+    <rect y="110" width="1000" height="590" fill="#6E7B8B"/>
+    <rect y="110" width="1000" height="14" fill="#96A2B0"/>
+    <g fill="#EDF1F5" opacity=".8">
+      <rect x="40" y="330" width="90" height="12" rx="6"/><rect x="210" y="330" width="90" height="12" rx="6"/>
+      <rect x="380" y="330" width="90" height="12" rx="6"/><rect x="550" y="330" width="90" height="12" rx="6"/>
+      <rect x="720" y="330" width="90" height="12" rx="6"/><rect x="890" y="330" width="90" height="12" rx="6"/>
+      <rect x="120" y="560" width="90" height="12" rx="6"/><rect x="290" y="560" width="90" height="12" rx="6"/>
+      <rect x="460" y="560" width="90" height="12" rx="6"/><rect x="630" y="560" width="90" height="12" rx="6"/>
+      <rect x="800" y="560" width="90" height="12" rx="6"/></g></svg>`
+};
 function buildHoles(){
-  const [m1,m2]=THEMES[theme].mound;
-  HOLE_POS.forEach(()=>{});
+  const art=MOLE_ART[theme]||MOLE_ART.flower;
+  const field=document.createElement('div');
+  field.className='moleField';field.innerHTML=MOLE_FIELD[theme]||MOLE_FIELD.flower;
+  stage.append(field);
   holes=HOLE_POS.map(([hx,hy])=>{
     const d=document.createElement('div');d.className='hole';
-    d.innerHTML=`
-      <svg class="back" viewBox="0 0 120 46"><ellipse cx="60" cy="23" rx="52" ry="18" fill="#4A3521"/><ellipse cx="60" cy="20" rx="52" ry="17" fill="#5C4229"/></svg>
+    d.innerHTML=`${art.back}
       <div class="cwrap"><button class="char" aria-label="タッチ"></button></div>
-      <svg class="mound" viewBox="0 0 120 34"><path d="M4 34 Q10 12 60 12 Q110 12 116 34 Z" fill="${m1}"/><path d="M4 34 Q10 20 60 20 Q110 20 116 34 Z" fill="${m2}" opacity=".9"/></svg>`;
+      ${art.fore}`;
     stage.append(d);
     const hole={el:d,char:d.querySelector('.char'),busy:false,upNow:false,downTimer:null};
     hole.char.addEventListener('pointerdown',ev=>{ev.stopPropagation();whack(hole)});
