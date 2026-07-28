@@ -971,7 +971,7 @@ button{font:inherit;border:0;background:none;cursor:pointer;touch-action:manipul
     <div class="setting"><p>むずかしさ</p><div class="levels three" data-key="diff" data-labels="やさしい,ふつう,むずかしい"></div></div>
     <div class="setting"><p>レースのほかの車（追い抜き）</p><div class="levels two" data-key="npc" data-labels="なし,あり"></div></div>
     <div class="setting"><p>プレゼントまでの⭐の数</p><div class="levels" data-key="goal" data-labels="5こ,8こ,12こ,20こ"></div></div>
-    <p style="text-align:center;color:#8AA79B;font-size:15px;margin:14px 0 4px">あそびのにわ v51</p>
+    <p style="text-align:center;color:#8AA79B;font-size:15px;margin:14px 0 4px">あそびのにわ v52</p>
     <button class="closeSettings">閉じる</button>
   </div>
 </aside>
@@ -1684,20 +1684,24 @@ function drawRace(dt){
 }
 
 /* ================= pinball (物理演算ピンボール) ================= */
-const PIN_W=620,PIN_H=1000;
+/* 台の中心線は PIN_CX。壁・バンパー・星・フリッパーはすべてこの軸で左右対称に置く */
+const PIN_W=620,PIN_H=1000,PIN_CX=310;
 const PIN_WALLS=[
-  [60,120,60,790,.86],[60,120,145,58,.88],[145,58,470,58,.9],[470,58,560,120,.88],
-  [560,120,560,930,.84],[60,790,170,900,.92],[510,790,450,900,.92],[510,230,510,925,.9],
-  [112,670,205,752,0],[508,670,415,752,0]
+  [60,120,60,930,.84],[560,120,560,930,.84],      /* 外壁 */
+  [60,120,175,58,.88],[445,58,560,120,.88],       /* 肩の傾斜 */
+  [175,58,445,58,.9],                             /* 天井 */
+  [110,230,110,925,.9],[510,230,510,925,.9],      /* 左右のレーン仕切り（右が発射レーン） */
+  [110,790,170,900,.92],[510,790,450,900,.92],    /* アウトレーン */
+  [112,670,205,752,0],[508,670,415,752,0]         /* 無反発ガイド板 */
 ];
 const PIN_SOFT_WALLS=[
   [215,435,260,475,.28],[405,435,360,475,.28]
 ];
 const PIN_BUMPER_BASE=[
-  {x:185,y:250,r:48,color:'#FFD34D'},{x:395,y:250,r:48,color:'#FF718F'}
+  {x:230,y:268,r:46,color:'#FFD34D'},{x:390,y:268,r:46,color:'#FF718F'},{x:310,y:150,r:36,color:'#7CE7FF'}
 ];
 const PIN_TARGET_BASE=[
-  {x:130,y:555,r:25,color:'#81C9F4'},{x:450,y:555,r:25,color:'#C59AF1'}
+  {x:175,y:555,r:25,color:'#81C9F4'},{x:445,y:555,r:25,color:'#C59AF1'}
 ];
 let pinCanvas=null,pinCtx=null,pinView={x:0,y:0,s:1},pinBall=null,pinBumpers=[],pinTargets=[];
 let pinFlippers=null,pinPointers={left:new Set(),right:new Set()},pinCanvasPointers=new Map();
@@ -1727,7 +1731,9 @@ function resetPinball(){
 }
 function launchPinball(){
   if(!running||roundOver||game!=='pinball'||!pinBall||!pinBall.ready)return;
-  ensureAC();pinBall.ready=false;pinBall.wait=0;pinBall.vx=-18;pinBall.vy=-(1010+dif()*55);
+  /* 台が左右対称なので、発射を毎回わずかにばらつかせて同じ軌道の繰り返しを防ぐ */
+  ensureAC();pinBall.ready=false;pinBall.wait=0;
+  pinBall.vx=-18+(Math.random()-.5)*26;pinBall.vy=-(1010+dif()*55)*(.96+Math.random()*.08);
   pinBall.stuck=0;if(pinLaunchBtn)pinLaunchBtn.classList.remove('ready');whoosh();
 }
 function pinRailSound(impact){
@@ -1842,77 +1848,132 @@ function pinStarPath(ctx,x,y,r){
   ctx.closePath();
 }
 function drawPinFlipper(ctx,f){
-  const ex=f.x+Math.cos(f.angle)*f.len,ey=f.y+Math.sin(f.angle)*f.len;
+  const ex=f.x+Math.cos(f.angle)*f.len,ey=f.y+Math.sin(f.angle)*f.len,g=glow();
   ctx.save();ctx.lineCap='round';
-  ctx.strokeStyle='rgba(3,16,38,.5)';ctx.lineWidth=42;ctx.beginPath();ctx.moveTo(f.x,f.y+7);ctx.lineTo(ex,ey+7);ctx.stroke();
-  const grad=ctx.createLinearGradient(f.x,f.y,ex,ey);grad.addColorStop(0,'#FF8A70');grad.addColorStop(.6,'#F34F5D');grad.addColorStop(1,'#FFF0C8');
-  ctx.strokeStyle=grad;ctx.lineWidth=34;ctx.beginPath();ctx.moveTo(f.x,f.y);ctx.lineTo(ex,ey);ctx.stroke();
-  ctx.strokeStyle='rgba(255,255,255,.7)';ctx.lineWidth=5;ctx.beginPath();ctx.moveTo(f.x+3,f.y-7);ctx.lineTo(ex,ey-7);ctx.stroke();
-  ctx.fillStyle='#DDE8F0';ctx.beginPath();ctx.arc(f.x,f.y,16,0,7);ctx.fill();ctx.restore();
+  ctx.strokeStyle='rgba(2,10,26,.55)';ctx.lineWidth=42;ctx.beginPath();ctx.moveTo(f.x,f.y+9);ctx.lineTo(ex,ey+9);ctx.stroke();
+  ctx.shadowColor='#FF4A6B';ctx.shadowBlur=26*g;
+  ctx.strokeStyle='rgba(255,74,107,.5)';ctx.lineWidth=40;ctx.beginPath();ctx.moveTo(f.x,f.y);ctx.lineTo(ex,ey);ctx.stroke();
+  ctx.shadowBlur=0;
+  const grad=ctx.createLinearGradient(f.x,f.y,ex,ey);grad.addColorStop(0,'#FF9E86');grad.addColorStop(.55,'#F5405C');grad.addColorStop(1,'#FFE9BE');
+  ctx.strokeStyle=grad;ctx.lineWidth=32;ctx.beginPath();ctx.moveTo(f.x,f.y);ctx.lineTo(ex,ey);ctx.stroke();
+  ctx.strokeStyle='rgba(255,255,255,.75)';ctx.lineWidth=5;ctx.beginPath();ctx.moveTo(f.x+4,f.y-8);ctx.lineTo(ex-2,ey-8);ctx.stroke();
+  ctx.shadowColor='#9CEBFF';ctx.shadowBlur=12*g;ctx.fillStyle='#EAF6FF';ctx.beginPath();ctx.arc(f.x,f.y,15,0,7);ctx.fill();
+  ctx.shadowBlur=0;ctx.fillStyle='#5B7C99';ctx.beginPath();ctx.arc(f.x,f.y,6,0,7);ctx.fill();
+  ctx.restore();
+}
+function pinTablePath(ctx){
+  ctx.beginPath();ctx.moveTo(150,24);ctx.quadraticCurveTo(45,35,32,145);ctx.lineTo(32,925);
+  ctx.quadraticCurveTo(PIN_CX,992,588,925);ctx.lineTo(588,145);ctx.quadraticCurveTo(575,35,470,24);ctx.closePath();
+}
+/* 左右のレーンは同じ絵。cx がレーンの中心（左85 / 右535）で PIN_CX から等距離 */
+function drawPinLane(ctx,cx,g){
+  ctx.save();
+  ctx.fillStyle='rgba(3,14,34,.55)';ctx.fillRect(cx-25,230,50,695);
+  for(let i=0;i<6;i++){
+    const lit=Math.max(0,Math.sin((1-(pinTime*1.15+i*.16)%1)*Math.PI));
+    ctx.fillStyle=i%2?'#FFD34D':'#7CE7FF';ctx.shadowColor=ctx.fillStyle;ctx.shadowBlur=14*g*lit;
+    ctx.globalAlpha=.22+.6*lit;ctx.beginPath();ctx.arc(cx,810-i*96,7,0,7);ctx.fill();
+  }
+  ctx.restore();
 }
 function drawPinball(){
   if(!pinCanvas||!pinCtx||!pinBall)return;
-  pinResizeCanvas();const ctx=pinCtx,{dpr,s,x,y}=pinView;
+  pinResizeCanvas();const ctx=pinCtx,{dpr,s,x,y}=pinView,g=glow();
   ctx.setTransform(dpr,0,0,dpr,0,0);ctx.clearRect(0,0,W,H);
-  const bg=ctx.createLinearGradient(0,0,0,H);bg.addColorStop(0,'#07152D');bg.addColorStop(.58,'#112C50');bg.addColorStop(1,'#061022');
+  /* 筐体の暗がりと上からの光 */
+  const bg=ctx.createLinearGradient(0,0,0,H);bg.addColorStop(0,'#040B1B');bg.addColorStop(.55,'#0A1D3A');bg.addColorStop(1,'#02060E');
   ctx.fillStyle=bg;ctx.fillRect(0,0,W,H);
+  const halo=ctx.createRadialGradient(W/2,H*.16,8,W/2,H*.16,Math.max(W,H)*.75);
+  halo.addColorStop(0,`rgba(56,152,224,${.22*g})`);halo.addColorStop(1,'rgba(4,10,22,0)');
+  ctx.fillStyle=halo;ctx.fillRect(0,0,W,H);
   ctx.save();ctx.translate(x,y);ctx.scale(s,s);
-  ctx.shadowColor='rgba(0,0,0,.55)';ctx.shadowBlur=30;ctx.shadowOffsetY=14;
-  ctx.beginPath();ctx.moveTo(145,24);ctx.quadraticCurveTo(45,35,32,145);ctx.lineTo(32,925);
-  ctx.quadraticCurveTo(310,992,588,925);ctx.lineTo(588,145);ctx.quadraticCurveTo(575,35,470,24);ctx.closePath();
-  const table=ctx.createLinearGradient(0,0,0,PIN_H);table.addColorStop(0,'#185D75');table.addColorStop(.55,'#123B68');table.addColorStop(1,'#081D42');
-  ctx.fillStyle=table;ctx.fill();ctx.shadowColor='transparent';ctx.lineWidth=12;ctx.strokeStyle='#8CE5F1';ctx.stroke();
-  ctx.globalAlpha=.18;ctx.strokeStyle='#BDEFFF';ctx.lineWidth=2;
-  for(let gy=130;gy<900;gy+=70){ctx.beginPath();ctx.moveTo(60,gy);ctx.lineTo(560,gy);ctx.stroke()}
+  /* 台の面 */
+  ctx.shadowColor='rgba(0,0,0,.6)';ctx.shadowBlur=34;ctx.shadowOffsetY=16;
+  pinTablePath(ctx);
+  const table=ctx.createLinearGradient(0,0,0,PIN_H);table.addColorStop(0,'#13496B');table.addColorStop(.5,'#0E2F5C');table.addColorStop(1,'#061634');
+  ctx.fillStyle=table;ctx.fill();ctx.shadowColor='transparent';ctx.shadowBlur=0;ctx.shadowOffsetY=0;
+  /* 面の模様は台の内側だけに描く */
+  ctx.save();pinTablePath(ctx);ctx.clip();
+  ctx.globalAlpha=.1;ctx.strokeStyle='#9FE4FF';ctx.lineWidth=2;
+  for(let gy=110;gy<940;gy+=68){ctx.beginPath();ctx.moveTo(110,gy);ctx.lineTo(510,gy);ctx.stroke()}
   ctx.globalAlpha=1;
-  /* 発射レーンと上部の案内灯 */
-  ctx.fillStyle='rgba(4,20,46,.48)';ctx.fillRect(515,215,46,710);
-  ctx.strokeStyle='#D7EDF3';ctx.lineWidth=6;ctx.beginPath();ctx.moveTo(510,230);ctx.lineTo(510,925);ctx.stroke();
-  for(let i=0;i<5;i++){
-    ctx.fillStyle=i%2?'#FFD34D':'#77D9F2';ctx.globalAlpha=.45+.25*Math.sin(pinTime*4+i);
-    ctx.beginPath();ctx.arc(535,720-i*82,7,0,7);ctx.fill();
-  }
-  ctx.globalAlpha=1;ctx.fillStyle='#F6D16A';ctx.fillRect(528,905,14,54);
+  const axis=ctx.createLinearGradient(PIN_CX-95,0,PIN_CX+95,0);
+  axis.addColorStop(0,'rgba(124,231,255,0)');axis.addColorStop(.5,`rgba(124,231,255,${.10*g})`);axis.addColorStop(1,'rgba(124,231,255,0)');
+  ctx.fillStyle=axis;ctx.fillRect(PIN_CX-95,24,190,968);
+  /* 中心にうっすら光る輪（左右対称の基準がひと目で分かるように） */
+  ctx.globalAlpha=.16*g;ctx.strokeStyle='#7CE7FF';ctx.lineWidth=3;
+  ctx.beginPath();ctx.arc(PIN_CX,645,104,0,7);ctx.stroke();
+  ctx.lineWidth=2;ctx.beginPath();ctx.arc(PIN_CX,645,84,0,7);ctx.stroke();
+  ctx.globalAlpha=.22*g;ctx.lineWidth=4;ctx.lineCap='round';
+  [-1,1].forEach(d=>{ctx.beginPath();ctx.moveTo(PIN_CX+d*30,610);ctx.lineTo(PIN_CX+d*52,645);ctx.lineTo(PIN_CX+d*30,680);ctx.stroke()});
+  ctx.globalAlpha=1;
+  const vg=ctx.createRadialGradient(PIN_CX,500,190,PIN_CX,500,530);
+  vg.addColorStop(0,'rgba(0,0,0,0)');vg.addColorStop(1,'rgba(0,0,0,.45)');
+  ctx.fillStyle=vg;ctx.fillRect(0,0,PIN_W,PIN_H);
+  ctx.restore();
+  /* ネオンの外枠（にじむ光＋細い芯） */
+  pinTablePath(ctx);ctx.shadowColor='#4FD8F5';ctx.shadowBlur=26*g;
+  ctx.lineWidth=14;ctx.strokeStyle='rgba(79,216,245,.45)';ctx.stroke();
+  ctx.lineWidth=6;ctx.strokeStyle='#CFF6FF';ctx.stroke();ctx.shadowBlur=0;
+  /* 左右のレーン（同じ絵＝中心対称）と発射側のプランジャー */
+  drawPinLane(ctx,PIN_CX-225,g);drawPinLane(ctx,PIN_CX+225,g);
+  ctx.shadowColor='#FFD880';ctx.shadowBlur=12*g;ctx.fillStyle='#F6D16A';ctx.fillRect(528,905,14,54);ctx.shadowBlur=0;
   ctx.strokeStyle='#FFF2B4';ctx.lineWidth=4;
   for(let sy=908;sy<958;sy+=10){ctx.beginPath();ctx.moveTo(520,sy);ctx.lineTo(550,sy+7);ctx.stroke()}
   /* 金属レール */
-  ctx.lineCap='round';ctx.lineWidth=11;ctx.strokeStyle='#DCE9EF';
+  ctx.lineCap='round';ctx.shadowColor='#7FD9FF';ctx.shadowBlur=10*g;
+  ctx.lineWidth=11;ctx.strokeStyle='#C9DEE8';
   PIN_WALLS.forEach(w=>{ctx.beginPath();ctx.moveTo(w[0],w[1]);ctx.lineTo(w[2],w[3]);ctx.stroke()});
-  ctx.lineWidth=3;ctx.strokeStyle='rgba(255,255,255,.95)';
+  ctx.shadowBlur=0;ctx.lineWidth=3;ctx.strokeStyle='rgba(255,255,255,.95)';
   PIN_WALLS.forEach(w=>{ctx.beginPath();ctx.moveTo(w[0],w[1]-2);ctx.lineTo(w[2],w[3]-2);ctx.stroke()});
-  /* 反発を抑えるソフトクッション */
-  ctx.lineCap='round';ctx.lineWidth=24;ctx.strokeStyle='#253B54';
+  /* 反発を抑えるソフトクッション（ネオンの縁取りで台になじませる） */
+  ctx.save();ctx.lineCap='round';
+  ctx.shadowColor='#5AC8F5';ctx.shadowBlur=14*g;
+  ctx.lineWidth=26;ctx.strokeStyle='#1B3352';
   PIN_SOFT_WALLS.forEach(w=>{ctx.beginPath();ctx.moveTo(w[0],w[1]);ctx.lineTo(w[2],w[3]);ctx.stroke()});
-  ctx.lineWidth=9;ctx.strokeStyle='#8DA6B8';
-  PIN_SOFT_WALLS.forEach(w=>{ctx.beginPath();ctx.moveTo(w[0],w[1]-2);ctx.lineTo(w[2],w[3]-2);ctx.stroke()});
+  ctx.shadowBlur=0;ctx.lineWidth=12;ctx.strokeStyle='rgba(124,231,255,.55)';
+  PIN_SOFT_WALLS.forEach(w=>{ctx.beginPath();ctx.moveTo(w[0],w[1]);ctx.lineTo(w[2],w[3]);ctx.stroke()});
+  ctx.lineWidth=4;ctx.strokeStyle='rgba(255,255,255,.85)';
+  PIN_SOFT_WALLS.forEach(w=>{ctx.beginPath();ctx.moveTo(w[0],w[1]-3);ctx.lineTo(w[2],w[3]-3);ctx.stroke()});
+  ctx.restore();
   /* バンパー */
   pinBumpers.forEach(o=>{
-    ctx.save();ctx.shadowColor=o.color;ctx.shadowBlur=12+22*(o.flash||0);
-    const g=ctx.createRadialGradient(o.x-13,o.y-15,5,o.x,o.y,o.r);
-    g.addColorStop(0,'#fff');g.addColorStop(.28,o.color);g.addColorStop(1,'#263B65');
-    ctx.fillStyle=g;ctx.beginPath();ctx.arc(o.x,o.y,o.r,0,7);ctx.fill();
-    ctx.lineWidth=9;ctx.strokeStyle='#EAF7FF';ctx.stroke();
-    ctx.lineWidth=4;ctx.strokeStyle=o.color;ctx.beginPath();ctx.arc(o.x,o.y,o.r+13,0,7);ctx.stroke();ctx.restore();
+    const f=o.flash||0,pulse=.5+.5*Math.sin(pinTime*3+o.x*.02);
+    ctx.save();ctx.shadowColor=o.color;ctx.shadowBlur=(14+30*f)*g;
+    const rg=ctx.createRadialGradient(o.x-o.r*.3,o.y-o.r*.35,4,o.x,o.y,o.r);
+    rg.addColorStop(0,'#fff');rg.addColorStop(.3,o.color);rg.addColorStop(1,'#1B2E57');
+    ctx.fillStyle=rg;ctx.beginPath();ctx.arc(o.x,o.y,o.r,0,7);ctx.fill();
+    ctx.lineWidth=8;ctx.strokeStyle='#EAF7FF';ctx.stroke();
+    ctx.shadowBlur=(10+26*f)*g;ctx.globalAlpha=Math.min(1,.3+.3*pulse+.4*f);
+    ctx.lineWidth=4;ctx.strokeStyle=o.color;ctx.beginPath();ctx.arc(o.x,o.y,o.r+12+6*f,0,7);ctx.stroke();
+    ctx.restore();
   });
   /* 星ターゲット */
   pinTargets.forEach(o=>{
-    ctx.save();ctx.shadowColor=o.color;ctx.shadowBlur=8+18*(o.flash||0);
-    pinStarPath(ctx,o.x,o.y,o.r);ctx.fillStyle=o.color;ctx.fill();ctx.lineWidth=5;ctx.strokeStyle='#fff';ctx.stroke();ctx.restore();
+    const f=o.flash||0,pulse=.5+.5*Math.sin(pinTime*2.4+o.x*.03);
+    ctx.save();ctx.shadowColor=o.color;ctx.shadowBlur=(10+24*f)*g;
+    ctx.globalAlpha=.25+.3*pulse+.4*f;ctx.lineWidth=3;ctx.strokeStyle=o.color;
+    pinStarPath(ctx,o.x,o.y,o.r+10+6*f);ctx.stroke();
+    ctx.globalAlpha=1;pinStarPath(ctx,o.x,o.y,o.r);
+    const sg=ctx.createLinearGradient(o.x,o.y-o.r,o.x,o.y+o.r);
+    sg.addColorStop(0,'#fff');sg.addColorStop(.45,o.color);sg.addColorStop(1,o.color);
+    ctx.fillStyle=sg;ctx.fill();ctx.lineWidth=4;ctx.strokeStyle='#fff';ctx.stroke();ctx.restore();
   });
   /* 跳ね返らず、ボールをフリッパーへ滑らせる固いガイド板 */
-  ctx.fillStyle='rgba(255,111,126,.7)';ctx.strokeStyle='#FFD8D2';ctx.lineWidth=5;
+  ctx.save();ctx.shadowColor='#FF7E90';ctx.shadowBlur=14*g;
+  ctx.fillStyle='rgba(255,111,126,.72)';ctx.strokeStyle='#FFD8D2';ctx.lineWidth=5;
   ctx.beginPath();ctx.moveTo(112,670);ctx.lineTo(205,752);ctx.lineTo(145,735);ctx.closePath();ctx.fill();ctx.stroke();
-  ctx.beginPath();ctx.moveTo(508,670);ctx.lineTo(415,752);ctx.lineTo(475,735);ctx.closePath();ctx.fill();ctx.stroke();
+  ctx.beginPath();ctx.moveTo(508,670);ctx.lineTo(415,752);ctx.lineTo(475,735);ctx.closePath();ctx.fill();ctx.stroke();ctx.restore();
   drawPinFlipper(ctx,pinFlippers.left);drawPinFlipper(ctx,pinFlippers.right);
   /* ボールの光跡 */
   pinBall.trail.forEach((p,i)=>{
-    const a=(i+1)/(pinBall.trail.length+1)*.22*glow();
-    ctx.fillStyle=`rgba(160,235,255,${a})`;ctx.beginPath();ctx.arc(p.x,p.y,pinBall.r*(.35+i/pinBall.trail.length*.35),0,7);ctx.fill();
+    const a=(i+1)/(pinBall.trail.length+1)*.26*g;
+    ctx.fillStyle=`rgba(160,235,255,${a})`;ctx.beginPath();ctx.arc(p.x,p.y,pinBall.r*(.35+i/pinBall.trail.length*.4),0,7);ctx.fill();
   });
   const ball=ctx.createRadialGradient(pinBall.x-6,pinBall.y-8,2,pinBall.x,pinBall.y,pinBall.r);
-  ball.addColorStop(0,'#fff');ball.addColorStop(.28,'#DDF7FF');ball.addColorStop(.65,'#7EA7BD');ball.addColorStop(1,'#273A56');
-  ctx.shadowColor='#9CEBFF';ctx.shadowBlur=12*glow();ctx.fillStyle=ball;ctx.beginPath();ctx.arc(pinBall.x,pinBall.y,pinBall.r,0,7);ctx.fill();
-  ctx.lineWidth=2;ctx.strokeStyle='#fff';ctx.stroke();ctx.restore();
+  ball.addColorStop(0,'#fff');ball.addColorStop(.28,'#E8FBFF');ball.addColorStop(.66,'#8FB8CE');ball.addColorStop(1,'#22344F');
+  ctx.shadowColor='#9CEBFF';ctx.shadowBlur=16*g;ctx.fillStyle=ball;ctx.beginPath();ctx.arc(pinBall.x,pinBall.y,pinBall.r,0,7);ctx.fill();
+  ctx.shadowBlur=0;ctx.lineWidth=2;ctx.strokeStyle='#fff';ctx.stroke();ctx.restore();
 }
 function bindPinButton(btn,side){
   btn.addEventListener('pointerdown',ev=>{
