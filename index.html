@@ -120,15 +120,19 @@ button{font:inherit;border:0;background:none;cursor:pointer;touch-action:manipul
   border-radius:12px 12px 22px 22px;overflow:visible}
 .pianoKey{position:relative;touch-action:none;transition:transform .08s,background .1s,box-shadow .1s}
 .whiteKey{z-index:1;min-width:0;border-radius:7px 7px 18px 18px;
+  display:flex;align-items:flex-end;justify-content:center;padding-bottom:20px;
   background:linear-gradient(100deg,#F3F3F6 0%,#FFFFFF 42%,#E3E6ED 100%);
   box-shadow:inset 0 -9px 0 #CED2DC,0 5px 8px rgba(25,30,50,.27)}
-.whiteKey::after{content:"";position:absolute;left:50%;bottom:22px;transform:translateX(-50%);
-  width:clamp(16px,2.8vw,25px);height:clamp(16px,2.8vw,25px);border-radius:50%;
-  background:#B8E6D2;opacity:.72}
+/* 鍵盤に書く音の名前。「ファ」だけ2文字なので横に伸びる形にする */
+.keyName{display:grid;place-items:center;
+  min-width:clamp(26px,4.2vw,42px);height:clamp(26px,4.2vw,42px);padding:0 clamp(3px,.6vw,7px);
+  border-radius:999px;background:#B8E6D2;opacity:.85;pointer-events:none;
+  color:#2C6152;font-size:clamp(13px,1.9vw,20px);font-weight:700;line-height:1;white-space:nowrap;
+  transition:background .1s,color .1s,opacity .1s}
 .whiteKey:active,.whiteKey.is-on{transform:translateY(7px);
   background:linear-gradient(100deg,#FFF0B8,#FFF9DD 48%,#F1D98D);
   box-shadow:inset 0 -3px 0 #D8C27B,0 2px 4px rgba(25,30,50,.2)}
-.whiteKey:active::after,.whiteKey.is-on::after{background:#FF9B70;opacity:1}
+.whiteKey:active .keyName,.whiteKey.is-on .keyName{background:#FF9B70;color:#fff;opacity:1}
 .blackKey{position:absolute;z-index:3;left:var(--x);top:0;transform:translateX(-50%);
   width:8.4%;height:61%;min-height:120px;border-radius:0 0 13px 13px;
   background:linear-gradient(100deg,#25283A,#50556F 55%,#202334);
@@ -526,8 +530,7 @@ button{font:inherit;border:0;background:none;cursor:pointer;touch-action:manipul
   #music{padding-left:8px;padding-right:8px}
   .pianoWrap{width:98vw;padding:10px;border-radius:24px}
   .pianoKeyboard{height:clamp(250px,38vh,310px);gap:2px}
-  .whiteKey{border-radius:5px 5px 12px 12px}
-  .whiteKey::after{bottom:17px}
+  .whiteKey{border-radius:5px 5px 12px 12px;padding-bottom:15px}
   .blackKey{width:9.3%;min-height:125px}
 }
 @media (max-height:540px){
@@ -669,14 +672,14 @@ button{font:inherit;border:0;background:none;cursor:pointer;touch-action:manipul
     <div id="musicPulse" aria-hidden="true"><span></span><span></span><span></span><span></span><span></span><span></span></div>
     <div class="pianoWrap">
       <div class="pianoKeyboard" aria-label="ピアノのけんばん">
-        <button class="pianoKey whiteKey" data-note="0" aria-label="ド"></button>
-        <button class="pianoKey whiteKey" data-note="2" aria-label="レ"></button>
-        <button class="pianoKey whiteKey" data-note="4" aria-label="ミ"></button>
-        <button class="pianoKey whiteKey" data-note="5" aria-label="ファ"></button>
-        <button class="pianoKey whiteKey" data-note="7" aria-label="ソ"></button>
-        <button class="pianoKey whiteKey" data-note="9" aria-label="ラ"></button>
-        <button class="pianoKey whiteKey" data-note="11" aria-label="シ"></button>
-        <button class="pianoKey whiteKey" data-note="12" aria-label="高いド"></button>
+        <button class="pianoKey whiteKey" data-note="0" aria-label="ド"><span class="keyName">ド</span></button>
+        <button class="pianoKey whiteKey" data-note="2" aria-label="レ"><span class="keyName">レ</span></button>
+        <button class="pianoKey whiteKey" data-note="4" aria-label="ミ"><span class="keyName">ミ</span></button>
+        <button class="pianoKey whiteKey" data-note="5" aria-label="ファ"><span class="keyName">ファ</span></button>
+        <button class="pianoKey whiteKey" data-note="7" aria-label="ソ"><span class="keyName">ソ</span></button>
+        <button class="pianoKey whiteKey" data-note="9" aria-label="ラ"><span class="keyName">ラ</span></button>
+        <button class="pianoKey whiteKey" data-note="11" aria-label="シ"><span class="keyName">シ</span></button>
+        <button class="pianoKey whiteKey" data-note="12" aria-label="高いド"><span class="keyName">ド</span></button>
         <button class="pianoKey blackKey" data-note="1" aria-label="ドのシャープ" style="--x:12.5%"></button>
         <button class="pianoKey blackKey" data-note="3" aria-label="レのシャープ" style="--x:25%"></button>
         <button class="pianoKey blackKey" data-note="6" aria-label="ファのシャープ" style="--x:50%"></button>
@@ -980,7 +983,7 @@ button{font:inherit;border:0;background:none;cursor:pointer;touch-action:manipul
     <div class="setting"><p>むずかしさ</p><div class="levels three" data-key="diff" data-labels="やさしい,ふつう,むずかしい"></div></div>
     <div class="setting"><p>レースのほかの車（追い抜き）</p><div class="levels two" data-key="npc" data-labels="なし,あり"></div></div>
     <div class="setting"><p>プレゼントまでの⭐の数</p><div class="levels" data-key="goal" data-labels="5こ,8こ,12こ,20こ"></div></div>
-    <p style="text-align:center;color:#8AA79B;font-size:15px;margin:14px 0 4px">あそびのにわ v57</p>
+    <p style="text-align:center;color:#8AA79B;font-size:15px;margin:14px 0 4px">あそびのにわ v58</p>
     <button class="closeSettings">閉じる</button>
   </div>
 </aside>
