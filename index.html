@@ -279,6 +279,10 @@ button{font:inherit;border:0;background:none;cursor:pointer;touch-action:manipul
 .bwrap .bbl{position:absolute;font-size:calc(var(--sz,120px)*.95);opacity:.85;line-height:1}
 #basket{position:absolute;z-index:8;bottom:2vh;width:clamp(150px,20vw,230px);
   pointer-events:none;filter:drop-shadow(0 10px 8px rgba(40,70,60,.3));will-change:transform}
+/* カゴの中にたまっていくもの。下からひょいと現れる */
+/* 拡大縮小は原点の扱いがSafariで揺れるので、上下移動と透明度だけで動かす */
+#bkItems text{animation:bkIn .34s cubic-bezier(.25,1.4,.5,1)}
+@keyframes bkIn{0%{transform:translateY(17px);opacity:0}55%{opacity:1}100%{transform:translateY(0);opacity:1}}
 /* カゴに入った瞬間のはずみ。かごの口を軸に少しつぶれる */
 #basket svg{transform-origin:50% 10%}
 #basket svg.catchPop{animation:bkCatch .3s ease-out}
@@ -743,6 +747,10 @@ button{font:inherit;border:0;background:none;cursor:pointer;touch-action:manipul
       <linearGradient id="bkBody" x1="0" y1="0" x2="0" y2="1">
         <stop offset="0%" stop-color="#D9A05B"/><stop offset="100%" stop-color="#A9743C"/>
       </linearGradient>
+      <!-- 手前がわのふち。上(カゴの内側)が暗く、下(ふちの表)が明るい -->
+      <linearGradient id="bkLip" x1="0" y1="0" x2="0" y2="1">
+        <stop offset="0%" stop-color="#A2763F"/><stop offset="55%" stop-color="#CE9A57"/><stop offset="100%" stop-color="#E2B075"/>
+      </linearGradient>
       <radialGradient id="bkHero" cx="38%" cy="30%" r="85%"><stop offset="0%" stop-color="#FFB199"/><stop offset="70%" stop-color="#F4694C"/><stop offset="100%" stop-color="#D94F36"/></radialGradient>
     </defs>
     <!-- マント -->
@@ -778,8 +786,15 @@ button{font:inherit;border:0;background:none;cursor:pointer;touch-action:manipul
       <path d="M23 28 Q70 36 117 28" stroke="#F2C88A" stroke-width="2.5" fill="none" opacity=".8"/>
       <ellipse cx="70" cy="22" rx="52" ry="10" fill="#6E4B28"/>
       <ellipse id="bkMouth" cx="70" cy="20" rx="52" ry="10" fill="#8A6238"/>
+      <!-- 奥がわのふち -->
       <path d="M18 22 a52 11 0 0 1 104 0" fill="none" stroke="#E0AB6A" stroke-width="7" stroke-linecap="round"/>
       <path d="M18 22 a52 11 0 0 1 104 0" fill="none" stroke="#B98A52" stroke-width="7" stroke-linecap="round" stroke-dasharray="9 7"/>
+      <!-- 受け取ったものはここに入る。手前のふちより先に描くので「カゴの中」に見える -->
+      <g id="bkItems"></g>
+      <!-- 手前がわのふち。入れたものの下側を隠す役目 -->
+      <path d="M18 22 a52 11 0 0 0 104 0" fill="url(#bkLip)"/>
+      <path d="M18 22 a52 11 0 0 0 104 0" fill="none" stroke="#E0AB6A" stroke-width="7" stroke-linecap="round"/>
+      <path d="M18 22 a52 11 0 0 0 104 0" fill="none" stroke="#B98A52" stroke-width="7" stroke-linecap="round" stroke-dasharray="9 7"/>
     </g>
   </svg></div>
   <div id="car" hidden><svg viewBox="0 0 190 135">
@@ -976,7 +991,7 @@ button{font:inherit;border:0;background:none;cursor:pointer;touch-action:manipul
     <div class="setting"><p>むずかしさ</p><div class="levels three" data-key="diff" data-labels="やさしい,ふつう,むずかしい"></div></div>
     <div class="setting"><p>レースのほかの車（追い抜き）</p><div class="levels two" data-key="npc" data-labels="なし,あり"></div></div>
     <div class="setting"><p>プレゼントまでの⭐の数</p><div class="levels" data-key="goal" data-labels="5こ,8こ,12こ,20こ"></div></div>
-    <p style="text-align:center;color:#8AA79B;font-size:15px;margin:14px 0 4px">あそびのにわ v55</p>
+    <p style="text-align:center;color:#8AA79B;font-size:15px;margin:14px 0 4px">あそびのにわ v56</p>
     <button class="closeSettings">閉じる</button>
   </div>
 </aside>
@@ -1444,7 +1459,8 @@ function spawnCatch(){
   if(!running)return;
   const list=THEMES[theme].items,sz=itemSize();
   const sc=DIFF.szM[dif()];
-  const e={kind:'fall',el:makeItem(list[Math.floor(Math.random()*list.length)],sc),sc,
+  const icon=list[Math.floor(Math.random()*list.length)];
+  const e={kind:'fall',chr:icon,el:makeItem(icon,sc),sc,
     x:sz/2+Math.random()*(W-sz),y:-sz-20,vy:(H*.10+Math.random()*H*.05)*DIFF.spdM[dif()],
     ph:Math.random()*6,amp:20+Math.random()*30,alive:true};
   e.el.addEventListener('pointerdown',ev=>{ev.stopPropagation();catchIt(e,true)});
@@ -1481,12 +1497,24 @@ function gotOne(n=1){
   for(let i=0;i<n;i++){score++;fillStar(score)}
   if(score>=goal())finishRound();
 }
+/* カゴの中に受け取ったものを積む。手前のふちより奥に描かれるので中に入って見える */
+function clearBasketItems(){const g=$('#bkItems');if(g)g.textContent=''}
+function putInBasket(chr){
+  const g=$('#bkItems');if(!g||!chr)return;
+  const t=document.createElementNS('http://www.w3.org/2000/svg','text');
+  const n=g.childElementCount;
+  t.setAttribute('x',70+[0,-26,26,-13,13][n%5]);   /* 口(x=18〜122)の中に並べる */
+  t.setAttribute('y',25-(n%2)*3);   /* 下半分が手前のふちに隠れて「入っている」ように見える高さ */
+  t.setAttribute('font-size','34');t.setAttribute('text-anchor','middle');
+  t.textContent=chr;g.append(t);
+  while(g.childElementCount>4)g.firstElementChild.remove();   /* たまりすぎないように */
+}
 /* カゴの口の位置（画面座標）。SVG内の口の楕円をそのまま測る */
 function basketMouth(){
   const m=$('#bkMouth');
   if(!m)return{x:basketX,y:H*.7,depth:40};
   const r=m.getBoundingClientRect();
-  return {x:r.left+r.width/2,y:r.top+r.height/2,depth:r.width*(30/104)};  /* 口の直径104に対し30ぶん沈める */
+  return {x:r.left+r.width/2,y:r.top+r.height/2,depth:r.width*(16/104)};  /* 口の直径104に対し16ぶん沈める */
 }
 function catchIt(e,tapped){
   if(!e.alive||roundOver)return;
@@ -1497,11 +1525,12 @@ function catchIt(e,tapped){
   el.style.pointerEvents='none';
   el.style.transition=`transform ${dur}s cubic-bezier(.35,.05,.6,1),opacity ${dur}s ease-in`;
   el.style.transform=`translate(${m.x-csz/2}px,${m.y+m.depth-csz/2}px) scale(.55)`;
-  el.style.opacity='.15';
+  el.style.opacity='0';   /* 消えると同時に、カゴの中に同じものが現れる */
   timers.push(setTimeout(()=>el.remove(),dur*1000+60));
   timers.push(setTimeout(()=>{
     const svg=basket.firstElementChild;
     if(svg){svg.classList.remove('catchPop');void svg.offsetWidth;svg.classList.add('catchPop')}
+    putInBasket(e.chr);                       /* カゴの中に実際に置く */
     burst(basketMouth().x,m.y,THEMES[theme].pop,6);
     if(!tapped)thunk();
   },dur*1000*.72));
@@ -2468,7 +2497,7 @@ function startPlay(){
     car.hidden=false;basketX=basketTX=W/2;
     setupRace();
   }else if(game==='catch'){
-    basket.hidden=false;basketX=basketTX=W/2;
+    basket.hidden=false;basketX=basketTX=W/2;clearBasketItems();
     for(let i=0;i<3;i++)timers.push(setTimeout(spawnCatch,i*700/spd()));
   }else if(game==='race'){
     if(rcnv&&rcnv.isConnected)drawRace(dt);
