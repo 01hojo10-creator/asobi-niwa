@@ -1,10 +1,10 @@
-# IRON SHIFT 2.2.2
+# IRON SHIFT 2.2.3
 
 Three-stage robot FPS, included in あそびのにわ.
 
 Open `index.html` in a current WebGL-capable browser. All runtime scripts, styles, icon and Japanese voice clips are embedded. No API key or server is required.
 
-Touch: left stick moves, use the visible 方向 pad to turn the gun/camera up, down, left or right; drag its knob or hold an arrow, hold the separate 射撃 button to fire. Look gestures never fire, and the fire button never turns the camera. Sliding off the fire button stops firing until a fresh press. Use a second finger on the direction pad to aim while intentionally holding fire. スコープ toggles aiming, 装填 reloads, and the three weapon buttons select weapons. 一時停止 opens resume/retry/restart and the garden link. Landscape is recommended; portrait is supported. Rotation and interruptions clear held input and pause the game.
+Touch: left stick moves. The outer ring of the direction pad turns the gun/camera. Its small central fire button fires continuously while held. Slide the same thumb between ring and center: entering the center settles for 140ms to avoid firing when merely crossing it; pressing the center directly fires immediately. Leaving the center or releasing stops firing. Scope remains independent. Rotation/interruption clears input. Landscape and portrait supported.
 
 PC: WASD, mouse, left/right click, 1–3, R, Esc/P. The original three stages, bosses and audio remain intact.
 
