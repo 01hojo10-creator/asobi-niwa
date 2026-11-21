@@ -1,0 +1,687 @@
+<!doctype html>
+<html lang="ja"><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>深海観測</title><style>:root{color-scheme:dark;font:16px/1.5 "Yu Gothic UI","Meiryo",sans-serif;color:#e4f4f6;background:#04141e;--border:#83bed248;--muted:#aecad4;--accent:#8decdf}*{box-sizing:border-box}body{margin:0;overflow:hidden}button,input{font:inherit}button{color:inherit;background:#09232ddb;border:1px solid var(--border);border-radius:8px;padding:.55rem .8rem;cursor:pointer}button:hover,button:focus-visible{border-color:var(--accent);background:#123c47}button:disabled{opacity:.45;cursor:default}button span,kbd,small{color:var(--muted)}[hidden]{display:none!important}#sea,#viewport,#flash{position:fixed;inset:0;width:100%;height:100%;display:block}#sea{touch-action:none;cursor:grab}#sea:active{cursor:grabbing}#viewport{pointer-events:none;border:solid #031018;border-width:8px 10px 28px;border-radius:78px / 52px;box-shadow:inset 0 0 38px 12px #01080d,inset 0 -20px 35px #05141a;z-index:1}#flash{z-index:5;pointer-events:none;background:#dcffff;opacity:0;transition:opacity .32s}header,footer,aside,#cue,#touch{z-index:3;position:fixed}header{top:24px;left:30px;right:30px;display:flex;align-items:start;justify-content:space-between;gap:12px;pointer-events:none}nav,header button{pointer-events:auto}nav{display:flex;gap:8px;flex-wrap:wrap;justify-content:flex-end}.brand{display:flex;align-items:center;gap:12px;text-shadow:0 2px 8px #000}.mark{font-size:26px;color:var(--accent)}h1,h2,p{margin:0}h1{font-size:1.18rem;letter-spacing:.11em}#zone{font-size:.88rem;color:var(--muted)}#mission{padding:5px 12px;text-align:center;border:1px solid var(--border);border-radius:8px;background:#04151ec9}#mission span{display:block;font-size:.8rem;color:var(--muted)}#mission strong{color:var(--accent);font-variant-numeric:tabular-nums}#scanner{right:30px;top:100px;width:188px;background:#031720e9;border:1px solid var(--border);border-radius:12px;overflow:hidden}#sonarToggle{display:flex;width:100%;justify-content:space-between;border:0;border-radius:0;text-align:left;background:#0d2834}#scanBody{padding:9px;text-align:center}#radar{width:100%;display:block}#reading{font-size:.87rem;color:#b9eadf;min-height:24px}#reticle{position:fixed;width:44px;height:35px;top:50%;left:50%;transform:translate(-50%,-50%);border:1px solid #bde0e77d;border-radius:8px;z-index:2;pointer-events:none}#reticle.ready{border:2px solid var(--accent);box-shadow:0 0 15px #63f6d45e}#cue{top:calc(50% + 32px);left:50%;transform:translateX(-50%);padding:4px 10px;border-radius:7px;text-align:center;background:#071b25dc;white-space:nowrap;pointer-events:none}#cue:empty{display:none}footer{bottom:30px;left:24px;right:24px;display:grid;grid-template-columns:1fr auto 1fr;align-items:center;padding:12px 16px;background:#041822e8;border:1px solid var(--border);border-radius:10px;gap:10px}footer p{text-align:right;color:var(--muted);font-size:.86rem}.depth strong{font-size:1.4rem;color:var(--accent);font-variant-numeric:tabular-nums}.depth small{margin-right:.4rem}#integrity{display:block;font-size:.8rem;color:#ffcbad}kbd{padding-left:4px}.controls{display:flex;gap:8px}#lamp[aria-pressed=false]{color:#a2b1b6}.overlay{position:fixed;inset:0;z-index:4;display:grid;place-items:center;background:radial-gradient(ellipse at 68% 45%,transparent,#03121c8c 68%);padding:20px;pointer-events:none}.card{pointer-events:auto;text-align:left;width:min(420px,100%);padding:30px;border:1px solid var(--border);border-radius:18px;background:linear-gradient(130deg,#092936f5,#051922ed);box-shadow:0 18px 70px #0008;backdrop-filter:blur(7px)}.card h2{font-weight:650;font-size:clamp(2.35rem,7vw,4rem);letter-spacing:.10em;line-height:1.15;margin-bottom:16px}.card p,dialog p{color:var(--muted)}label{display:flex;align-items:center;justify-content:space-between;margin:24px 0 14px}input{width:4rem;color:#e4f4f6;background:#07202c;border:1px solid var(--border);border-radius:6px;text-align:center;padding:5px}.primary{background:#8ce8dc;color:#06252c;border-color:#aef1e9;font-weight:bold}.primary:hover,.primary:focus-visible{background:#b9fff2;color:#06252c}.card .primary{width:100%;margin-bottom:12px}.card small{display:block;text-align:center}dialog{color:inherit;background:#071d28;border:1px solid var(--border);border-radius:14px;padding:20px;width:min(740px,calc(100% - 28px));max-height:84dvh;z-index:10}dialog::backdrop{background:#010a12b8;backdrop-filter:blur(3px)}.dialog-title{display:flex;justify-content:space-between;align-items:start;gap:16px;margin-bottom:16px}#species{display:grid;grid-template-columns:repeat(auto-fill,minmax(142px,1fr));gap:10px}.specimen{min-height:96px;padding:9px;display:flex;align-items:center;justify-content:center;flex-direction:column;gap:6px;background:#10303d;border:1px solid #7098a22e;border-radius:8px;text-align:center;overflow:hidden}.specimen img{width:100%;aspect-ratio:16/9;object-fit:cover;border-radius:4px}.specimen small{font-size:.78rem}#photo{margin-top:12px;display:block;width:100%;border-radius:6px}#detail button{float:right}#result{width:min(420px,calc(100% - 28px))}.result-buttons{display:flex;flex-wrap:wrap;gap:10px;margin-top:14px}#touch{display:none;bottom:133px;left:24px;gap:4px;max-width:230px;flex-wrap:wrap}#touch button{touch-action:none}@media(pointer:coarse){#touch{display:flex}}@media(max-width:740px){header{top:14px;left:12px;right:12px}nav{gap:4px}nav button{font-size:.8rem;padding:.35rem .45rem}.brand{gap:4px}.mark{display:none}h1{font-size:1rem}#scanner{top:81px;right:12px;width:118px}#scanBody{padding:4px}#reading{font-size:.7rem}footer{left:12px;right:12px;bottom:15px;grid-template-columns:1fr auto;padding:7px}footer p{grid-column:span 2;text-align:center}#viewport{border-radius:37px / 29px}#touch{bottom:110px;left:12px}}
+@media(pointer:coarse){#touch button{min-width:46px;min-height:46px;padding:.42rem .65rem;background:#092c3be8}footer p{display:none}footer{grid-template-columns:1fr auto}#touch{bottom:95px}kbd,#sonarToggle span{display:none}#snap,#lamp,#drone{min-height:44px}#mission span{display:none}#mission{padding:6px 9px}}@media(pointer:coarse) and (orientation:landscape){#touch{bottom:20px;left:24px}footer{left:auto;min-width:210px;bottom:17px;right:24px}#scanner{width:128px;top:65px}}@media(max-width:440px){.card{padding:21px}#cue{max-width:96%;white-space:normal;width:max-content;font-size:.84rem}#reticle{width:37px;height:29px}}button{touch-action:manipulation}#sea{background:radial-gradient(ellipse at 55% 30%,#123544,#04141e 80%)}body{overscroll-behavior:none}
+.yard-link{display:block;text-align:center;color:#a6dedc;margin:0 0 .45rem;font-size:.88rem}</style>
+<body><canvas id="sea" aria-label="潜水艇の窓から見た3Dの海底"></canvas><div id="viewport"></div><div id="flash"></div>
+<header><div class="brand"><span class="mark">◈</span><div><h1>深海観測</h1><div id="zone">調査船</div></div></div><div id="mission" hidden><span>今回の記録</span><strong id="count">0 / 5</strong></div><nav><button id="openbook">図鑑 <span id="total">0 / 50</span></button><button id="mute" aria-pressed="false">音あり</button><button id="home" hidden>帰港</button></nav></header>
+<div id="hud" hidden><div id="reticle"></div><div id="cue" role="status"></div><aside id="scanner"><button id="sonarToggle" aria-expanded="true">ソナー <span>R</span></button><div id="scanBody"><canvas id="radar" width="168" height="168" aria-label="進行方向基準のソナー"></canvas><p id="reading">観測中</p></div></aside><footer><div class="depth"><small>深度</small><strong id="depth">0</strong> m <span id="integrity"></span></div><div class="controls"><button id="lamp" aria-pressed="true">ライト <kbd>F</kbd></button><button id="drone" hidden aria-pressed="false">ドローン</button><button id="snap">撮影 <kbd>E</kbd></button></div><p>ドラッグで見回す · WASD 移動 · Q / Z 上下</p></footer><div id="touch"><button data-key="a">←</button><button data-key="w">↑</button><button data-key="s">↓</button><button data-key="d">→</button><button data-key="q">浮上</button><button data-key="z">潜降</button></div></div>
+<main id="start" class="overlay"><section class="card start-card"><h2>深海観測</h2><p>潜水艇に乗り、海底を巡る。<br>ソナーの反応をたどり、生き物を撮影する。</p><label for="goal">今回の目標 <span><input id="goal" type="number" value="5" min="1" max="50" inputmode="numeric"> 種類</span></label><button class="primary" id="launch">潜航する</button><a class="yard-link" href="../#games">あそびのにわへ戻る</a><small id="startStatus">図鑑はこのブラウザーに保存されます</small></section></main>
+<dialog id="book"><div class="dialog-title"><div><h2>観察図鑑</h2><p id="bookProgress"></p></div><button data-close="book" autofocus>閉じる</button></div><div id="species"></div></dialog>
+<dialog id="result"><h2 id="resultTitle"></h2><p id="resultText"></p><div class="result-buttons"><button id="continue">探索を続ける</button><button id="dock" class="primary">帰港する</button></div></dialog>
+<dialog id="detail"><button data-close="detail">閉じる</button><h2 id="detailTitle"></h2><img id="photo" alt=""></dialog>
+<noscript>このゲームにはJavaScriptが必要です。</noscript><script>'use strict';
+const $ = id => document.getElementById(id);
+const sea = $('sea');
+const gl = sea.getContext('webgl2', { antialias: true, preserveDrawingBuffer: true, alpha: false });
+const clamp = (v, a, b) => Math.min(b, Math.max(a, v));
+const mix = (a, b, t) => a + (b - a) * t;
+const tau = Math.PI * 2;
+const sin = Math.sin, cos = Math.cos, length = Math.hypot;
+const sub = (a, b) => a.map((v, i) => v - b[i]);
+const dot = (a, b) => a.reduce((n, v, i) => n + v * b[i], 0);
+const rand = n => { const v = sin(n * 91.738 + 8.33) * 43758.5453; return v - Math.floor(v); };
+const color = hex => [16, 8, 0].map(shift => ((hex >> shift) & 255) / 255);
+const zones = [
+  ['砂紋の斜面', -22, 0x617577], ['沈没貨物船', -128, 0x64766d],
+  ['発光クラゲの谷', -246, 0x394c64], ['熱水の岩場', -368, 0x686457], ['大海溝', -491, 0x343d61]
+];
+const fauna = [
+  [
+    ['ハダカイワシ','school',1.12,0x539bbe],['オトヒメクラゲ','jelly',1.45,0x7ee6ff],['サクラエビ','shrimp',.67,0xfb634d],['キンメダイ','fish',1.46,0xea5439],['リュウグウノツカイ','eel',4.0,0x88c3d9],
+    ['ホタルイカ','squid',1.12,0x49bbfa],['ギンザメ','shark',2.6,0x839ab0],['トガリムネエソ','flat',1.05,0x94cde3],['マッコウクジラ','whale',13.0,0x63768a],['マルソコダラ','fish',1.3,0xb9a58f]
+  ],
+  [
+    ['アカグツ','flat',1.7,0xb27358],['ミツクリザメ','shark',4.9,0xad8a8b],['モモイロサルパ','jelly',.93,0xe7abf3],['クロシビカマス','eel',2.92,0x526a8e],['ナミクダヒゲエビ','shrimp',.88,0xd85241],
+    ['ツノシャチホコガニ','crab',1.48,0xd45a44],['センジュナマコ','jelly',1.7,0xe0a7c3],['ヨロイイタチウオ','fish',2.5,0x869490],['ギンメダイ','school',.88,0xc0cddb],['ヒゲダイ','fish',2.12,0x667b7a]
+  ],
+  [
+    ['アカチョウチンクラゲ','jelly',1.86,0xf9658e],['コトクラゲ','jelly',3.0,0xb2b1ff],['ミズヒキイカ','squid',3.1,0xa28fdd],['オニキンメ','fish',1.48,0x815856],['オオクチホシエソ','eel',2.9,0x857bae],
+    ['デメニギス','fish',1.22,0x71c6ad],['ボウエンギョ','eel',1.54,0x81c2ce],['ヤナギムシガレイ','flat',1.66,0x988074],['ミズウオ','eel',3.85,0x79a2ae],['ユウレイイカ','squid',1.98,0xbd92f8]
+  ],
+  [
+    ['ユノハナガニ','crab',1.3,0xd9c9b1],['ゴエモンコシオリエビ','crab',1.6,0xceb58d],['オハラエビ','shrimp',.97,0xf1e5c6],['ヨコエビ','shrimp',.69,0xffa859],['チョウチンアンコウ','fish',1.93,0x9b705b],
+    ['テングギンザメ','shark',3.2,0x64989b],['メンダコ','squid',1.64,0xee7861],['オオグチボヤ','jelly',1.3,0xf1959f],['キタノクロダラ','fish',2.1,0x908a9e],['セキトリイワシ','school',1.38,0xc7d2e0]
+  ],
+  [
+    ['ラブカ','eel',4.37,0x9b897c],['オンデンザメ','shark',7.0,0x637889],['アカボウクジラ','whale',10.4,0x83889b],['ダイオウイカ','squid',8.2,0xbe5756],['フウセンウナギ','eel',3.1,0x7275a5],
+    ['シンカイクサウオ','flat',1.48,0xb5a1ca],['ダイオウグソクムシ','crab',1.75,0xa7a7b5],['オオタルマワシ','shrimp',.83,0xbf84ae],['オオグチクラゲ','jelly',3.2,0xd27aa0],['ニュウドウカジカ','fish',1.7,0xb8839c]
+  ]
+];
+const specialPositions = [[3,-8,-38],[-5,-10,-47],[9,-1.8,-55],[-11,-5,-59],[16,-9,-68],[-15,-12,-74],[25,-13,-75],[-25,-13,-83],[26,-12,-65],[-4,-5,-94]];
+const species = fauna.flatMap((group, area) => group.map(([name, type, size, tint], i) => {
+  const id = area * 10 + i;
+  const p = area === 0 ? specialPositions[i] : [
+    (i % 2 ? -1 : 1) * (7 + i * 2.6) + 7 * sin(area),
+    -(6 + 2 * i % 13), zones[area][1] - 15 - i * 5.2
+  ];
+  return { id, area, name, type, size, tint, base: [p[0], floorAt(p[0],p[2])+p[1]*-1,p[2]], pos: [0,0,0], yaw: 0 };
+}));
+function floorAt(x,z) {
+  const descent = Math.max(0,-z) * .135;
+  const ravine = 9 * Math.exp(-((x-31)*(x-31))/190) * Math.exp(-((z+212)*(z+212))/8500);
+  return -17-descent-ravine + 1.25*sin(x*.12+z*.115)+.45*cos(z*.31-x*.27)+.48*sin(x*.28+z*.23);
+}
+function compile(type, source) {
+  const shader = gl.createShader(type);
+  gl.shaderSource(shader, source);
+  gl.compileShader(shader);
+  if (!gl.getShaderParameter(shader,gl.COMPILE_STATUS)) throw new Error(gl.getShaderInfoLog(shader));
+  return shader;
+}
+const vert = `#version 300 es
+layout(location=0) in vec3 shape;
+layout(location=1) in vec4 ink;
+uniform vec3 eye, ahead, right, up, origin;
+uniform vec2 lens;
+uniform float turn, size, time, motion;
+out vec3 world; out vec4 pigment; out float depth;
+void main(){
+  vec3 p=shape;
+  if(motion==1.) p.z+=sin(time*6.+p.x*4.)*.22*max(0.,-p.x);
+  if(motion==2.) p.y+=sin(time*2.+p.x*2.)*.19*max(0.,-p.x);
+  if(motion==3.) p.xz*=1.+.15*sin(time*2.65+p.y);
+  if(motion==4.) {p.z+=sin(time*5.+p.x*5.)*.15; p.y+=.11*sin(time*7.+p.x*7.);}
+  float c=cos(turn), s=sin(turn);
+  world=origin+vec3(c*p.x+s*p.z,p.y,-s*p.x+c*p.z)*size;
+  vec3 d=world-eye;
+  depth=dot(d,ahead);
+  gl_Position=vec4(dot(d,right)*lens.x,dot(d,up)*lens.y,depth*1.0015-.14,depth);
+  gl_PointSize=clamp(16./max(depth,1.),1.2,3.3);
+  pigment=ink;
+}`;
+const frag = `#version 300 es
+precision highp float;
+in vec3 world; in vec4 pigment; in float depth;
+uniform vec3 eye,ahead;
+uniform float lamp,time,mode;
+out vec4 pixel;
+void main(){
+  float d=length(world-eye);
+  vec3 dir=normalize(world-eye);
+  float beam=smoothstep(.73,.995,dot(dir,ahead))*exp(-d*.036)*lamp;
+  float attenuation=exp(-d*.027);
+  vec3 fog=vec3(.014,.068,.101);
+  vec3 normal=normalize(cross(dFdx(world),dFdy(world)));
+  if(!gl_FrontFacing) normal=-normal;
+  float light=max(.0,dot(normal,normalize(vec3(-.35,1.,.42))));
+  float spec=pow(max(dot(normal,-dir),0.),4.)*beam;
+  float ripple=sin(world.x*.59+world.z*.78+time*.47+sin(world.z*.49))*sin(world.z*.42-time*.51+sin(world.x*.59));
+  float grit=fract(sin(dot(floor(world*20.),vec3(12.9898,78.233,36.59)))*43758.5453);
+  float sand=sin(world.z*4.8+world.x*.95+sin(world.x*.44)*1.7)*smoothstep(.62,.95,normal.y);
+  vec3 base=pigment.rgb*(.24+.32*light+beam*.80+beam*.14*ripple)*(.93+.12*grit+sand*.10);
+  base+=pigment.rgb*pigment.a*1.45+vec3(.10,.20,.23)*spec;
+  if(mode==1.) {vec2 p=gl_PointCoord-.5;if(dot(p,p)>.25) discard;base=pigment.rgb*(.12+beam*.8+pigment.a); }
+  float jellyEdge=pow(1.-abs(dot(normal,dir)),1.55);
+  float alpha=mode==2.?clamp(.20+pigment.a*.52+jellyEdge*.43,.18,.88):1.;
+  pixel=vec4(mix(fog,base,attenuation),alpha);
+}`;
+let program, uniforms={}, worldMesh, dustMesh, bootError;
+function init() {
+  if (!gl) throw new Error('WebGL 2を利用できません。この端末の別のブラウザーで開いてください。');
+  program=gl.createProgram();
+  gl.attachShader(program,compile(gl.VERTEX_SHADER,vert));
+  gl.attachShader(program,compile(gl.FRAGMENT_SHADER,frag));
+  gl.linkProgram(program);
+  if (!gl.getProgramParameter(program,gl.LINK_STATUS)) throw new Error(gl.getProgramInfoLog(program));
+  gl.useProgram(program);
+  for (const key of ['eye','ahead','right','up','origin','lens','turn','size','time','motion','lamp','mode']) uniforms[key]=gl.getUniformLocation(program,key);
+  gl.enable(gl.DEPTH_TEST);
+  gl.enable(gl.BLEND);gl.blendFunc(gl.SRC_ALPHA,gl.ONE_MINUS_SRC_ALPHA);
+  gl.clearColor(.014,.068,.101,1);
+  worldMesh = upload(buildWorld());
+  dustMesh = upload(buildDust(),gl.POINTS);
+  for (const animal of species) animal.mesh = upload(buildCreature(animal));
+}
+function upload(data, mode=gl.TRIANGLES) {
+  const vao=gl.createVertexArray();
+  gl.bindVertexArray(vao);
+  const buf=gl.createBuffer();
+  gl.bindBuffer(gl.ARRAY_BUFFER,buf);
+  gl.bufferData(gl.ARRAY_BUFFER,new Float32Array(data),gl.STATIC_DRAW);
+  gl.enableVertexAttribArray(0);
+  gl.vertexAttribPointer(0,3,gl.FLOAT,false,28,0);
+  gl.enableVertexAttribArray(1);
+  gl.vertexAttribPointer(1,4,gl.FLOAT,false,28,12);
+  gl.bindVertexArray(null);
+  return {vao,length:data.length/7,mode};
+}
+function shapes() {
+  const data=[];
+  function point(p,c,e=0){ data.push(...p,...c,e); }
+  function tri(a,b,c,k,e=0){ point(a,k,e);point(b,k,e);point(c,k,e); }
+  function quad(a,b,c,d,k,e=0){ tri(a,b,c,k,e);tri(a,c,d,k,e); }
+  function box(x,y,z,w,h,d,k,rot=0) {
+    const p=[[-1,-1,-1],[1,-1,-1],[1,1,-1],[-1,1,-1],[-1,-1,1],[1,-1,1],[1,1,1],[-1,1,1]].map(([a,b,c])=>[x+cos(rot)*a*w/2+sin(rot)*c*d/2,y+b*h/2,z-sin(rot)*a*w/2+cos(rot)*c*d/2]);
+    for(const [a,b,c,d] of [[0,3,2,1],[4,5,6,7],[0,4,7,3],[1,2,6,5],[3,7,6,2],[0,1,5,4]]) quad(p[a],p[b],p[c],p[d],k);
+  }
+  function ell(x,y,z,w,h,d,k,e=0,steps=14,rings=8,rough=0) {
+    const p=(j,i)=>{
+      const a=i/steps*tau,b=j/rings*Math.PI;
+      const v=1+rough*(.5*sin(i*1.8+j*.76)+.5*cos(i*2.3+j*3.3));
+      return [x+w*cos(a)*sin(b)*v,y+h*cos(b)*v,z+d*sin(a)*sin(b)*v];
+    };
+    for(let j=0;j<rings;j++) for(let i=0;i<steps;i++) quad(p(j,i),p(j+1,i),p(j+1,(i+1)%steps),p(j,(i+1)%steps),k,e);
+  }
+  function limb(a,b,r,k,e=0) {
+    const d=sub(b,a), norm=length(...d) || 1;
+    let u=[d[2],0,-d[0]];
+    if(length(...u)<.001) u=[1,0,0];
+    const un=length(...u);
+    u=u.map(v=>v/un);
+    const v=[d[1]*u[2]-d[2]*u[1],d[2]*u[0]-d[0]*u[2],d[0]*u[1]-d[1]*u[0]].map(w=>w/norm);
+    const ring=(p,i)=>p.map((q,j)=>q+r*(cos(i*tau/6)*u[j]+sin(i*tau/6)*v[j]));
+    for(let i=0;i<6;i++) quad(ring(a,i),ring(b,i),ring(b,i+1),ring(a,i+1),k,e);
+  }
+  return {data,point,tri,quad,box,ell,limb};
+}
+function buildWorld(){
+  const m=shapes();
+  for(let z=26;z>-640;z-=3) for(let x=-132;x<132;x+=3){
+    const area=clamp(Math.floor((-z+17)/120),0,4);
+    const tint=color(zones[area][2]).map(v=>v*(.94+.06*rand(x+1201*z)));
+    const p=(a,b)=>[a,floorAt(a,b),b];
+    m.quad(p(x,z),p(x+3,z),p(x+3,z-3),p(x,z-3),tint);
+  }
+  for(let i=0;i<360;i++){
+    const x=(rand(i*3)-.5)*176,z=16-rand(i*3+1)*626;
+    const h=.34+rand(i*3+2)**2*(Math.abs(x)<15&&z>-82?1.1:6.4);
+    const k=color([0x536466,0x3d545a,0x60696b,0x354b50][i%4]);
+    m.ell(x,floorAt(x,z)+h*.21,z,h*(1+rand(i+555)),h,h*.82,k,0,8,5,.34);
+    if(i%5===0) for(let j=0;j<4;j++){
+      const base=[x+j*.42,floorAt(x,z)+.05,z];
+      const stalk=[x+j*.72,base[1]+.65+rand(i+j)*1.0,z+(j-2)*.38];
+      m.limb(base,stalk,.07,color(0x746476));
+      m.limb(stalk,[stalk[0]+.3,stalk[1]+.32,stalk[2]+.11],.048,color(0x9f7186));
+    }
+  }
+  for(let i=0;i<11;i++){
+    const z=-48+i*4,x=-18+sin(i)*2;
+    m.ell(x,floorAt(x,z)+1,z,4,4.1,3.1,color(0x415565),0,9,6,.23);
+  }
+  wreck(m);
+  for(let i=0;i<15;i++){
+    const x=7+rand(400+i)*23,z=-360-rand(i+222)*43,h=1.2+rand(i+985)*7;
+    m.ell(x,floorAt(x,z)+h*.42,z,h*.31,h,h*.38,color(0x4c4b48),0,9,6,.47);
+    for(let j=0;j<4;j++) m.ell(x+(rand(i*7+j)-.5)*1.5,floorAt(x,z)+.5+j*.48,z+.2,.20,.43,.18,color(0xe29262),.21,7,4);
+  }
+  return m.data;
+}
+function wreck(m){
+  const cx=1,cz=-143,cy=floorAt(cx,cz)+3;
+  const rust=color(0x69514a), dark=color(0x303b42), deck=color(0x4a6866);
+  const sections=[[-24,4.0],[-20,5.2],[-10,5.5],[3,5.45],[12,5.0],[20,2.9],[24,.2]];
+  for(let i=0;i<sections.length-1;i++){
+    const [x,w]=sections[i], [xx,ww]=sections[i+1];
+    for(const side of [-1,1]){
+      m.quad([cx+x,cy-3,cz+w*.53*side],[cx+xx,cy-3,cz+ww*.53*side],
+        [cx+xx,cy+1.8,cz+ww*side],[cx+x,cy+1.8,cz+w*side],i%2?rust:dark);
+      m.limb([cx+x,cy+1.81,cz+w*side],[cx+xx,cy+1.81,cz+ww*side],.12,rust);
+    }
+    m.quad([cx+x,cy+1.8,cz-w],[cx+xx,cy+1.8,cz-ww],[cx+xx,cy+1.8,cz+ww],[cx+x,cy+1.8,cz+w],deck);
+  }
+  for(let i=-21;i<23;i+=2.5) for(const side of [-1,1]){
+    const wz=i>13?mix(5,.8,(i-13)/11):5.1;
+    m.limb([cx+i,cy+1.8,cz+side*wz],[cx+i,cy+2.8,cz+side*wz],.07,rust);
+    if(i<20) m.limb([cx+i,cy+2.8,cz+side*wz],[cx+i+2.5,cy+2.8,cz+side*(i>11?wz-.6:wz)],.065,rust);
+  }
+  m.box(cx-12,cy+2.06,cz,9,.55,8.1,dark);
+  m.box(cx-12,cy+5.06,cz,8.4,.5,8.1,deck);
+  for(const z of [cz-3.5,cz+3.5]) for(let i=0;i<5;i++) m.box(cx-16+i*1.83,cy+3.65,z,.36,3.12,.32,rust);
+  for(const x of [cx-16,cx-8]) for(let i=0;i<4;i++) m.box(x,cy+3.65,cz-3.45+i*2.3,.32,3.12,.32,rust);
+  m.box(cx-14,cy+6.7,cz,2.3,3.2,2.3,dark);
+  m.box(cx-14,cy+8.25,cz,2.65,.30,2.6,rust);
+  m.limb([cx+6,cy+1.9,cz],[cx+8,cy+12,cz+.8],.33,rust);
+  m.limb([cx+2,cy+7.8,cz-.6],[cx+13,cy+8.8,cz+1.0],.16,dark);
+  for(let i=0;i<13;i++){
+    const t=i/12, x=22+19*t,z=-141+27*t;
+    const y=floorAt(x,z)+.28+4.5*(1-t)**4;
+    m.ell(x,y,z,.36,.18,.42,rust,0,8,4);
+  }
+  const x=41,z=-114,y=floorAt(x,z)+.3;
+  m.limb([x-1.7,y,z+1.4],[x+1.6,y,z-1.65],.20,rust);
+  for(const s of [-1,1]){
+    m.limb([x+1.3,y,z-1.3],[x+.38+s*1.37,y+.13,z-2.1+s*.65],.19,rust);
+  }
+}
+function buildDust(){
+  const m=shapes();
+  for(let i=0;i<3600;i++){
+    const x=(rand(i*3+7000)-.5)*154,z=25-rand(i*3+7001)*645,y=mix(floorAt(x,z),-2,rand(i*3+7002));
+    m.point([x,y,z],color(0x65a9ac),.17+rand(i+7)*.13);
+  }
+  return m.data;
+}
+function buildCreature(a){
+  const m=shapes(), k=color(a.tint), pale=k.map(x=>mix(x,1,.27)), dark=k.map(x=>x*.58), eye=color(0x08101a);
+  const {type,id}=a;
+  const fin=(p,q,r,c=dark)=>m.tri(p,q,r,c);
+  if(type==='jelly'){
+    const rings=10, segments=29, w=.39+(id%4)*.042;
+    const surface=(j,i)=>{const p=(i%segments)*tau/segments,b=j/rings*Math.PI*.53;return [sin(b)*cos(p)*w,.13+.39*cos(b),sin(b)*sin(p)*w];};
+    for(let j=0;j<rings;j++) for(let i=0;i<segments;i++)
+      m.quad(surface(j,i),surface(j+1,i),surface(j+1,i+1),surface(j,i+1),(i+j)%4===0?pale:k,.23+(.40*j/rings));
+    for(let i=0;i<12;i++){
+      const phase=i*tau/12; let p=[cos(phase)*w*.81,.13,sin(phase)*w*.82];
+      const extent=.62+rand(i+id)*.55;
+      for(let j=1;j<=10;j++){
+        const q=[p[0]+.02*sin(j*.53+phase),.13-extent*j/10,p[2]+.022*cos(j*.61+phase)];
+        m.limb(p,q,.014-(j*.0008),pale,.4);p=q;
+      }
+    }
+  } else if(type==='shrimp'||type==='crab'){
+    const crab=type==='crab';
+    for(let i=0;i<(crab?4:8);i++) m.ell(.40-i*.12,-((i*.045)**2),0,.12,.15-i*.009,crab?.29:.12,k,0,10,7);
+    for(const s of [-1,1]){
+      m.ell(.52,.08,s*.095,.053,.051,.055,eye,.22,9,6);
+      for(let j=0;j<(crab?5:7);j++){
+        const p=[.31-j*.115,-.08,s*.08],q=[p[0]-.1,-.26,s*(crab?.43:.25)],r=[q[0]-.18,-.33,s*(crab?.56:.29)];
+        m.limb(p,q,.025,k);m.limb(q,r,.014,pale);
+      }
+      m.limb([.49,.09,s*.08],[.75,.24,s*.21],.022,k);
+      m.limb([.75,.24,s*.21],[1.04,.39,s*.26],.009,pale);
+      if(crab) m.ell(.61,-.13,s*.36,.17,.095,.12,k,0,10,7);
+      else fin([-.49,-.1,0],[-.74,-.17,s*.24],[-.68,-.07,0],k);
+    }
+  } else if(type==='squid'){
+    const short=id===36;
+    m.ell(.20,.035,0,short?.47:.57,short?.37:.24,.23,k,0,20,12);
+    for(const s of [-1,1]){
+      m.ell(-.16,.07,s*.157,.097,.072,.05,pale,.18);
+      m.ell(-.19,.07,s*.189,.057,.054,.028,eye);
+      fin([.38,.0,s*.09],[.13,.0,s*.54],[-.02,0,s*.20],k);
+    }
+    for(let i=0;i<10;i++){
+      const p=[-.13,.09*sin(i*tau/10),.13*cos(i*tau/10)];
+      const q=[-.48,-.09+.15*sin(i*tau/10),.19*cos(i*tau/10)];
+      const r=[i>7?-1.13:-.72,-.12+.21*sin(i*tau/10),.26*cos(i*tau/10)];
+      m.limb(p,q,.035,k,.11);m.limb(q,r,.025,pale,.18);
+    }
+  } else {
+    const whale=type==='whale', shark=type==='shark', eel=type==='eel', flat=type==='flat';
+    const fullness=whale?.22:shark?.18:eel?.08:flat?.29:.23+((id%7)-3)*.013;
+    const width=whale?.21:shark?.13:eel?.075:flat?.10:.15;
+    const sections=[[-.67,.13],[-.48,.32],[-.30,.57],[-.08,.88],[.16,1],[.33,whale?.96:.79],[.49,whale?.78:.30],[.53,.05]];
+    const p=(j,i)=>{const [x,s]=sections[j],angle=i*tau/22;return [x,fullness*s*cos(angle),width*s*sin(angle)];};
+    for(let j=0;j<sections.length-1;j++) for(let i=0;i<22;i++){
+      const tint=(cos((i+.5)*tau/22)<-.35?pale:k).map(v=>v*(.88+.12*sin(i*1.2+j)));
+      m.quad(p(j,i),p(j+1,i),p(j+1,i+1),p(j,i+1),tint);
+    }
+    if(whale){
+      for(const s of [-1,1]) fin([-.64,0,0],[-.99,.04,s*.37],[-.88,.008,s*.098],k);
+      for(const s of [-1,1]) fin([.22,-.12,s*.13],[-.12,-.16,s*.35],[-.18,-.14,s*.14],k);
+    } else {
+      fin([-.61,.035,0],[-.96,.30,0],[-.83,.012,.012],k);
+      fin([-.61,-.035,0],[-.95,shark?-.18:-.24,0],[-.83,.012,-.012],dark);
+      const high=shark?.43:eel?.12:flat?.39:.31;
+      fin([.10,fullness*.87,0],[-.12,high,0],[-.33,fullness*.55,0],k);
+      for(const s of [-1,1]) fin([.25,-.06,s*width],[-.17,-.19,s*(shark?.37:.28)],[-.10,-.095,s*(width+.01)],k);
+    }
+    for(const s of [-1,1]){
+      const x=whale?.27:.34, ey=fullness*.30, ez=s*width*.79;
+      m.ell(x,ey,ez,.073*(eel?.64:1),.065*(eel?.70:1),.039,pale,.05,10,7);
+      m.ell(x+.015,ey,ez+s*.018,.048*(eel?.64:1),.048*(eel?.70:1),.031,eye,.18,10,7);
+      if(type==='school'||id===20||id===34) for(let i=0;i<6;i++){
+        m.ell(.27-i*.105,-fullness*.42,s*width*(.73-i*.065),.017,.023,.024,color(0x5dccf2),1.1,7,5);
+      }
+      if(shark||whale) for(let i=0;i<(shark?5:1);i++){
+        const x=.13+i*.038;
+        m.limb([x,fullness*.32,s*width*.97],[x-.015,-fullness*.38,s*width*.97],.009,dark);
+      }
+    }
+    if(id===34){
+      m.limb([.31,.1,0],[.45,.29,0],.025,dark);
+      m.ell(.47,.28,0,.046,.049,.041,color(0xeef582),.95,8,5);
+    }
+  }
+  return m.data;
+}
+
+
+const camera={pos:[0,-8,12],yaw:0,pitch:-.22,vel:[0,0,0]};
+let attitude, ratio=1, active=false, time=0, diveTime=0, intro=0, lampOn=true, sonarOpen=true, muted=false;
+let records={}, goal=5, discoveries=new Set(), hull=100, eligible=null, target=null, pingRing=0, nextPing=0;
+let message='', messageUntil=0, audio, droneMode=false, subPosition=null, lastAttack=-100, goalShown=false;
+const keys=new Set(), mobileKeys=new Map();
+const radar=$('radar').getContext('2d');
+const storage='deep-sea-log-v1';
+try{
+  const saved=JSON.parse(localStorage.getItem(storage) || '{}');
+  records=saved.records && typeof saved.records==='object'?saved.records:{};
+  $('goal').value=clamp(Number(saved.goal)||5,1,50);
+}catch{}
+function checkpoint(){
+  try{localStorage.setItem(storage,JSON.stringify({records,goal:Number($('goal').value)||5}));return true;}
+  catch{say('このブラウザーに保存できませんでした',4);return false;}
+}
+function recordCount(){return species.filter(a=>records[a.id]?.image).length;}
+function refreshCounts(){
+  $('count').textContent=discoveries.size+' / '+goal;
+  $('total').textContent=recordCount()+' / 50';
+}
+function say(text, seconds=3){message=text;messageUntil=time+seconds;}
+function setLamp(value){lampOn=value;$('lamp').setAttribute('aria-pressed',String(value));}
+function setSonar(value){
+  sonarOpen=value;
+  $('sonarToggle').setAttribute('aria-expanded',String(value));
+  $('scanBody').hidden=!value;
+  if(value) nextPing=0;
+}
+function play(frequency=740,duration=.2, volume=.035,to=frequency*.83){
+  if(muted || !audio || audio.state!=='running')return;
+  const tone=audio.createOscillator(), gain=audio.createGain();
+  const start=audio.currentTime;
+  tone.type='sine';tone.frequency.setValueAtTime(frequency,start);
+  tone.frequency.exponentialRampToValueAtTime(to,start+duration);
+  gain.gain.setValueAtTime(.0001,start);
+  gain.gain.linearRampToValueAtTime(volume,start+.021);
+  gain.gain.exponentialRampToValueAtTime(.0001,start+duration);
+  tone.connect(gain);gain.connect(audio.destination);tone.start();tone.stop(start+duration+.02);
+}
+function begin(){
+  if(bootError) return;
+  const raw=Math.trunc(Number($('goal').value));
+  goal=clamp(Number.isFinite(raw)&&raw>0?raw:5,1,50);
+  $('goal').value=goal;checkpoint();
+  try{
+    const Audio=window.AudioContext||window.webkitAudioContext;
+    if(Audio){audio ||= new Audio(); audio.resume().catch(()=>{});}
+  }catch{}
+  discoveries=new Set();active=true;diveTime=0;intro=0;hull=100;goalShown=false;droneMode=false;subPosition=null;
+  nextPing=0;lastAttack=-100;eligible=null;target=null;
+  camera.pos=[0,-.1,15];camera.yaw=0;camera.pitch=-.12;camera.vel=[0,0,0];
+  setLamp(true);setSonar(true);refreshCounts();resetInput();
+  $('drone').setAttribute('aria-pressed','false');$('drone').textContent='ドローン';
+  $('start').hidden=true;$('hud').hidden=false;$('mission').hidden=false;$('home').hidden=false;
+  say('潜航中',2.5);play(110,1,.055,65);
+}
+function returnHome(){
+  if($('result').open)$('result').close();
+  active=false;resetInput();
+  $('start').hidden=false;$('hud').hidden=true;$('mission').hidden=true;$('home').hidden=true;
+  $('zone').textContent='調査船';
+  $('startStatus').textContent='図鑑 '+recordCount()+' / 50 · '+(discoveries.size ? '前回の記録 '+discoveries.size+' 種類':'このブラウザーに保存');
+  camera.pos=[2,-10,-107];camera.yaw=-.03;camera.pitch=-.08;camera.vel=[0,0,0];
+  $('launch').focus();
+}
+function result(kind){
+  resetInput();
+  const emergency=kind==='emergency';
+  $('continue').hidden=emergency;
+  $('resultTitle').textContent=emergency?'緊急浮上':kind==='goal'?'目標達成':'帰港しますか？';
+  $('resultText').textContent=emergency?'サメの接触で艇が損傷しました。今回の写真は図鑑に残ります。':
+    '今回の観察 '+discoveries.size+' / '+goal+' 種類。図鑑 '+recordCount()+' / 50。';
+  if(!$('result').open)$('result').showModal();
+}
+function updateAnimals(t){
+  for(const a of species){
+    const [x,y,z]=a.base, p=t*(a.type==='whale'?.20:a.type==='jelly'?.24:.41+(a.id%5)*.023)+a.id*.91;
+    const cruise=a.type==='whale'?10.5:a.type==='shark'?5.1:a.type==='shrimp'||a.type==='crab'?.85:a.type==='jelly'?1.32:2.6+(a.id%3)*.34;
+    const x1=x+sin(p)*cruise;
+    const z1=z+cos(p)*cruise*.64;
+    let y1=y+.58*sin(p*1.71);
+    if(a.type==='crab') y1=floorAt(x1,z1)+.50;
+    a.pos=[x1,y1,z1];
+    a.yaw=Math.atan2(sin(p)*.64,cos(p));
+    if(active&&intro>=1&&a.id===11&&hull>0&&!droneMode){
+      const delta=sub(camera.pos,a.pos), range=length(...delta);
+      if(lampOn&&range<15&&diveTime-lastAttack>2.2){
+        a.pos=a.pos.map((v,i)=>v+delta[i]*.62);
+        a.yaw=-Math.atan2(delta[2],delta[0]);
+        if(range<9){
+          hull=Math.max(0,hull-34); lastAttack=diveTime;
+          $('flash').style.background='#f38b7b';
+          flash();
+          say('サメが接近！ ライトを消して距離を取る',3);
+          play(95,.5,.10,35);
+          if(hull===0) result('emergency');
+        }
+      }
+    }
+  }
+}
+function getAttitude(){
+  const y=camera.yaw,p=camera.pitch;
+  return {ahead:[sin(y)*cos(p),sin(p),-cos(y)*cos(p)],right:[cos(y),0,sin(y)],up:[-sin(y)*sin(p),cos(p),cos(y)*sin(p)]};
+}
+function displayMesh(mesh,origin=[0,0,0],turn=0,size=1,motion=0,mode=0,localTime=time){
+  gl.uniform3fv(uniforms.origin,origin);
+  gl.uniform1f(uniforms.turn,turn);gl.uniform1f(uniforms.size,size);
+  gl.uniform1f(uniforms.motion,motion);gl.uniform1f(uniforms.mode,mode);
+  gl.uniform1f(uniforms.time,localTime);
+  gl.bindVertexArray(mesh.vao);gl.drawArrays(mesh.mode,0,mesh.length);
+}
+function draw(){
+  const pixel=Math.min(devicePixelRatio||1,innerWidth<850?1.20:1.5);
+  const w=Math.max(1,Math.round(sea.clientWidth*pixel)),h=Math.max(1,Math.round(sea.clientHeight*pixel));
+  if(sea.width!==w||sea.height!==h){sea.width=w;sea.height=h;gl.viewport(0,0,w,h);}
+  ratio=w/h;
+  const clearDepth=clamp((-camera.pos[1]-1)/25,0,1);
+  const fogSurface=(1-clearDepth)*.051;
+  gl.clearColor(.014,.068+fogSurface,.101+fogSurface*1.25,1);
+  gl.clear(gl.COLOR_BUFFER_BIT|gl.DEPTH_BUFFER_BIT);
+  const {ahead,right,up}=attitude=getAttitude();
+  gl.uniform3fv(uniforms.eye,camera.pos);
+  gl.uniform3fv(uniforms.ahead,ahead);gl.uniform3fv(uniforms.right,right);gl.uniform3fv(uniforms.up,up);
+  const f=ratio<1?1.25:1.53;
+  gl.uniform2f(uniforms.lens,f/ratio,f);
+  gl.uniform1f(uniforms.lamp,lampOn?1:0);
+  displayMesh(worldMesh);
+  displayMesh(dustMesh,[.3*sin(time*.20),.32*sin(time*.31),0],0,1,0,1);
+  let best=null;
+  for(const a of species){
+    const local=sub(a.pos,camera.pos),distance=length(...local),drift=dot(local,ahead);
+    if(distance>103 || drift<-a.size)continue;
+    const motion=a.type==='whale'?2:a.type==='jelly'?3:['shrimp','crab','squid'].includes(a.type)?4:1;
+    displayMesh(a.mesh,a.pos,a.yaw,a.size,motion,a.type==='jelly'?2:0,time+a.id);
+    if(a.type==='school') for(let i=1;i<=7;i++){
+      const s=sin(i*2.25+time*1.12), p=[a.pos[0]+s*1.8,a.pos[1]+.32*cos(i*2.9+time*.8)+i*.11,a.pos[2]+1.08*sin(i*5)+i*.31];
+      displayMesh(a.mesh,p,a.yaw+.14*s,a.size*(.7+rand(i+77)*.25),motion,0,time+i);
+    }
+    const screenX=dot(local,right)*f/ratio/Math.max(drift,.1);
+    const screenY=dot(local,up)*f/Math.max(drift,.1);
+    const center=length(screenX,screenY);
+    const glow=['jelly','squid','school'].includes(a.type);
+    const clearLine=[.25,.5,.75].every(step=>{const [x,y,z]=camera.pos.map((v,i)=>v+local[i]*step);return y>floorAt(x,z)+.06;});
+    const range=Math.min(26,8+a.size*1.9);
+    if(drift> .6&&distance<range&&center<Math.min(.33,.23+a.size*.015)&&clearLine&&(lampOn||glow) && (a.area!==0||!active||intro>=1)){
+      const score=center+distance*.008;
+      if(!best||score<best.score)best={a,screenX,screenY,score};
+    }
+  }
+  eligible=best;
+}
+function updateSonar(){
+  let distance=Infinity;
+  target=null;
+  if(intro>=1&&diveTime>=8.5){
+    for(const a of species){
+      if(discoveries.has(a.id)) continue;
+      const d=length(...sub(a.pos,camera.pos));
+      if(d<distance){distance=d;target=a;}
+    }
+  }
+  const cx=84,cy=84;
+  radar.clearRect(0,0,168,168);
+  radar.fillStyle='#061923';
+  radar.beginPath();radar.arc(cx,cy,77,0,tau);radar.fill();
+  radar.strokeStyle='#3b726f';radar.lineWidth=1;
+  for(const r of [25,50,76]){radar.beginPath();radar.arc(cx,cy,r,0,tau);radar.stroke();}
+  radar.strokeStyle='#31514e';radar.beginPath();radar.moveTo(8,84);radar.lineTo(160,84);radar.moveTo(84,8);radar.lineTo(84,160);radar.stroke();
+  radar.strokeStyle='#79e4c3';radar.lineWidth=1;
+  radar.beginPath();radar.moveTo(cx,cy-6);radar.lineTo(cx-4,cy+4);radar.lineTo(cx+4,cy+4);radar.closePath();radar.stroke();
+  radar.strokeStyle='rgba(94,239,191,'+Math.max(0,(1-pingRing)*.63)+')';
+  radar.beginPath();radar.arc(cx,cy,Math.max(1,pingRing*76),0,tau);radar.stroke();
+  if(!target){$('reading').textContent=discoveries.size===50?'全種類を観察':'周囲を走査中';return;}
+  const d=sub(target.pos,camera.pos);
+  const forward=dot(d,[sin(camera.yaw),0,-cos(camera.yaw)]), side=dot(d,[cos(camera.yaw),0,sin(camera.yaw)]);
+  const bearing=Math.atan2(side,forward);
+  const rr=clamp(length(forward,side)*1.63,8,70), xx=cx+sin(bearing)*rr, yy=cy-cos(bearing)*rr;
+  const halo=radar.createRadialGradient(xx,yy,0,xx,yy,14);
+  halo.addColorStop(0,'#a9ffe0');halo.addColorStop(.27,'#54e8bca3');halo.addColorStop(1,'#54e8bc00');
+  radar.fillStyle=halo;radar.fillRect(xx-14,yy-14,28,28);
+  const dir=forward<0&&Math.abs(side)<-forward*.82?'後方':Math.abs(side)<3||Math.abs(bearing)<.28?'正面':side>0?'右':'左';
+  const vertical=Math.abs(d[1])<2?'同じ高さ':d[1]>0?'上':'下';
+  $('reading').textContent=dir+'・'+vertical+' 約 '+Math.max(1,Math.round(distance))+' m';
+}
+function flash(){
+  const el=$('flash');
+  el.style.transition='none';el.style.opacity='.65';
+  requestAnimationFrame(()=>requestAnimationFrame(()=>{el.style.transition='opacity .4s';el.style.opacity='0';}));
+}
+function photograph(){
+  if(!active||intro<1||$('result').open||$('book').open)return;
+  if(!eligible){say('生き物を中央に捉えて、もう少し近づいてください',2.3);return;}
+  const {a,screenX,screenY}=eligible;
+  const output=document.createElement('canvas');output.width=360;output.height=202;
+  const cx=(1+screenX)*sea.width/2,cy=(1-screenY)*sea.height/2;
+  const maxW=Math.min(sea.width,sea.height*360/202);
+  const w=maxW*.70,h=w*202/360;
+  output.getContext('2d').drawImage(sea,clamp(cx-w/2,0,sea.width-w),clamp(cy-h/2,0,sea.height-h),w,h,0,0,360,202);
+  records[a.id]={image:output.toDataURL('image/jpeg',.73)};
+  const first=!discoveries.has(a.id);
+  discoveries.add(a.id);refreshCounts();
+  $('flash').style.background='#dfffff';flash();
+  play(900,.12,.08,390);
+  say(first?'撮影：'+a.name+' · '+discoveries.size+' / '+goal:'写真を更新：'+a.name,3);
+  checkpoint();
+  if(first&&discoveries.size>=goal&&!goalShown){
+    goalShown=true;result('goal');
+  }
+}
+function updateBook(){
+  $('bookProgress').textContent=recordCount()+' / 50 種類';
+  const root=$('species');root.replaceChildren();
+  for(const a of species){
+    const photo=records[a.id]?.image;
+    const el=document.createElement(photo?'button':'div');
+    el.className='specimen';
+    if(photo){
+      const image=new Image();image.src=photo;image.alt='';image.loading='lazy';el.append(image);
+      el.addEventListener('click',()=>{
+        $('detailTitle').textContent=a.name;
+        $('photo').src=photo;$('photo').alt=a.name+'の観察写真';$('detail').showModal();
+      });
+    }
+    const name=document.createElement('span');
+    name.textContent=photo?a.name:'未発見';
+    const area=document.createElement('small');area.textContent=zones[a.area][0];
+    el.append(name,area);root.append(el);
+  }
+}
+function resetInput(){keys.clear();mobileKeys.clear();drag=null;}
+function isDown(key){return keys.has(key)||Array.from(mobileKeys.values()).includes(key);}
+function updateDive(dt){
+  diveTime+=dt;
+  const {pos}=camera;
+  if(intro<1){
+    intro=Math.min(1,intro+dt/5.4);
+    const t=intro*intro*(3-2*intro);
+    pos[1]=mix(-.10,-11.15,t);pos[2]=mix(15,-9,t);
+    if(intro===1)say('海底を見回す · 反応を待つ',3);
+  }else{
+    const throttle=Number(isDown('w'))-Number(isDown('s')), lateral=Number(isDown('d'))-Number(isDown('a'));
+    const ascent=Number(isDown('q'))-Number(isDown('z'));
+    const bearing=sin(camera.yaw), cross=cos(camera.yaw);
+    const speed=droneMode?8.2:13.9;
+    const scale=speed/(throttle&&lateral?Math.SQRT2:1);
+    const want=[(bearing*throttle+cross*lateral)*scale,throttle*sin(camera.pitch)*7+ascent*8.8,(-cross*throttle+bearing*lateral)*scale];
+    for(let i=0;i<3;i++) {camera.vel[i]=mix(camera.vel[i],want[i],1-Math.exp(-dt*4.2));pos[i]+=camera.vel[i]*dt;}
+    pos[0]=clamp(pos[0],-92,92);pos[2]=clamp(pos[2],-570,16);
+    if(droneMode&&length(...sub(pos,subPosition))>35){
+      for(let i=0;i<3;i++)pos[i]=subPosition[i]+(pos[i]-subPosition[i])*.98;
+    }
+    pos[1]=clamp(pos[1],floorAt(pos[0],pos[2])+(droneMode?.6:1.3),-.36);
+  }
+  const area=clamp(Math.floor((-pos[2]+17)/120),0,4);
+  $('zone').textContent=droneMode?'観察ドローン':zones[area][0];
+  $('depth').textContent=Math.round(-pos[1]*11);
+  $('integrity').textContent=hull<100?'艇体 '+hull+'%':'';
+  $('drone').hidden=!droneMode&&length(pos[0]-1,pos[2]+143)>33;
+  if(sonarOpen&&target&&diveTime>=nextPing){
+    pingRing=.01;nextPing=diveTime+3.8;play(672,.28,.037,512);
+  }
+  pingRing=Math.min(1,pingRing+dt*.73);
+}
+function toggleDrone(){
+  if($('drone').hidden||!active||intro<1)return;
+  if(droneMode){camera.pos=subPosition;subPosition=null;droneMode=false;say('潜水艇に戻りました');}
+  else{subPosition=camera.pos.slice();droneMode=true;say('観察ドローンを発進しました');}
+  camera.vel=[0,0,0];
+  $('drone').setAttribute('aria-pressed',String(droneMode));
+  $('drone').textContent=droneMode?'艇に戻る':'ドローン';
+}
+let drag=null;
+sea.addEventListener('pointerdown',event=>{
+  if(!active||event.button!==0||drag)return;
+  drag={id:event.pointerId,x:event.clientX,y:event.clientY};sea.setPointerCapture(event.pointerId);
+});
+sea.addEventListener('pointermove',event=>{
+  if(!drag||drag.id!==event.pointerId)return;
+  camera.yaw+=(event.clientX-drag.x)*.0061;
+  camera.pitch=clamp(camera.pitch-(event.clientY-drag.y)*.0059,-1.35,1.35);
+  drag.x=event.clientX;drag.y=event.clientY;
+});
+for(const name of ['pointercancel','lostpointercapture','pointerup']) sea.addEventListener(name,event=>{if(drag?.id===event.pointerId)drag=null;});
+document.querySelectorAll('#touch button').forEach(button=>{
+  button.addEventListener('pointerdown',event=>{
+    event.preventDefault();
+    mobileKeys.set(event.pointerId,button.dataset.key);button.setPointerCapture(event.pointerId);
+  });
+  for(const name of ['pointerup','pointercancel','lostpointercapture'])button.addEventListener(name,event=>mobileKeys.delete(event.pointerId));
+});
+window.addEventListener('blur',resetInput);
+document.addEventListener('visibilitychange',()=>{if(document.hidden)resetInput();});
+document.addEventListener('keydown',event=>{
+  if(!active||$('book').open||$('result').open||$('detail').open||event.ctrlKey||event.metaKey||event.altKey)return;
+  const k=event.key.toLowerCase();
+  if('wasdqz'.includes(k)&&k.length===1){event.preventDefault();keys.add(k);}
+  if(event.repeat)return;
+  if(k==='f')setLamp(!lampOn);
+  if(k==='r')setSonar(!sonarOpen);
+  if(k==='e')photograph();
+});
+document.addEventListener('keyup',event=>keys.delete(event.key.toLowerCase()));
+$('launch').addEventListener('click',begin);
+$('lamp').addEventListener('click',()=>setLamp(!lampOn));
+$('snap').addEventListener('click',photograph);
+$('drone').addEventListener('click',toggleDrone);
+$('sonarToggle').addEventListener('click',()=>setSonar(!sonarOpen));
+$('openbook').addEventListener('click',()=>{resetInput();updateBook();$('book').showModal();});
+$('home').addEventListener('click',()=>result('manual'));
+$('dock').addEventListener('click',returnHome);
+$('continue').addEventListener('click',()=>$('result').close());
+$('result').addEventListener('cancel',event=>{if(hull===0)event.preventDefault();});
+$('mute').addEventListener('click',()=>{
+  muted=!muted;$('mute').textContent=muted?'消音':'音あり';$('mute').setAttribute('aria-pressed',String(muted));
+});
+for(const el of document.querySelectorAll('[data-close]'))el.addEventListener('click',()=>$(el.dataset.close).close());
+let before=performance.now(), cadence=0;
+function frame(now){
+  const dt=clamp((now-before)/1000,0,.045);before=now;
+  const paused=$('book').open||$('result').open||$('detail').open;
+  if(!paused){
+    time+=dt;
+    if(active)updateDive(dt);
+    updateAnimals(time);
+  }
+  draw();
+  if(active&&!paused){
+    cadence+=dt;
+    if(cadence>.11){
+      cadence=0;
+      if(sonarOpen)updateSonar();
+      $('reticle').classList.toggle('ready',Boolean(eligible)&&intro>=1);
+      $('cue').textContent=time<messageUntil?message:eligible&&intro>=1?'撮影できます':'';
+    }
+  }
+  requestAnimationFrame(frame);
+}
+try{init();returnHome();refreshCounts();requestAnimationFrame(frame);}
+catch(error){
+  bootError=error;
+  console.error(error);
+  $('launch').disabled=true;$('startStatus').textContent=gl?'3D画面を起動できませんでした。':error.message;
+}
+
+
+</script></body></html>
