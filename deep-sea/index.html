@@ -5,11 +5,12 @@
 #chart{width:min(665px,calc(100% - 24px))}#chartSites{display:grid;grid-template-columns:1fr 1fr;gap:9px}#chartSites article{background:#102d39;border:1px solid var(--border);border-radius:10px;padding:11px}#chartSites h3{margin:0 0 4px;color:#b8eee5;font-size:1rem}#chartSites p{font-size:.88rem;margin-bottom:9px}#chartSites button{font-size:.88rem;margin:0 6px 5px 0;min-height:40px}#course{position:fixed;z-index:3;left:30px;top:103px;text-align:left;max-width:57vw;font-size:.88rem}#courseArrow{color:var(--accent);display:inline-block;margin-right:6px}#chart .dialog-title{position:sticky;top:0;background:#071d28;z-index:1}@media(max-width:740px){header{display:grid;grid-template-columns:minmax(72px,1fr) auto}header nav{grid-row:1;grid-column:2}#mission{grid-column:1;grid-row:2;justify-self:start;margin-top:-4px}#course{left:12px;top:117px}#scanner{top:69px}#chartSites{grid-template-columns:1fr}#chart{padding:14px}.card h2{font-size:2.4rem}}@media(max-width:370px){nav button{font-size:.73rem;padding:.27rem .36rem}}
 
 @media(max-width:740px){.controls{gap:4px}.controls button{padding:.46rem .44rem;font-size:.83rem;min-height:44px}.depth strong{font-size:1.1rem}}@media(max-width:375px){.depth small{display:block;margin-right:0}.controls button{padding:.39rem .34rem;font-size:.78rem}}
+.card .steerHelp,.card .touchHelp{text-align:left;margin-top:10px;font-size:.88rem}.card .touchHelp{display:none}@media(any-pointer:coarse),(max-width:740px){.card .steerHelp{display:none}.card .touchHelp{display:block}}
 .yard-link{display:block;text-align:center;color:#a6dedc;margin:0 0 .45rem;font-size:.88rem}</style>
 <body><canvas id="sea" aria-label="潜水艇の窓から見た3Dの海底"></canvas><div id="viewport"></div><div id="flash"></div>
 <header><div class="brand"><span class="mark">◈</span><div><h1>深海観測</h1><div id="zone">調査船</div></div></div><div id="mission" hidden><span>今回の記録</span><strong id="count">0 / 5</strong></div><nav><button id="map">海域マップ</button><button id="openbook">図鑑 <span id="total">0 / 60</span></button><button id="mute" aria-pressed="false">音あり</button><button id="home" hidden>帰港</button></nav></header>
-<div id="hud" hidden><div id="reticle"></div><div id="cue" role="status"></div><button id="course" hidden title="案内を終了"><span id="courseArrow">▲</span><span id="courseText"></span></button><aside id="scanner"><button id="sonarToggle" aria-expanded="true">ソナー <span>R</span></button><div id="scanBody"><canvas id="radar" width="168" height="168" aria-label="進行方向基準のソナー"></canvas><p id="reading">観測中</p></div></aside><footer><div class="depth"><small>深度</small><strong id="depth">0</strong> m <span id="integrity"></span></div><div class="controls"><button id="lamp" aria-pressed="true">ライト <kbd>F</kbd></button><button id="drone" hidden aria-pressed="false">ドローン</button><button id="overhead" aria-pressed="false"><span id="overheadText">見下ろす</span> <kbd>V</kbd></button><button id="snap">撮影 <kbd>E</kbd></button></div><p>ドラッグで見回す · WASD 移動 · Q / Z 上下</p></footer><div id="touch"><button data-key="a" aria-label="左に移動">←</button><button data-key="w" aria-label="前進">↑</button><button data-key="s" aria-label="後退">↓</button><button data-key="d" aria-label="右に移動">→</button><button data-key="q">浮上</button><button data-key="z">潜降</button></div></div>
-<main id="start" class="overlay"><section class="card start-card"><h2>深海観測</h2><p>潜水艇に乗り、海底を巡る。<br>ソナーの反応をたどり、生き物を撮影する。</p><label for="goal">今回の目標 <span><input id="goal" type="number" value="5" min="1" max="60" inputmode="numeric"> 種類</span></label><button class="primary" id="launch">潜航する</button><a class="yard-link" href="../#games">あそびのにわへ戻る</a><small id="startStatus">図鑑はこのブラウザーに保存されます</small></section></main>
+<div id="hud" hidden><div id="reticle"></div><div id="cue" role="status"></div><button id="course" hidden title="案内を終了"><span id="courseArrow">▲</span><span id="courseText"></span></button><aside id="scanner"><button id="sonarToggle" aria-expanded="true">ソナー <span>R</span></button><div id="scanBody"><canvas id="radar" width="168" height="168" aria-label="進行方向基準のソナー"></canvas><p id="reading">観測中</p></div></aside><footer><div class="depth"><small>深度</small><strong id="depth">0</strong> m <span id="integrity"></span></div><div class="controls"><button id="lamp" aria-pressed="true">ライト <kbd>F</kbd></button><button id="drone" hidden aria-pressed="false">ドローン</button><button id="snap">撮影 <kbd>E</kbd></button></div><p>左ボタン長押しで前進 · 押したままドラッグで操舵</p></footer><div id="touch"><button data-key="a" aria-label="左に移動">←</button><button data-key="w" aria-label="前進">↑</button><button data-key="s" aria-label="後退">↓</button><button data-key="d" aria-label="右に移動">→</button><button data-key="q">浮上</button><button data-key="z">潜降</button></div></div>
+<main id="start" class="overlay"><section class="card start-card"><h2>深海観測</h2><p>潜水艇に乗り、海底を巡る。<br>ソナーの反応をたどり、生き物を撮影する。<small class="steerHelp">左ボタンを押したまま動かして操舵。<br>見ている向きに進みます。</small><small class="touchHelp">指で見回し、前進ボタンを押すと、<br>見ている向きに進みます。</small></p><label for="goal">今回の目標 <span><input id="goal" type="number" value="5" min="1" max="60" inputmode="numeric"> 種類</span></label><button class="primary" id="launch">潜航する</button><a class="yard-link" href="../#games">あそびのにわへ戻る</a><small id="startStatus">図鑑はこのブラウザーに保存されます</small></section></main>
 <dialog id="chart"><div class="dialog-title"><div><h2>海域マップ</h2><p>海域を選んで潜航できます。</p></div><button data-close="chart" autofocus>閉じる</button></div><div id="chartSites"></div></dialog><dialog id="book"><div class="dialog-title"><div><h2>観察図鑑</h2><p id="bookProgress"></p></div><button data-close="book" autofocus>閉じる</button></div><div id="species"></div></dialog>
 <dialog id="result"><h2 id="resultTitle"></h2><p id="resultText"></p><div class="result-buttons"><button id="continue">探索を続ける</button><button id="dock" class="primary">帰港する</button></div></dialog>
 <dialog id="detail"><button data-close="detail">閉じる</button><h2 id="detailTitle"></h2><img id="photo" alt=""></dialog>
@@ -607,7 +608,6 @@ function buildCreature(a){
 
 
 const camera={pos:[0,-8,12],yaw:0,pitch:-.22,vel:[0,0,0]};
-let overhead=false;
 let attitude, ratio=1, active=false, time=0, diveTime=0, intro=0, lampOn=true, sonarOpen=true, muted=false;
 let records={}, goal=5, discoveries=new Set(), hull=100, eligible=null, target=null, pingRing=0, nextPing=0;
 let message='', messageUntil=0, audio, droneMode=false, subPosition=null, lastAttack=-100, goalShown=false;
@@ -659,7 +659,6 @@ function begin(){
   discoveries=new Set();destination=null;active=true;diveTime=0;intro=0;hull=100;goalShown=false;droneMode=false;subPosition=null;
   nextPing=0;lastAttack=-100;eligible=null;target=null;
   camera.pos=[0,-.1,15];camera.yaw=0;camera.pitch=-.12;camera.vel=[0,0,0];
-  setOverhead(false);
   setLamp(true);setSonar(true);refreshCounts();resetInput();
   $('drone').setAttribute('aria-pressed','false');$('drone').textContent='ドローン';
   $('start').hidden=true;$('hud').hidden=false;$('mission').hidden=false;$('home').hidden=false;
@@ -674,7 +673,6 @@ function visitSite(site){
   }
   intro=1;diveTime=Math.max(diveTime,8.55);
   camera.pos=[site.x,site.y,site.z];camera.yaw=site.yaw;camera.pitch=site.pitch??-.10;camera.vel=[0,0,0];
-  setOverhead(false);
   droneMode=false;subPosition=null;target=null;eligible=null;nextPing=0;
   $('drone').setAttribute('aria-pressed','false');$('drone').textContent='ドローン';
   resetInput();
@@ -915,23 +913,6 @@ function updateBook(){
     el.append(name,area);root.append(el);
   }
 }
-function setOverhead(enabled){
-  overhead=enabled;
-  $('overhead').setAttribute('aria-pressed',String(enabled));
-  $('overheadText').textContent=enabled?'正面を見る':'見下ろす';
-}
-function toggleOverhead(){
-  if(!active||intro<1||$('result').open)return;
-  setOverhead(!overhead);
-  if(overhead){
-    const rise=droneMode?3:7;
-    camera.pos[1]=Math.min(-.62,camera.pos[1]+rise);
-    camera.vel[1]=0;
-    camera.pitch=-.78;
-  }else{
-    camera.pitch=-.10;
-  }
-}
 function resetInput(){keys.clear();mobileKeys.clear();drag=null;}
 function isDown(key){return keys.has(key)||Array.from(mobileKeys.values()).includes(key);}
 function updateDive(dt){
@@ -943,12 +924,15 @@ function updateDive(dt){
     pos[1]=mix(-.10,-11.15,t);pos[2]=mix(15,-9,t);
     if(intro===1)say('海底を見回す · 反応を待つ',3);
   }else{
-    const throttle=Number(isDown('w'))-Number(isDown('s')), lateral=Number(isDown('d'))-Number(isDown('a'));
+    const usingMouse=drag?.type==='mouse';
+    const throttle=Number(isDown('w')||usingMouse)-Number(isDown('s'));
+    const lateral=Number(isDown('d'))-Number(isDown('a'));
     const ascent=Number(isDown('q'))-Number(isDown('z'));
-    const bearing=sin(camera.yaw), cross=cos(camera.yaw);
+    const {ahead,right}=getAttitude();
     const speed=droneMode?8.2:19.5;
     const scale=speed/(throttle&&lateral?Math.SQRT2:1);
-    const want=[(bearing*throttle+cross*lateral)*scale,throttle*(overhead?0:sin(camera.pitch)*7)+ascent*8.8,(-cross*throttle+bearing*lateral)*scale];
+    const want=ahead.map((v,i)=>(v*throttle+right[i]*lateral)*scale);
+    want[1]+=ascent*8.8;
     for(let i=0;i<3;i++) {camera.vel[i]=mix(camera.vel[i],want[i],1-Math.exp(-dt*4.2));pos[i]+=camera.vel[i]*dt;}
     pos[0]=clamp(pos[0],-120,327);pos[2]=clamp(pos[2],-670,53);
     if(droneMode&&length(...sub(pos,subPosition))>35){
@@ -977,10 +961,13 @@ function toggleDrone(){
 let drag=null;
 sea.addEventListener('pointerdown',event=>{
   if(!active||event.button!==0||drag)return;
-  drag={id:event.pointerId,x:event.clientX,y:event.clientY};sea.setPointerCapture(event.pointerId);
+  event.preventDefault();
+  drag={id:event.pointerId,type:event.pointerType,x:event.clientX,y:event.clientY};
+  sea.setPointerCapture(event.pointerId);
 });
 sea.addEventListener('pointermove',event=>{
   if(!drag||drag.id!==event.pointerId)return;
+  if(drag.type==='mouse' && !(event.buttons&1)){drag=null;return;}
   camera.yaw+=(event.clientX-drag.x)*.0061;
   camera.pitch=clamp(camera.pitch-(event.clientY-drag.y)*.0059,-1.35,1.35);
   drag.x=event.clientX;drag.y=event.clientY;
@@ -1003,14 +990,12 @@ document.addEventListener('keydown',event=>{
   if(k==='f')setLamp(!lampOn);
   if(k==='r')setSonar(!sonarOpen);
   if(k==='e')photograph();
-  if(k==='v')toggleOverhead();
   if(k==='m')showChart();
 });
 document.addEventListener('keyup',event=>keys.delete(event.key.toLowerCase()));
 $('launch').addEventListener('click',begin);
 $('lamp').addEventListener('click',()=>setLamp(!lampOn));
 $('snap').addEventListener('click',photograph);
-$('overhead').addEventListener('click',toggleOverhead);
 $('drone').addEventListener('click',toggleDrone);
 $('sonarToggle').addEventListener('click',()=>setSonar(!sonarOpen));
 $('openbook').addEventListener('click',()=>{resetInput();updateBook();$('book').showModal();});
