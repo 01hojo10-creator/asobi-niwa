@@ -4,10 +4,11 @@
 @media(any-pointer:coarse),(max-width:740px){#touch{display:flex;left:max(12px,env(safe-area-inset-left));bottom:calc(83px + env(safe-area-inset-bottom))}#touch button{min-width:46px;min-height:46px;padding:.42rem .60rem;background:#092c3bef;touch-action:none;user-select:none;-webkit-user-select:none}#touch button:active{border-color:#8decdf;background:#165261}footer p,kbd,#sonarToggle span{display:none}footer{grid-template-columns:1fr auto;bottom:max(15px,env(safe-area-inset-bottom))}#snap,#lamp,#drone{min-height:44px}#mission span{display:none}#mission{padding:6px 9px}}@media(any-pointer:coarse) and (orientation:landscape),(max-height:550px) and (orientation:landscape){#touch{bottom:max(18px,env(safe-area-inset-bottom));max-width:none}footer{left:auto;min-width:195px;bottom:max(16px,env(safe-area-inset-bottom));right:max(18px,env(safe-area-inset-right))}#scanner{width:128px;top:65px}}
 #chart{width:min(665px,calc(100% - 24px))}#chartSites{display:grid;grid-template-columns:1fr 1fr;gap:9px}#chartSites article{background:#102d39;border:1px solid var(--border);border-radius:10px;padding:11px}#chartSites h3{margin:0 0 4px;color:#b8eee5;font-size:1rem}#chartSites p{font-size:.88rem;margin-bottom:9px}#chartSites button{font-size:.88rem;margin:0 6px 5px 0;min-height:40px}#course{position:fixed;z-index:3;left:30px;top:103px;text-align:left;max-width:57vw;font-size:.88rem}#courseArrow{color:var(--accent);display:inline-block;margin-right:6px}#chart .dialog-title{position:sticky;top:0;background:#071d28;z-index:1}@media(max-width:740px){header{display:grid;grid-template-columns:minmax(72px,1fr) auto}header nav{grid-row:1;grid-column:2}#mission{grid-column:1;grid-row:2;justify-self:start;margin-top:-4px}#course{left:12px;top:117px}#scanner{top:69px}#chartSites{grid-template-columns:1fr}#chart{padding:14px}.card h2{font-size:2.4rem}}@media(max-width:370px){nav button{font-size:.73rem;padding:.27rem .36rem}}
 
+@media(max-width:740px){.controls{gap:4px}.controls button{padding:.46rem .44rem;font-size:.83rem;min-height:44px}.depth strong{font-size:1.1rem}}@media(max-width:375px){.depth small{display:block;margin-right:0}.controls button{padding:.39rem .34rem;font-size:.78rem}}
 .yard-link{display:block;text-align:center;color:#a6dedc;margin:0 0 .45rem;font-size:.88rem}</style>
 <body><canvas id="sea" aria-label="潜水艇の窓から見た3Dの海底"></canvas><div id="viewport"></div><div id="flash"></div>
 <header><div class="brand"><span class="mark">◈</span><div><h1>深海観測</h1><div id="zone">調査船</div></div></div><div id="mission" hidden><span>今回の記録</span><strong id="count">0 / 5</strong></div><nav><button id="map">海域マップ</button><button id="openbook">図鑑 <span id="total">0 / 60</span></button><button id="mute" aria-pressed="false">音あり</button><button id="home" hidden>帰港</button></nav></header>
-<div id="hud" hidden><div id="reticle"></div><div id="cue" role="status"></div><button id="course" hidden title="案内を終了"><span id="courseArrow">▲</span><span id="courseText"></span></button><aside id="scanner"><button id="sonarToggle" aria-expanded="true">ソナー <span>R</span></button><div id="scanBody"><canvas id="radar" width="168" height="168" aria-label="進行方向基準のソナー"></canvas><p id="reading">観測中</p></div></aside><footer><div class="depth"><small>深度</small><strong id="depth">0</strong> m <span id="integrity"></span></div><div class="controls"><button id="lamp" aria-pressed="true">ライト <kbd>F</kbd></button><button id="drone" hidden aria-pressed="false">ドローン</button><button id="snap">撮影 <kbd>E</kbd></button></div><p>ドラッグで見回す · WASD 移動 · Q / Z 上下</p></footer><div id="touch"><button data-key="a" aria-label="左に移動">←</button><button data-key="w" aria-label="前進">↑</button><button data-key="s" aria-label="後退">↓</button><button data-key="d" aria-label="右に移動">→</button><button data-key="q">浮上</button><button data-key="z">潜降</button></div></div>
+<div id="hud" hidden><div id="reticle"></div><div id="cue" role="status"></div><button id="course" hidden title="案内を終了"><span id="courseArrow">▲</span><span id="courseText"></span></button><aside id="scanner"><button id="sonarToggle" aria-expanded="true">ソナー <span>R</span></button><div id="scanBody"><canvas id="radar" width="168" height="168" aria-label="進行方向基準のソナー"></canvas><p id="reading">観測中</p></div></aside><footer><div class="depth"><small>深度</small><strong id="depth">0</strong> m <span id="integrity"></span></div><div class="controls"><button id="lamp" aria-pressed="true">ライト <kbd>F</kbd></button><button id="drone" hidden aria-pressed="false">ドローン</button><button id="overhead" aria-pressed="false"><span id="overheadText">見下ろす</span> <kbd>V</kbd></button><button id="snap">撮影 <kbd>E</kbd></button></div><p>ドラッグで見回す · WASD 移動 · Q / Z 上下</p></footer><div id="touch"><button data-key="a" aria-label="左に移動">←</button><button data-key="w" aria-label="前進">↑</button><button data-key="s" aria-label="後退">↓</button><button data-key="d" aria-label="右に移動">→</button><button data-key="q">浮上</button><button data-key="z">潜降</button></div></div>
 <main id="start" class="overlay"><section class="card start-card"><h2>深海観測</h2><p>潜水艇に乗り、海底を巡る。<br>ソナーの反応をたどり、生き物を撮影する。</p><label for="goal">今回の目標 <span><input id="goal" type="number" value="5" min="1" max="60" inputmode="numeric"> 種類</span></label><button class="primary" id="launch">潜航する</button><a class="yard-link" href="../#games">あそびのにわへ戻る</a><small id="startStatus">図鑑はこのブラウザーに保存されます</small></section></main>
 <dialog id="chart"><div class="dialog-title"><div><h2>海域マップ</h2><p>海域を選んで潜航できます。</p></div><button data-close="chart" autofocus>閉じる</button></div><div id="chartSites"></div></dialog><dialog id="book"><div class="dialog-title"><div><h2>観察図鑑</h2><p id="bookProgress"></p></div><button data-close="book" autofocus>閉じる</button></div><div id="species"></div></dialog>
 <dialog id="result"><h2 id="resultTitle"></h2><p id="resultText"></p><div class="result-buttons"><button id="continue">探索を続ける</button><button id="dock" class="primary">帰港する</button></div></dialog>
@@ -65,7 +66,7 @@ const surveySites = [
   {name:'沖合のドロップオフ', x:134, z:-60, y:-14, yaw:0, text:'青く開けた沖合。岩棚の先には深い海が広がります。'},
   {name:'砂紋の斜面', x:0, z:-9, y:-11.15, yaw:0, text:'細かな砂紋を横切り、沖合や沈没船へ向かえます。'},
   {name:'沈没貨物船', x:17, z:-115, y:-30, yaw:-.40, text:'砂紋の斜面から沖の南側。錨の鎖の先に船首、奥に船橋があります。'},
-  {name:'発光クラゲの谷', x:9, z:-234, y:-37, yaw:0, text:'谷の縁でライトを消すと、青白い発光が見えてきます。'},
+  {name:'発光クラゲの谷', x:9, z:-239, y:-37, yaw:.045, pitch:-.26, text:'谷の縁でライトを消すと、青白い発光が見えてきます。'},
   {name:'熱水の岩場', x:8, z:-357, y:-57, yaw:0, text:'噴出口が立ち並ぶ岩場。底の近くでエビやカニを探せます。'},
   {name:'大海溝', x:8, z:-482, y:-66, yaw:0, text:'水深が一気に増す海域。ときどき大型の生き物が横切ります。'}
 ];
@@ -120,12 +121,20 @@ void main(){
   skin=shape;
   if(motion==1.) p.z+=sin(time*6.+p.x*4.)*.22*max(0.,-p.x);
   if(motion==2.) p.y+=sin(time*2.+p.x*2.)*.19*max(0.,-p.x);
-  if(motion==3.) p.xz*=1.+.15*sin(time*2.65+p.y);
+  if(motion==3.){
+    float beat=sin(time*2.4+.55);
+    p.xz*=1.+(.135*beat-.065*sin(time*4.8))*smoothstep(-.35,.27,p.y);
+    p.y-=.058*beat*smoothstep(.10,.52,p.y);
+    float trailing=max(0.,.11-p.y);
+    p.x+=.115*trailing*trailing*sin(time*2.0+p.y*4.6);
+    p.z+=.087*trailing*trailing*cos(time*1.7+p.y*4.2);
+  }
   if(motion==4.) {p.z+=sin(time*5.+p.x*5.)*.15; p.y+=.11*sin(time*7.+p.x*7.);}
   if(motion==5.) p.y+=sin(time*2.2+abs(p.z)*2.)*abs(p.z)*.34;
   float c=cos(turn), s=sin(turn);
   smoothed=vec3(c*meshNormal.x+s*meshNormal.z,meshNormal.y,-s*meshNormal.x+c*meshNormal.z);
   world=origin+vec3(c*p.x+s*p.z,p.y,-s*p.x+c*p.z)*size;
+  if(motion==6.) world=origin+(right*p.x+up*p.y)*size;
   vec3 d=world-eye;
   depth=dot(d,ahead);
   gl_Position=vec4(dot(d,right)*lens.x,dot(d,up)*lens.y,depth*1.0015-.14,depth);
@@ -137,10 +146,18 @@ precision highp float;
 in vec3 world; in vec4 pigment; in float depth;
 in vec3 smoothed; in vec3 skin;
 uniform vec3 eye,ahead;
-uniform float lamp,time,mode,sunlight;
+uniform float lamp,time,mode,sunlight,jellyLight;
 out vec4 pixel;
 void main(){
   float d=length(world-eye);
+  if(mode==4.){
+    float radius=length(skin.xy);
+    float wave=.85+.15*sin(time*2.4+.55);
+    float core=exp(-radius*radius*7.);
+    float falloff=1.-smoothstep(.45,1.,radius);
+    pixel=vec4(pigment.rgb,(core*.41+falloff*.08)*falloff*exp(-d*.020)*wave*(.38+.62*(1.-lamp))*jellyLight);
+    return;
+  }
   vec3 dir=normalize(world-eye);
   float beam=smoothstep(.72,.985,dot(dir,ahead))*exp(-d*.036)*lamp*(1.-sunlight*.65);
   float attenuation=exp(-d*.027);
@@ -162,10 +179,22 @@ void main(){
   base+=pigment.rgb*pigment.a*1.45+vec3(.16,.27,.31)*spec;
   if(mode==1.) {vec2 p=gl_PointCoord-.5;if(dot(p,p)>.25) discard;base=pigment.rgb*(.12+beam*.8+pigment.a); }
   float jellyEdge=pow(1.-abs(dot(normal,dir)),1.55);
-  float alpha=mode==2.?clamp(.20+pigment.a*.52+jellyEdge*.43,.18,.88):1.;
-  pixel=vec4(mix(fog,base,attenuation),alpha);
+  if(mode==2.){
+    float pulse=.85+.15*sin(time*2.4+.55+skin.y*2.);
+    float emit=pigment.a*(.58+.78*jellyLight)*pulse;
+    float selfLight=exp(-d*.017);
+    float shoulder=smoothstep(.12,.53,skin.y);
+    float streak=.5+.5*cos(15.*atan(skin.z,skin.x)+skin.y*6.);
+    float softShell=(.09+.13*jellyEdge+.045*streak)*jellyLight*shoulder;
+    vec3 glow=pigment.rgb*(emit*(1.35-.19*lamp)+jellyEdge*.16+softShell*pulse);
+    vec3 tissue=base*(.35+.75*beam)+glow*selfLight;
+    float opacity=clamp(.11+jellyEdge*.31+pigment.a*.80+.16*emit+.22*softShell,.12,.96);
+    pixel=vec4(mix(fog,tissue,clamp(selfLight+.15,.0,1.)),opacity);
+    return;
+  }
+  pixel=vec4(mix(fog,base,attenuation),1.);
 }`;
-let program, uniforms={}, worldMesh, dustMesh, bootError;
+let program, uniforms={}, worldMesh, dustMesh, jellyHalo, bootError;
 function init() {
   if (!gl) throw new Error('WebGL 2を利用できません。この端末の別のブラウザーで開いてください。');
   program=gl.createProgram();
@@ -174,12 +203,13 @@ function init() {
   gl.linkProgram(program);
   if (!gl.getProgramParameter(program,gl.LINK_STATUS)) throw new Error(gl.getProgramInfoLog(program));
   gl.useProgram(program);
-  for (const key of ['eye','ahead','right','up','origin','lens','turn','size','time','motion','lamp','mode','sunlight']) uniforms[key]=gl.getUniformLocation(program,key);
+  for (const key of ['eye','ahead','right','up','origin','lens','turn','size','time','motion','lamp','mode','sunlight','jellyLight']) uniforms[key]=gl.getUniformLocation(program,key);
   gl.enable(gl.DEPTH_TEST);
   gl.enable(gl.BLEND);gl.blendFunc(gl.SRC_ALPHA,gl.ONE_MINUS_SRC_ALPHA);
   gl.clearColor(.014,.068,.101,1);
   worldMesh = upload(buildWorld());
   dustMesh = upload(buildDust(),gl.POINTS);
+  jellyHalo = upload(buildJellyHalo());
   for (const animal of species) animal.mesh = upload(buildCreature(animal),gl.TRIANGLES,true);
 }
 function smoothNormals(data) {
@@ -370,6 +400,11 @@ function wreck(m){
     m.limb([x+1.3,y,z-1.3],[x+.38+s*1.37,y+.13,z-2.1+s*.65],.19,rust);
   }
 }
+function buildJellyHalo(){
+  const m=shapes();
+  m.quad([-1,-1,0],[1,-1,0],[1,1,0],[-1,1,0],color(0x4ab5f5));
+  return m.data;
+}
 function buildDust(){
   const m=shapes();
   for(let i=0;i<3600;i++){
@@ -383,18 +418,66 @@ function buildCreature(a){
   const {type,id}=a;
   const fin=(p,q,r,c=dark)=>m.tri(p,q,r,c);
   if(type==='jelly'){
-    const rings=10, segments=29, w=.39+(id%4)*.042;
-    const surface=(j,i)=>{const p=(i%segments)*tau/segments,b=j/rings*Math.PI*.53;return [sin(b)*cos(p)*w,.13+.39*cos(b),sin(b)*sin(p)*w];};
-    for(let j=0;j<rings;j++) for(let i=0;i<segments;i++)
-      m.quad(surface(j,i),surface(j+1,i),surface(j+1,i+1),surface(j,i+1),(i+j)%4===0?pale:k,.23+(.40*j/rings));
-    for(let i=0;i<12;i++){
-      const phase=i*tau/12; let p=[cos(phase)*w*.81,.13,sin(phase)*w*.82];
-      const extent=.62+rand(i+id)*.55;
-      for(let j=1;j<=10;j++){
-        const q=[p[0]+.02*sin(j*.53+phase),.13-extent*j/10,p[2]+.022*cos(j*.61+phase)];
-        m.limb(p,q,.014-(j*.0008),pale,.4);p=q;
+    const bands=19, segments=56, w=.41+(id%4)*.038;
+    const luminous=[20,21,48].includes(id);
+    const rim=luminous?(id===20?color(0x8ad9ff):id===48?color(0xd09fff):color(0x76cfff)):pale;
+    const membrane=k.map((v,i)=>mix(v,rim[i],luminous?.42:.22));
+    const bell=(t,ang)=>{
+      const angle=t*Math.PI*.525;
+      const flutes=.026*sin(16*ang)*t*t;
+      return [(w*sin(angle)+flutes)*cos(ang),.11+w*1.08*cos(angle)-.023*t*t*cos(16*ang),(w*sin(angle)+flutes)*sin(ang)];
+    };
+    for(let j=0;j<bands;j++) for(let i=0;i<segments;i++){
+      const t=j/bands, t2=(j+1)/bands, a=i*tau/segments,b=(i+1)*tau/segments;
+      const rib=i%7===0? .055 : 0;
+      m.quad(bell(t,a),bell(t2,a),bell(t2,b),bell(t,b),membrane,.025+rib+.075*t*t);
+    }
+    // Two fine, luminous folds follow the edge of the bell.
+    for(let i=0;i<segments;i++){
+      const a=i*tau/segments,b=(i+1)*tau/segments;
+      m.quad(bell(.969,a),bell(1,a),bell(1,b),bell(.969,b),rim,luminous?.95:.53);
+      if(i%7<=2) m.quad(bell(.926,a),bell(.946,a),bell(.946,b),bell(.926,b),rim,luminous?.60:.27);
+    }
+    for(let i=0;i<8;i++){
+      const angle=i*tau/8;
+      for(let j=3;j<15;j++){
+        const t=j/15,u=(j+1)/15;
+        m.limb(bell(t,angle+.025*t),bell(u,angle+.025*u),.0043,rim,luminous?.64:.36);
       }
     }
+    // Four curved organs are visible through the transparent bell.
+    const organ=membrane.map((v,i)=>mix(v,[.97,.62,.77][i],.36));
+    for(let i=0;i<4;i++){
+      const a=i*tau/4+.3;
+      for(let j=0;j<22;j++){
+        const at=t=>{const r=.087+.046*cos(t),s=.055*sin(t);
+          return [r*cos(a)-s*sin(a),.235+.013*cos(t*2),r*sin(a)+s*cos(a)];
+        };
+        m.limb(at((.42+j*.242)),at((.42+(j+1)*.242)),.009,organ,luminous?.60:.33);
+      }
+    }
+    for(let i=0;i<24;i++){
+      const phase=i*tau/24, extent=(id===48?.76:.54)+rand(i*11+id)*.61;
+      let p=bell(1,phase);
+      for(let j=1;j<=23;j++){
+        const f=j/23, drift=f*f*.14;
+        const q=[p[0]+.012*sin(j*.39+phase)+drift*.033,.10-extent*f,p[2]+.012*cos(j*.43+phase)];
+        m.limb(p,q,mix(.0079,.0019,f),i%4===0?rim:membrane,
+          (luminous?.79:.49)*(i%4===0?1:.63)*(1-f*.40));
+        p=q;
+      }
+    }
+    for(let i=0;i<4;i++){
+      const phase=i*tau/4;
+      let p=[.058*cos(phase),.25,.058*sin(phase)];
+      for(let j=1;j<=21;j++){
+        const f=j/21,r=.055+.04*f,twist=phase+f*3.2;
+        const q=[cos(twist)*r,.25-f*.68,sin(twist)*r];
+        m.limb(p,q,mix(.024,.007,f),organ,luminous?.65:.40);
+        p=q;
+      }
+    }
+
   } else if(type==='shrimp'||type==='crab'){
     const crab=type==='crab';
     for(let i=0;i<(crab?4:8);i++) m.ell(.40-i*.12,-((i*.045)**2),0,.12,.15-i*.009,crab?.29:.12,k,0,10,7);
@@ -524,6 +607,7 @@ function buildCreature(a){
 
 
 const camera={pos:[0,-8,12],yaw:0,pitch:-.22,vel:[0,0,0]};
+let overhead=false;
 let attitude, ratio=1, active=false, time=0, diveTime=0, intro=0, lampOn=true, sonarOpen=true, muted=false;
 let records={}, goal=5, discoveries=new Set(), hull=100, eligible=null, target=null, pingRing=0, nextPing=0;
 let message='', messageUntil=0, audio, droneMode=false, subPosition=null, lastAttack=-100, goalShown=false;
@@ -575,6 +659,7 @@ function begin(){
   discoveries=new Set();destination=null;active=true;diveTime=0;intro=0;hull=100;goalShown=false;droneMode=false;subPosition=null;
   nextPing=0;lastAttack=-100;eligible=null;target=null;
   camera.pos=[0,-.1,15];camera.yaw=0;camera.pitch=-.12;camera.vel=[0,0,0];
+  setOverhead(false);
   setLamp(true);setSonar(true);refreshCounts();resetInput();
   $('drone').setAttribute('aria-pressed','false');$('drone').textContent='ドローン';
   $('start').hidden=true;$('hud').hidden=false;$('mission').hidden=false;$('home').hidden=false;
@@ -588,7 +673,8 @@ function visitSite(site){
     if(site===surveySites[2])return;
   }
   intro=1;diveTime=Math.max(diveTime,8.55);
-  camera.pos=[site.x,site.y,site.z];camera.yaw=site.yaw;camera.pitch=-.10;camera.vel=[0,0,0];
+  camera.pos=[site.x,site.y,site.z];camera.yaw=site.yaw;camera.pitch=site.pitch??-.10;camera.vel=[0,0,0];
+  setOverhead(false);
   droneMode=false;subPosition=null;target=null;eligible=null;nextPing=0;
   $('drone').setAttribute('aria-pressed','false');$('drone').textContent='ドローン';
   resetInput();
@@ -707,11 +793,13 @@ function draw(){
   displayMesh(worldMesh);
   displayMesh(dustMesh,[.3*sin(time*.20),.32*sin(time*.31),0],0,1,0,1);
   let best=null;
+  const visibleJellies=[];
   for(const a of species){
     const local=sub(a.pos,camera.pos),distance=length(...local),drift=dot(local,ahead);
     if(distance>103 || drift<-a.size)continue;
     const motion=['ray','turtle'].includes(a.type)?5:a.type==='whale'?2:a.type==='jelly'?3:['shrimp','crab','squid'].includes(a.type)?4:1;
-    displayMesh(a.mesh,a.pos,a.yaw,a.size,motion,a.type==='jelly'?2:3,time+a.id);
+    if(a.type==='jelly') visibleJellies.push({a,distance});
+    else displayMesh(a.mesh,a.pos,a.yaw,a.size,motion,3,time+a.id);
     if(a.type==='school') for(let i=1;i<=7;i++){
       const s=sin(i*2.25+time*1.12), p=[a.pos[0]+s*1.8,a.pos[1]+.32*cos(i*2.9+time*.8)+i*.11,a.pos[2]+1.08*sin(i*5)+i*.31];
       displayMesh(a.mesh,p,a.yaw+.14*s,a.size*(.7+rand(i+77)*.25),motion,3,time+i);
@@ -727,7 +815,27 @@ function draw(){
       if(!best||score<best.score)best={a,screenX,screenY,score};
     }
   }
+  drawJellies(visibleJellies);
   eligible=best;
+}
+function drawJellies(visible){
+  visible.sort((one,two)=>two.distance-one.distance);
+  for(const {a} of visible){
+    const bright=[20,21,48].includes(a.id);
+    gl.uniform1f(uniforms.jellyLight,bright?1.6:.74);
+    displayMesh(a.mesh,a.pos,a.yaw,a.size,3,2,time+a.id);
+  }
+  gl.depthMask(false);
+  gl.blendFunc(gl.SRC_ALPHA,gl.ONE);
+  for(const {a,distance} of visible){
+    if(distance>60)continue;
+    const bright=[20,21,48].includes(a.id);
+    gl.uniform1f(uniforms.jellyLight,bright?1.52:.51);
+    const glow=[a.pos[0],a.pos[1]+a.size*.20,a.pos[2]];
+    displayMesh(jellyHalo,glow,0,a.size*(bright?.99:.76),6,4,time+a.id);
+  }
+  gl.blendFunc(gl.SRC_ALPHA,gl.ONE_MINUS_SRC_ALPHA);
+  gl.depthMask(true);
 }
 function updateSonar(){
   let distance=Infinity;
@@ -807,6 +915,23 @@ function updateBook(){
     el.append(name,area);root.append(el);
   }
 }
+function setOverhead(enabled){
+  overhead=enabled;
+  $('overhead').setAttribute('aria-pressed',String(enabled));
+  $('overheadText').textContent=enabled?'正面を見る':'見下ろす';
+}
+function toggleOverhead(){
+  if(!active||intro<1||$('result').open)return;
+  setOverhead(!overhead);
+  if(overhead){
+    const rise=droneMode?3:7;
+    camera.pos[1]=Math.min(-.62,camera.pos[1]+rise);
+    camera.vel[1]=0;
+    camera.pitch=-.78;
+  }else{
+    camera.pitch=-.10;
+  }
+}
 function resetInput(){keys.clear();mobileKeys.clear();drag=null;}
 function isDown(key){return keys.has(key)||Array.from(mobileKeys.values()).includes(key);}
 function updateDive(dt){
@@ -823,7 +948,7 @@ function updateDive(dt){
     const bearing=sin(camera.yaw), cross=cos(camera.yaw);
     const speed=droneMode?8.2:19.5;
     const scale=speed/(throttle&&lateral?Math.SQRT2:1);
-    const want=[(bearing*throttle+cross*lateral)*scale,throttle*sin(camera.pitch)*7+ascent*8.8,(-cross*throttle+bearing*lateral)*scale];
+    const want=[(bearing*throttle+cross*lateral)*scale,throttle*(overhead?0:sin(camera.pitch)*7)+ascent*8.8,(-cross*throttle+bearing*lateral)*scale];
     for(let i=0;i<3;i++) {camera.vel[i]=mix(camera.vel[i],want[i],1-Math.exp(-dt*4.2));pos[i]+=camera.vel[i]*dt;}
     pos[0]=clamp(pos[0],-120,327);pos[2]=clamp(pos[2],-670,53);
     if(droneMode&&length(...sub(pos,subPosition))>35){
@@ -878,12 +1003,14 @@ document.addEventListener('keydown',event=>{
   if(k==='f')setLamp(!lampOn);
   if(k==='r')setSonar(!sonarOpen);
   if(k==='e')photograph();
+  if(k==='v')toggleOverhead();
   if(k==='m')showChart();
 });
 document.addEventListener('keyup',event=>keys.delete(event.key.toLowerCase()));
 $('launch').addEventListener('click',begin);
 $('lamp').addEventListener('click',()=>setLamp(!lampOn));
 $('snap').addEventListener('click',photograph);
+$('overhead').addEventListener('click',toggleOverhead);
 $('drone').addEventListener('click',toggleDrone);
 $('sonarToggle').addEventListener('click',()=>setSonar(!sonarOpen));
 $('openbook').addEventListener('click',()=>{resetInput();updateBook();$('book').showModal();});
