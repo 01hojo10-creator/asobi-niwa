@@ -1,16 +1,17 @@
 <!doctype html>
-<html lang="ja"><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><title>深海観測</title><style>:root{color-scheme:dark;font:16px/1.5 "Yu Gothic UI","Meiryo",sans-serif;color:#e4f4f6;background:#04141e;--border:#83bed248;--muted:#aecad4;--accent:#8decdf}*{box-sizing:border-box}body{margin:0;overflow:hidden}button,input{font:inherit}button{color:inherit;background:#09232ddb;border:1px solid var(--border);border-radius:8px;padding:.55rem .8rem;cursor:pointer}button:hover,button:focus-visible{border-color:var(--accent);background:#123c47}button:disabled{opacity:.45;cursor:default}button span,kbd,small{color:var(--muted)}[hidden]{display:none!important}#sea,#viewport,#flash{position:fixed;inset:0;width:100%;height:100%;display:block}#sea{touch-action:none;cursor:grab}#sea:active{cursor:grabbing}#viewport{pointer-events:none;border:solid #031018;border-width:8px 10px 28px;border-radius:78px / 52px;box-shadow:inset 0 0 38px 12px #01080d,inset 0 -20px 35px #05141a;z-index:1}#flash{z-index:5;pointer-events:none;background:#dcffff;opacity:0;transition:opacity .32s}header,footer,aside,#cue,#touch{z-index:3;position:fixed}header{top:24px;left:30px;right:30px;display:flex;align-items:start;justify-content:space-between;gap:12px;pointer-events:none}nav,header button{pointer-events:auto}nav{display:flex;gap:8px;flex-wrap:wrap;justify-content:flex-end}.brand{display:flex;align-items:center;gap:12px;text-shadow:0 2px 8px #000}.mark{font-size:26px;color:var(--accent)}h1,h2,p{margin:0}h1{font-size:1.18rem;letter-spacing:.11em}#zone{font-size:.88rem;color:var(--muted)}#mission{padding:5px 12px;text-align:center;border:1px solid var(--border);border-radius:8px;background:#04151ec9}#mission span{display:block;font-size:.8rem;color:var(--muted)}#mission strong{color:var(--accent);font-variant-numeric:tabular-nums}#scanner{right:30px;top:100px;width:188px;background:#031720e9;border:1px solid var(--border);border-radius:12px;overflow:hidden}#sonarToggle{display:flex;width:100%;justify-content:space-between;border:0;border-radius:0;text-align:left;background:#0d2834}#scanBody{padding:9px;text-align:center}#radar{width:100%;display:block}#reading{font-size:.87rem;color:#b9eadf;min-height:24px}#reticle{position:fixed;width:44px;height:35px;top:50%;left:50%;transform:translate(-50%,-50%);border:1px solid #bde0e77d;border-radius:8px;z-index:2;pointer-events:none}#reticle.ready{border:2px solid var(--accent);box-shadow:0 0 15px #63f6d45e}#cue{top:calc(50% + 32px);left:50%;transform:translateX(-50%);padding:4px 10px;border-radius:7px;text-align:center;background:#071b25dc;white-space:nowrap;pointer-events:none}#cue:empty{display:none}footer{bottom:30px;left:24px;right:24px;display:grid;grid-template-columns:1fr auto 1fr;align-items:center;padding:12px 16px;background:#041822e8;border:1px solid var(--border);border-radius:10px;gap:10px}footer p{text-align:right;color:var(--muted);font-size:.86rem}.depth strong{font-size:1.4rem;color:var(--accent);font-variant-numeric:tabular-nums}.depth small{margin-right:.4rem}#integrity{display:block;font-size:.8rem;color:#ffcbad}kbd{padding-left:4px}.controls{display:flex;gap:8px}#lamp[aria-pressed=false]{color:#a2b1b6}.overlay{position:fixed;inset:0;z-index:4;display:grid;place-items:center;background:radial-gradient(ellipse at 68% 45%,transparent,#03121c8c 68%);padding:20px;pointer-events:none}.card{pointer-events:auto;text-align:left;width:min(420px,100%);padding:30px;border:1px solid var(--border);border-radius:18px;background:linear-gradient(130deg,#092936f5,#051922ed);box-shadow:0 18px 70px #0008;backdrop-filter:blur(7px)}.card h2{font-weight:650;font-size:clamp(2.35rem,7vw,4rem);letter-spacing:.10em;line-height:1.15;margin-bottom:16px}.card p,dialog p{color:var(--muted)}label{display:flex;align-items:center;justify-content:space-between;margin:24px 0 14px}input{width:4rem;color:#e4f4f6;background:#07202c;border:1px solid var(--border);border-radius:6px;text-align:center;padding:5px}.primary{background:#8ce8dc;color:#06252c;border-color:#aef1e9;font-weight:bold}.primary:hover,.primary:focus-visible{background:#b9fff2;color:#06252c}.card .primary{width:100%;margin-bottom:12px}.card small{display:block;text-align:center}dialog{color:inherit;background:#071d28;border:1px solid var(--border);border-radius:14px;padding:20px;width:min(740px,calc(100% - 28px));max-height:84dvh;z-index:10}dialog::backdrop{background:#010a12b8;backdrop-filter:blur(3px)}.dialog-title{display:flex;justify-content:space-between;align-items:start;gap:16px;margin-bottom:16px}#species{display:grid;grid-template-columns:repeat(auto-fill,minmax(142px,1fr));gap:10px}.specimen{min-height:96px;padding:9px;display:flex;align-items:center;justify-content:center;flex-direction:column;gap:6px;background:#10303d;border:1px solid #7098a22e;border-radius:8px;text-align:center;overflow:hidden}.specimen img{width:100%;aspect-ratio:16/9;object-fit:cover;border-radius:4px}.specimen small{font-size:.78rem}#photo{margin-top:12px;display:block;width:100%;border-radius:6px}#detail button{float:right}#result{width:min(420px,calc(100% - 28px))}.result-buttons{display:flex;flex-wrap:wrap;gap:10px;margin-top:14px}#touch{display:none;bottom:133px;left:24px;gap:4px;max-width:230px;flex-wrap:wrap}#touch button{touch-action:none}@media(pointer:coarse){#touch{display:flex}}@media(max-width:740px){header{top:14px;left:12px;right:12px}nav{gap:4px}nav button{font-size:.8rem;padding:.35rem .45rem}.brand{gap:4px}.mark{display:none}h1{font-size:1rem}#scanner{top:81px;right:12px;width:118px}#scanBody{padding:4px}#reading{font-size:.7rem}footer{left:12px;right:12px;bottom:15px;grid-template-columns:1fr auto;padding:7px}footer p{grid-column:span 2;text-align:center}#viewport{border-radius:37px / 29px}#touch{bottom:110px;left:12px}}
-@media(pointer:coarse){#touch button{min-width:46px;min-height:46px;padding:.42rem .65rem;background:#092c3be8}footer p{display:none}footer{grid-template-columns:1fr auto}#touch{bottom:95px}kbd,#sonarToggle span{display:none}#snap,#lamp,#drone{min-height:44px}#mission span{display:none}#mission{padding:6px 9px}}@media(pointer:coarse) and (orientation:landscape){#touch{bottom:20px;left:24px}footer{left:auto;min-width:210px;bottom:17px;right:24px}#scanner{width:128px;top:65px}}@media(max-width:440px){.card{padding:21px}#cue{max-width:96%;white-space:normal;width:max-content;font-size:.84rem}#reticle{width:37px;height:29px}}button{touch-action:manipulation}#sea{background:radial-gradient(ellipse at 55% 30%,#123544,#04141e 80%)}body{overscroll-behavior:none}
-@media(any-pointer:coarse),(max-width:740px){#touch{display:flex;left:max(12px,env(safe-area-inset-left));bottom:calc(83px + env(safe-area-inset-bottom))}#touch button{min-width:46px;min-height:46px;padding:.42rem .60rem;background:#092c3bef;touch-action:none;user-select:none;-webkit-user-select:none}#touch button:active{border-color:#8decdf;background:#165261}footer p,kbd,#sonarToggle span{display:none}footer{grid-template-columns:1fr auto;bottom:max(15px,env(safe-area-inset-bottom))}#snap,#lamp,#drone{min-height:44px}#mission span{display:none}#mission{padding:6px 9px}}@media(any-pointer:coarse) and (orientation:landscape),(max-height:550px) and (orientation:landscape){#touch{bottom:max(18px,env(safe-area-inset-bottom));max-width:none}footer{left:auto;min-width:195px;bottom:max(16px,env(safe-area-inset-bottom));right:max(18px,env(safe-area-inset-right))}#scanner{width:128px;top:65px}}
-#chart{width:min(665px,calc(100% - 24px))}#chartSites{display:grid;grid-template-columns:1fr 1fr;gap:9px}#chartSites article{background:#102d39;border:1px solid var(--border);border-radius:10px;padding:11px}#chartSites h3{margin:0 0 4px;color:#b8eee5;font-size:1rem}#chartSites p{font-size:.88rem;margin-bottom:9px}#chartSites button{font-size:.88rem;margin:0 6px 5px 0;min-height:40px}#course{position:fixed;z-index:3;left:30px;top:103px;text-align:left;max-width:57vw;font-size:.88rem}#courseArrow{color:var(--accent);display:inline-block;margin-right:6px}#chart .dialog-title{position:sticky;top:0;background:#071d28;z-index:1}@media(max-width:740px){header{display:grid;grid-template-columns:minmax(72px,1fr) auto}header nav{grid-row:1;grid-column:2}#mission{grid-column:1;grid-row:2;justify-self:start;margin-top:-4px}#course{left:12px;top:117px}#scanner{top:69px}#chartSites{grid-template-columns:1fr}#chart{padding:14px}.card h2{font-size:2.4rem}}@media(max-width:370px){nav button{font-size:.73rem;padding:.27rem .36rem}}
+<html lang="ja"><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><title>深海観測</title><style>:root{color-scheme:dark;font:16px/1.5 "Yu Gothic UI","Meiryo",sans-serif;color:#e4f4f6;background:#04141e;--border:#83bed248;--muted:#aecad4;--accent:#8decdf}*{box-sizing:border-box}body{margin:0;overflow:hidden}button,input{font:inherit}button{color:inherit;background:#09232ddb;border:1px solid var(--border);border-radius:8px;padding:.55rem .8rem;cursor:pointer}button:hover,button:focus-visible{border-color:var(--accent);background:#123c47}button:disabled{opacity:.45;cursor:default}button span,kbd,small{color:var(--muted)}[hidden]{display:none!important}#sea,#viewport,#flash{position:fixed;inset:0;width:100%;height:100%;display:block}#sea{touch-action:none;cursor:grab}#sea:active{cursor:grabbing}#viewport{pointer-events:none;border:solid #031018;border-width:8px 10px 28px;border-radius:78px / 52px;box-shadow:inset 0 0 38px 12px #01080d,inset 0 -20px 35px #05141a;z-index:1}#flash{z-index:5;pointer-events:none;background:#dcffff;opacity:0;transition:opacity .32s}header,footer,aside,#cue,#touch{z-index:3;position:fixed}header{top:24px;left:30px;right:30px;display:flex;align-items:start;justify-content:space-between;gap:12px;pointer-events:none}nav,header button{pointer-events:auto}nav{display:flex;gap:8px;flex-wrap:wrap;justify-content:flex-end}.brand{display:flex;align-items:center;gap:12px;text-shadow:0 2px 8px #000}.mark{font-size:26px;color:var(--accent)}h1,h2,p{margin:0}h1{font-size:1.18rem;letter-spacing:.11em}#zone{font-size:.88rem;color:var(--muted)}#mission{padding:5px 12px;text-align:center;border:1px solid var(--border);border-radius:8px;background:#04151ec9}#mission span{display:block;font-size:.8rem;color:var(--muted)}#mission strong{color:var(--accent);font-variant-numeric:tabular-nums}#reticle{position:fixed;width:44px;height:35px;top:50%;left:50%;transform:translate(-50%,-50%);border:1px solid #bde0e77d;border-radius:8px;z-index:2;pointer-events:none}#reticle.ready{border:2px solid var(--accent);box-shadow:0 0 15px #63f6d45e}#cue{top:calc(50% + 32px);left:50%;transform:translateX(-50%);padding:4px 10px;border-radius:7px;text-align:center;background:#071b25dc;white-space:nowrap;pointer-events:none}#cue:empty{display:none}footer{bottom:30px;left:24px;right:24px;display:grid;grid-template-columns:1fr auto 1fr;align-items:center;padding:12px 16px;background:#041822e8;border:1px solid var(--border);border-radius:10px;gap:10px}footer p{text-align:right;color:var(--muted);font-size:.86rem}.depth strong{font-size:1.4rem;color:var(--accent);font-variant-numeric:tabular-nums}.depth small{margin-right:.4rem}#integrity{display:block;font-size:.8rem;color:#ffcbad}kbd{padding-left:4px}.controls{display:flex;gap:8px}#lamp[aria-pressed=false]{color:#a2b1b6}.overlay{position:fixed;inset:0;z-index:4;display:grid;place-items:center;background:radial-gradient(ellipse at 68% 45%,transparent,#03121c8c 68%);padding:20px;pointer-events:none}.card{pointer-events:auto;text-align:left;width:min(420px,100%);padding:30px;border:1px solid var(--border);border-radius:18px;background:linear-gradient(130deg,#092936f5,#051922ed);box-shadow:0 18px 70px #0008;backdrop-filter:blur(7px)}.card h2{font-weight:650;font-size:clamp(2.35rem,7vw,4rem);letter-spacing:.10em;line-height:1.15;margin-bottom:16px}.card p,dialog p{color:var(--muted)}label{display:flex;align-items:center;justify-content:space-between;margin:24px 0 14px}input{width:4rem;color:#e4f4f6;background:#07202c;border:1px solid var(--border);border-radius:6px;text-align:center;padding:5px}.primary{background:#8ce8dc;color:#06252c;border-color:#aef1e9;font-weight:bold}.primary:hover,.primary:focus-visible{background:#b9fff2;color:#06252c}.card .primary{width:100%;margin-bottom:12px}.card small{display:block;text-align:center}dialog{color:inherit;background:#071d28;border:1px solid var(--border);border-radius:14px;padding:20px;width:min(740px,calc(100% - 28px));max-height:84dvh;z-index:10}dialog::backdrop{background:#010a12b8;backdrop-filter:blur(3px)}.dialog-title{display:flex;justify-content:space-between;align-items:start;gap:16px;margin-bottom:16px}#species{display:grid;grid-template-columns:repeat(auto-fill,minmax(142px,1fr));gap:10px}.specimen{min-height:96px;padding:9px;display:flex;align-items:center;justify-content:center;flex-direction:column;gap:6px;background:#10303d;border:1px solid #7098a22e;border-radius:8px;text-align:center;overflow:hidden}.specimen img{width:100%;aspect-ratio:16/9;object-fit:cover;border-radius:4px}.specimen small{font-size:.78rem}#photo{margin-top:12px;display:block;width:100%;border-radius:6px}#detail button{float:right}#result{width:min(420px,calc(100% - 28px))}.result-buttons{display:flex;flex-wrap:wrap;gap:10px;margin-top:14px}#touch{display:none;bottom:133px;left:24px;gap:4px;max-width:230px;flex-wrap:wrap}#touch button{touch-action:none}@media(pointer:coarse){#touch{display:flex}}@media(max-width:740px){header{top:14px;left:12px;right:12px}nav{gap:4px}nav button{font-size:.8rem;padding:.35rem .45rem}.brand{gap:4px}.mark{display:none}h1{font-size:1rem}footer{left:12px;right:12px;bottom:15px;grid-template-columns:1fr auto;padding:7px}footer p{grid-column:span 2;text-align:center}#viewport{border-radius:37px / 29px}#touch{bottom:110px;left:12px}}
+@media(pointer:coarse){#touch button{min-width:46px;min-height:46px;padding:.42rem .65rem;background:#092c3be8}footer p{display:none}footer{grid-template-columns:1fr auto}#touch{bottom:95px}kbd{display:none}#snap,#lamp,#drone{min-height:44px}#mission span{display:none}#mission{padding:6px 9px}}@media(pointer:coarse) and (orientation:landscape){#touch{bottom:20px;left:24px}footer{left:auto;min-width:210px;bottom:17px;right:24px}}@media(max-width:440px){.card{padding:21px}#cue{max-width:96%;white-space:normal;width:max-content;font-size:.84rem}#reticle{width:37px;height:29px}}button{touch-action:manipulation}#sea{background:radial-gradient(ellipse at 55% 30%,#123544,#04141e 80%)}body{overscroll-behavior:none}
+@media(any-pointer:coarse),(max-width:740px){#touch{display:flex;left:max(12px,env(safe-area-inset-left));bottom:calc(83px + env(safe-area-inset-bottom))}#touch button{min-width:46px;min-height:46px;padding:.42rem .60rem;background:#092c3bef;touch-action:none;user-select:none;-webkit-user-select:none}#touch button:active{border-color:#8decdf;background:#165261}footer p,kbd{display:none}footer{grid-template-columns:1fr auto;bottom:max(15px,env(safe-area-inset-bottom))}#snap,#lamp,#drone{min-height:44px}#mission span{display:none}#mission{padding:6px 9px}}@media(any-pointer:coarse) and (orientation:landscape),(max-height:550px) and (orientation:landscape){#touch{bottom:max(18px,env(safe-area-inset-bottom));max-width:none}footer{left:auto;min-width:195px;bottom:max(16px,env(safe-area-inset-bottom));right:max(18px,env(safe-area-inset-right))}}
+#chart{width:min(665px,calc(100% - 24px))}#chartSites{display:grid;grid-template-columns:1fr 1fr;gap:9px}#chartSites article{background:#102d39;border:1px solid var(--border);border-radius:10px;padding:11px}#chartSites h3{margin:0 0 4px;color:#b8eee5;font-size:1rem}#chartSites p{font-size:.88rem;margin-bottom:9px}#chartSites button{font-size:.88rem;margin:0 6px 5px 0;min-height:40px}#course{position:fixed;z-index:3;left:30px;top:103px;text-align:left;max-width:57vw;font-size:.88rem}#courseArrow{color:var(--accent);display:inline-block;margin-right:6px}#chart .dialog-title{position:sticky;top:0;background:#071d28;z-index:1}@media(max-width:740px){header{display:grid;grid-template-columns:minmax(72px,1fr) auto}header nav{grid-row:1;grid-column:2}#mission{grid-column:1;grid-row:2;justify-self:start;margin-top:-4px}#course{left:12px;top:117px}#chartSites{grid-template-columns:1fr}#chart{padding:14px}.card h2{font-size:2.4rem}}@media(max-width:370px){nav button{font-size:.73rem;padding:.27rem .36rem}}
 
 @media(max-width:740px){.controls{gap:4px}.controls button{padding:.46rem .44rem;font-size:.83rem;min-height:44px}.depth strong{font-size:1.1rem}}@media(max-width:375px){.depth small{display:block;margin-right:0}.controls button{padding:.39rem .34rem;font-size:.78rem}}
 .card .steerHelp,.card .touchHelp{text-align:left;margin-top:10px;font-size:.88rem}.card .touchHelp{display:none}@media(any-pointer:coarse),(max-width:740px){.card .steerHelp{display:none}.card .touchHelp{display:block}}
-.yard-link{display:block;text-align:center;color:#a6dedc;margin:0 0 .45rem;font-size:.88rem}</style>
+#photoGuide{position:fixed;z-index:3;display:flex;flex-direction:column;align-items:center;gap:.13rem;transform:translate(-50%,-50%);pointer-events:none;color:#bcfff1;white-space:nowrap;text-shadow:0 1px 5px #031821}#guideArrow{display:grid;place-items:center;width:31px;height:31px;background:#0a2736ed;border:1px solid #8bdfcfbd;border-radius:50%;font-size:20px;line-height:1;transform-origin:center;color:#bcfff1}#guideText{background:#06212de8;border:1px solid #6ba49d87;border-radius:6px;padding:.11rem .39rem;font-size:.80rem}#photoGuide.on-target #guideArrow{font-size:0;width:22px;height:20px;border-radius:5px;background:#10323bc7}#photoGuide.on-target #guideArrow::after{content:"▼";font-size:11px}@media(max-height:460px){#photoGuide{gap:0}#guideArrow{width:25px;height:25px;font-size:16px}}
+#photoGuide.on-target{transform:translate(-50%,calc(-100% - 7px))}#photoGuide.on-target #guideArrow{order:2}.yard-link{display:block;text-align:center;color:#a6dedc;margin:0 0 .45rem;font-size:.88rem}</style>
 <body><canvas id="sea" aria-label="潜水艇の窓から見た3Dの海底"></canvas><div id="viewport"></div><div id="flash"></div>
 <header><div class="brand"><span class="mark">◈</span><div><h1>深海観測</h1><div id="zone">調査船</div></div></div><div id="mission" hidden><span>今回の記録</span><strong id="count">0 / 5</strong></div><nav><button id="map">海域マップ</button><button id="openbook">図鑑 <span id="total">0 / 60</span></button><button id="mute" aria-pressed="false">音あり</button><button id="home" hidden>帰港</button></nav></header>
-<div id="hud" hidden><div id="reticle"></div><div id="cue" role="status"></div><button id="course" hidden title="案内を終了"><span id="courseArrow">▲</span><span id="courseText"></span></button><aside id="scanner"><button id="sonarToggle" aria-expanded="true">ソナー <span>R</span></button><div id="scanBody"><canvas id="radar" width="168" height="168" aria-label="進行方向基準のソナー"></canvas><p id="reading">観測中</p></div></aside><footer><div class="depth"><small>深度</small><strong id="depth">0</strong> m <span id="integrity"></span></div><div class="controls"><button id="lamp" aria-pressed="true">ライト <kbd>F</kbd></button><button id="drone" hidden aria-pressed="false">ドローン</button><button id="snap">撮影 <kbd>E</kbd></button></div><p>左ボタンで前進 · 右ボタンで後退 · ドラッグで操舵</p></footer><div id="touch"><button data-key="a" aria-label="左に移動">←</button><button data-key="w" aria-label="前進">↑</button><button data-key="s" aria-label="後退">↓</button><button data-key="d" aria-label="右に移動">→</button><button data-key="q">浮上</button><button data-key="z">潜降</button></div></div>
-<main id="start" class="overlay"><section class="card start-card"><h2>深海観測</h2><p>潜水艇に乗り、海底を巡る。<br>ソナーの反応をたどり、生き物を撮影する。<small class="steerHelp">左ボタンで前進、右ボタンで後退。<br>押したままマウスを動かして操舵。</small><small class="touchHelp">指で見回し、前進・後退ボタンで移動。</small></p><label for="goal">今回の目標 <span><input id="goal" type="number" value="5" min="1" max="60" inputmode="numeric"> 種類</span></label><button class="primary" id="launch">潜航する</button><a class="yard-link" href="../#games">あそびのにわへ戻る</a><small id="startStatus">図鑑はこのブラウザーに保存されます</small></section></main>
+<div id="hud" hidden><div id="reticle"></div><div id="cue" role="status"></div><button id="course" hidden title="案内を終了"><span id="courseArrow">▲</span><span id="courseText"></span></button><div id="photoGuide" hidden><span id="guideArrow" aria-hidden="true">➤</span><span id="guideText"></span></div><footer><div class="depth"><small>深度</small><strong id="depth">0</strong> m <span id="integrity"></span></div><div class="controls"><button id="lamp" aria-pressed="true">ライト <kbd>F</kbd></button><button id="drone" hidden aria-pressed="false">ドローン</button><button id="snap">撮影 <kbd>E</kbd></button></div><p>左ボタンで前進 · 右ボタンで後退 · ドラッグで操舵</p></footer><div id="touch"><button data-key="a" aria-label="左に移動">←</button><button data-key="w" aria-label="前進">↑</button><button data-key="s" aria-label="後退">↓</button><button data-key="d" aria-label="右に移動">→</button><button data-key="q">浮上</button><button data-key="z">潜降</button></div></div>
+<main id="start" class="overlay"><section class="card start-card"><h2>深海観測</h2><p>潜水艇に乗り、海底を巡る。<br>矢印をたどり、まだ撮っていない生き物を探す。<small class="steerHelp">左ボタンで前進、右ボタンで後退。<br>押したままマウスを動かして操舵。</small><small class="touchHelp">指で見回し、前進・後退ボタンで移動。</small></p><label for="goal">今回の目標 <span><input id="goal" type="number" value="5" min="1" max="60" inputmode="numeric"> 種類</span></label><button class="primary" id="launch">潜航する</button><a class="yard-link" href="../#games">あそびのにわへ戻る</a><small id="startStatus">図鑑はこのブラウザーに保存されます</small></section></main>
 <dialog id="chart"><div class="dialog-title"><div><h2>海域マップ</h2><p>海域を選んで潜航できます。</p></div><button data-close="chart" autofocus>閉じる</button></div><div id="chartSites"></div></dialog><dialog id="book"><div class="dialog-title"><div><h2>観察図鑑</h2><p id="bookProgress"></p></div><button data-close="book" autofocus>閉じる</button></div><div id="species"></div></dialog>
 <dialog id="result"><h2 id="resultTitle"></h2><p id="resultText"></p><div class="result-buttons"><button id="continue">探索を続ける</button><button id="dock" class="primary">帰港する</button></div></dialog>
 <dialog id="detail"><button data-close="detail">閉じる</button><h2 id="detailTitle"></h2><img id="photo" alt=""></dialog>
@@ -63,7 +64,7 @@ const species = fauna.flatMap((group, area) => group.map(([name, type, size, tin
 }));
 
 const surveySites = [
-  {name:'サンゴ礁', x:238, z:18, y:-3.55, yaw:0, text:'浅く明るい海。サンゴの周りに色鮮やかな魚が集まります。'},
+  {name:'サンゴ礁', x:238, z:16, y:-2.30, yaw:.05, pitch:-.32, text:'色鮮やかなサンゴが岩棚を覆う浅瀬。サンゴのすぐ上を巡れます。'},
   {name:'沖合のドロップオフ', x:134, z:-60, y:-14, yaw:0, text:'青く開けた沖合。岩棚の先には深い海が広がります。'},
   {name:'砂紋の斜面', x:0, z:-9, y:-11.15, yaw:0, text:'細かな砂紋を横切り、沖合や沈没船へ向かえます。'},
   {name:'沈没貨物船', x:17, z:-115, y:-30, yaw:-.40, text:'砂紋の斜面から沖の南側。錨の鎖の先に船首、奥に船橋があります。'},
@@ -174,9 +175,10 @@ void main(){
   float sand=sin(world.z*4.8+world.x*.95+sin(world.x*.44)*1.7)*smoothstep(.62,.95,normal.y);
   float scales=sin(skin.x*136.+sin(skin.y*95.)*.8)*sin(skin.y*115.+skin.x*46.);
   float pores=sin(skin.x*61.+skin.z*47.)*sin(skin.y*77.+sin(skin.x*91.));
-  float detail=mode==3.?.065*scales+.041*pores:0.;
+  float coralGrain=sin(world.x*23.+sin(world.y*25.))*sin(world.z*32.+sin(world.x*12.));
+  float detail=mode==3.?.065*scales+.041*pores:mode==5.?.115*coralGrain+.055*ripple:0.;
   float caustics=pow(max(0.,1.-abs(ripple)),8.)*sunlight*.23;
-  vec3 base=pigment.rgb*(.20+.37*light+beam*.91+sunlight*(.51+.39*light)+caustics+beam*.13*ripple)*(.94+.11*grit+sand*.10+detail);
+  vec3 base=pigment.rgb*(.20+.37*light+beam*.91+sunlight*(.51+.39*light+(mode==5.?.19:0.))+caustics+beam*.13*ripple)*(.94+.11*grit+sand*.10+detail);
   base+=pigment.rgb*pigment.a*1.45+vec3(.16,.27,.31)*spec;
   if(mode==1.) {vec2 p=gl_PointCoord-.5;if(dot(p,p)>.25) discard;base=pigment.rgb*(.12+beam*.8+pigment.a); }
   float jellyEdge=pow(1.-abs(dot(normal,dir)),1.55);
@@ -195,7 +197,7 @@ void main(){
   }
   pixel=vec4(mix(fog,base,attenuation),1.);
 }`;
-let program, uniforms={}, worldMesh, dustMesh, jellyHalo, bootError;
+let program, uniforms={}, worldMesh, reefMesh, dustMesh, jellyHalo, bootError;
 function init() {
   if (!gl) throw new Error('WebGL 2を利用できません。この端末の別のブラウザーで開いてください。');
   program=gl.createProgram();
@@ -209,6 +211,7 @@ function init() {
   gl.enable(gl.BLEND);gl.blendFunc(gl.SRC_ALPHA,gl.ONE_MINUS_SRC_ALPHA);
   gl.clearColor(.014,.068,.101,1);
   worldMesh = upload(buildWorld());
+  const reef=shapes();reefLandscape(reef);reefMesh=upload(reef.data);
   dustMesh = upload(buildDust(),gl.POINTS);
   jellyHalo = upload(buildJellyHalo());
   for (const animal of species) animal.mesh = upload(buildCreature(animal),gl.TRIANGLES,true);
@@ -263,15 +266,15 @@ function shapes() {
     };
     for(let j=0;j<rings;j++) for(let i=0;i<steps;i++) quad(p(j,i),p(j+1,i),p(j+1,(i+1)%steps),p(j,(i+1)%steps),k,e);
   }
-  function limb(a,b,r,k,e=0) {
+  function limb(a,b,r,k,e=0,endRadius=r) {
     const d=sub(b,a), norm=length(...d) || 1;
     let u=[d[2],0,-d[0]];
     if(length(...u)<.001) u=[1,0,0];
     const un=length(...u);
     u=u.map(v=>v/un);
     const v=[d[1]*u[2]-d[2]*u[1],d[2]*u[0]-d[0]*u[2],d[0]*u[1]-d[1]*u[0]].map(w=>w/norm);
-    const ring=(p,i)=>p.map((q,j)=>q+r*(cos(i*tau/6)*u[j]+sin(i*tau/6)*v[j]));
-    for(let i=0;i<6;i++) quad(ring(a,i),ring(b,i),ring(b,i+1),ring(a,i+1),k,e);
+    const ring=(p,i,radius)=>p.map((q,j)=>q+radius*(cos(i*tau/6)*u[j]+sin(i*tau/6)*v[j]));
+    for(let i=0;i<6;i++) quad(ring(a,i,r),ring(b,i,endRadius),ring(b,i+1,endRadius),ring(a,i+1,r),k,e);
   }
   return {data,point,tri,quad,box,ell,limb};
 }
@@ -279,7 +282,7 @@ function buildWorld(){
   const m=shapes();
   for(let z=77;z>-720;z-=4) for(let x=-160;x<355;x+=4){
     const area=clamp(Math.floor((-z+17)/120),0,4);
-    const tint=color(x>174&&z>-188?0x9a9980:x>85&&z>-216?0x718486:zones[area][2]).map(v=>v*(.94+.06*rand(x+1201*z)));
+    const tint=color(x>200&&z>-99?0x706b53:x>174&&z>-188?0x8c8975:x>85&&z>-216?0x718486:zones[area][2]).map(v=>v*(.94+.06*rand(x+1201*z)));
     const p=(a,b)=>[a,floorAt(a,b),b];
     m.quad(p(x,z),p(x+4,z),p(x+4,z-4),p(x,z-4),tint);
   }
@@ -299,7 +302,6 @@ function buildWorld(){
     const z=-48+i*4,x=-18+sin(i)*2;
     m.ell(x,floorAt(x,z)+1,z,4,4.1,3.1,color(0x415565),0,9,6,.23);
   }
-  reefLandscape(m);
   wreck(m);
   for(let i=0;i<15;i++){
     const x=7+rand(400+i)*23,z=-360-rand(i+222)*43,h=1.2+rand(i+985)*7;
@@ -309,52 +311,123 @@ function buildWorld(){
   return m.data;
 }
 
+const reefFootprints=[];
 function reefLandscape(m){
-  const sandy=color(0xad9c7b);
-  const hues=[0xc97569,0xc69756,0xb26589,0x8571ad,0xd8a482,0xa3af72,0xe3887b].map(color);
-  for(let i=0;i<180;i++){
-    const close=i<32;
-    const x=close ? 228+i%8*2.9+rand(i+112) : 91+rand(221+i*5)*233;
-    const z=close ? -3-Math.floor(i/8)*5.8+rand(i+998)*2.7 : 38-rand(401+i*7)*184;
-    const reef=x>191&&z>-85;
-    if(Math.abs(x-238)<6&&z>-11&&z<19)continue;
-    const k=hues[i%hues.length],y=floorAt(x,z);
-    const radius=(.6+rand(i+78)*2.15)*(reef?1.18:1);
-    const elevation=close ? .71 : 1;
-    m.ell(x,y-.25,z,radius*1.38,radius*.38,radius*1.08,reef?sandy:color(0x627160),0,15,8,.19);
-    if(!reef&&i%4)continue;
-    if(i%3===0){
-      for(let j=0;j<6;j++){
-        const a=j*tau/6+rand(i),w=.75+rand(j*23+i)*1.36;
-        const xx=x+cos(a)*radius*.65,zz=z+sin(a)*radius*.67;
-        const base=[xx,y+.15,zz],parent=[xx+cos(a)*w*.32,y+w*.68,zz+sin(a)*w*.3];
-        const top=[parent[0]+cos(a)*w*.22,Math.min(-.42,y+w*elevation),parent[2]+sin(a)*w*.4];
-        m.limb(base,parent,.098+w*.045,k);m.limb(parent,top,.082,k);
-        for(const s of [-1,1]){
-          const bud=[parent[0]+cos(a+s*.87)*w*.36,parent[1]+w*.22,parent[2]+sin(a+s*.87)*w*.32];
-          m.limb(parent,bud,.065,k);m.ell(...bud,.075,.16,.068,k,0,7,4);
-        }
-      }
-    }else if(i%3===1){
-      for(let j=0;j<5;j++){
-        const a=j*tau/5, xx=x+radius*.33*cos(a),zz=z+radius*.32*sin(a);
-        m.ell(xx,y+.44+j*.12,zz,radius*.6,.12+j*.024,radius*.54,k,.025,12,6,.18);
-      }
-    }else{
-      for(let j=0;j<7;j++){
-        const a=j*tau/7, r=.21+rand(i+j)*.63;
-        m.ell(x+cos(a)*radius*.49,y+.3,z+sin(a)*radius*.42,r,r*.82,r,k,0,10,6,.21);
+  const palette=[
+    [0xcb5483,0xf393ac],[0x9861bd,0xd1a0ee],[0xe27357,0xfbb78c],[0xd1a656,0xffd989],
+    [0x64a891,0xb2e1ab],[0xd58437,0xf6bb6a],[0xa94d71,0xf48fab],[0x68769a,0xaaa1c8]
+  ].map(pair=>pair.map(color));
+  const stone=[0x515c58,0x655c50,0x6c625a,0x485e56,0x79715b].map(color);
+
+  function branching(x,y,z,s,k,tip,seed){
+    const ground=[x,y,z];
+    for(let arm=0;arm<5;arm++){
+      const yaw=arm*tau/5+seed, vx=cos(yaw),vz=sin(yaw);
+      const rise=s*(.64+rand(seed+arm)*.49);
+      const root=[x+vx*s*.13,y+rise*.18,z+vz*s*.13];
+      const fork=[x+vx*s*.40,y+rise*.61,z+vz*s*.40];
+      const upper=[x+vx*s*.55,y+rise*.91,z+vz*s*.55];
+      m.limb(ground,root,s*.126,k,0,s*.11);
+      m.limb(root,fork,s*.11,k,0,s*.072);
+      m.limb(fork,upper,s*.073,k,0,s*.037);
+      for(let twig=0;twig<3;twig++){
+        const a=yaw+(twig-1)*.87;
+        const finish=[upper[0]+cos(a)*s*.23,Math.min(-.35,y+rise+s*(.13+rand(seed+twig+arm)*.21)),upper[2]+sin(a)*s*.23];
+        const joint=[mix(fork[0],finish[0],.59),mix(fork[1],finish[1],.68),mix(fork[2],finish[2],.59)];
+        m.limb(fork,joint,s*.052,k,0,s*.033);
+        m.limb(joint,finish,s*.033,tip,0,s*.012);
       }
     }
   }
-  // Darker ledges mark the edge of the reef and keep the open-water route legible.
-  for(let i=0;i<23;i++){
-    const x=170+sin(i*.43)*12,z=13-i*6.3;
-    const y=floorAt(x,z), h=1.1+rand(89+i)*2.4;
-    m.ell(x,y-.7,z,h*2.0,h,h*1.32,color(0x7e8879),0,10,6,.28);
+  function plated(x,y,z,s,k,tip,seed){
+    for(let l=0;l<3;l++){
+      const yy=y+s*(.34+l*.35),sw=s*(1.05-.17*l);
+      const ox=x+cos(seed+l*.9)*s*.23,oz=z+sin(seed+l*.9)*s*.24;
+      m.limb([x,y,z],[ox,yy,oz],s*.091,k);
+      const plate=(fraction,a)=>{
+        const frill=1.+.09*sin(5*a+l)+.036*sin(9*a+seed);
+        return [ox+cos(a)*sw*fraction*frill,yy+sw*(fraction*.25+.105*sin(a*4+seed)*fraction*fraction),oz+sin(a)*sw*fraction*.84*frill];
+      };
+      for(let i=0;i<26;i++){
+        const a=i*tau/26,b=(i+1)*tau/26;
+        m.quad(plate(.08,a),plate(.68,a),plate(.68,b),plate(.08,b),k);
+        m.quad(plate(.68,a),plate(1,a),plate(1,b),plate(.68,b),k);
+        const aa=plate(1,a),bb=plate(1,b);
+        m.quad(plate(.96,a),aa,bb,plate(.96,b),tip.map((v,j)=>mix(v,k[j],.58)));
+        m.quad(aa,[aa[0],aa[1]-sw*.032,aa[2]],[bb[0],bb[1]-sw*.032,bb[2]],bb,k);
+      }
+    }
+  }
+  function boulder(x,y,z,s,k,tip,seed){
+    m.ell(x,y+.20*s,z,s,s*.74,s*.82,k,0,15,8,.14);
+    for(let i=0;i<16;i++){
+      const a=i*2.40+seed,h=(i+.5)/16,dist=Math.sqrt(1-h*h)*s*.84;
+      const r=s*(.11+rand(seed+i)*.11);
+      const xx=x+cos(a)*dist,zz=z+sin(a)*dist*.81,yy=y+s*(.16+h*.71);
+      m.ell(xx,yy,zz,r,r*.76,r, i%4? k:tip,0,7,4,.22);
+    }
+  }
+  function seaFan(x,y,z,s,k,tip,seed){
+    const dx=cos(seed),dz=sin(seed);
+    const fan=(u,v)=>[x+dx*u*s+.13*s*sin(v*2+seed),y+v*s,z+dz*u*s+.14*s*sin(u*3)];
+    const base=fan(0,0);
+    for(let i=0;i<13;i++){
+      const angle=(i-6)*.19,length=.80+.32*cos(angle);
+      let prev=base;
+      for(let j=1;j<=6;j++){
+        const t=j/6,u=sin(angle)*length*t,v=cos(angle)*length*t;
+        const point=fan(u,v);
+        m.limb(prev,point,s*(.035-.0037*j),j>4?tip:k);
+        if(i<12&&j>1){
+          const b=angle+.19,t2=t-.071;
+          m.limb(point,fan(sin(b)*length*t2,cos(b)*length*t2),s*.0087,k);
+        }
+        prev=point;
+      }
+    }
+  }
+  const colonies=[branching,plated,branching,boulder,seaFan,plated,boulder];
+  const zStart=27;
+  for(let row=0;row<23;row++)for(let col=0;col<15;col++){
+    const seed=row*137+col*13+83;
+    const x=204+col*5.45+(rand(seed)-.5)*3.1,z=zStart-row*5.25+(rand(seed+1)-.5)*2.6;
+    const channel=237+5.5*sin((z-4)*.082);
+    const reefEdge=clamp((38-z)/130,0,1);
+    if(Math.abs(x-channel)<1.7&&row>5&&rand(seed+2)<.56)continue;
+    if(col<2&&rand(seed+3)<.31)continue;
+    const y=floorAt(x,z);
+    const s=(1.05+rand(seed+5)*1.30)*(1+reefEdge*.29);
+    // The rocky shelf extends between neighboring colonies so only narrow sandy gaps remain.
+    m.ell(x,y-.15,z,s*1.62,s*.54,s*1.34,stone[(row+col)%stone.length],0,12,6,.24);
+    const base=Math.min(-2.3,y+s*.28);
+    const [body,tip]=palette[(col*3+row+Math.floor(rand(seed+6)*8))%palette.length];
+    const colony=colonies[(col+row*3+Math.floor(rand(seed+7)*5))%colonies.length];
+    const ceiling=Math.max(.58,(-.35-base)/1.48);
+    const growth=Math.min(s,ceiling);
+    colony(x,base,z,growth,body,tip,seed);
+    reefFootprints.push({x,z,r:growth*.98,top:Math.min(-.70,base+growth*1.32)});
+    if(row<12&&(col+row)%2===0){
+      const patch=palette[(col+row+4)%palette.length];
+      boulder(x+s*.68,base-.24,z-s*.66,s*.44,...patch,seed+4);
+    }
+  }
+  for(let i=0;i<26;i++){
+    const x=164+sin(i*.43)*15,z=24-i*5.6,y=floorAt(x,z),h=1.1+rand(89+i)*2.4;
+    m.ell(x,y-.7,z,h*2.,h,h*1.32,stone[i%stone.length],0,11,6,.28);
+    const [k,tip]=palette[i%palette.length];
+    if(i%2===0)seaFan(x,y+.4,z,h*.55,k,tip,i);
   }
 }
 
+function seabedClearance(x,z){
+  let level=floorAt(x,z)+1.3;
+  if(x<198||x>287||z<-94||z>30)return level;
+  for(const c of reefFootprints){
+    const dx=x-c.x,dz=z-c.z,d2=dx*dx+dz*dz;
+    if(d2<c.r*c.r)level=Math.max(level,mix(c.top+.25,level,d2/(c.r*c.r)));
+  }
+  return level;
+}
 function wreck(m){
   const cx=1,cz=-143,cy=floorAt(cx,cz)+3;
   const rust=color(0x69514a), dark=color(0x303b42), deck=color(0x4a6866);
@@ -608,11 +681,10 @@ function buildCreature(a){
 
 
 const camera={pos:[0,-8,12],yaw:0,pitch:-.22,vel:[0,0,0]};
-let attitude, ratio=1, active=false, time=0, diveTime=0, intro=0, lampOn=true, sonarOpen=true, muted=false;
-let records={}, goal=5, discoveries=new Set(), hull=100, eligible=null, target=null, pingRing=0, nextPing=0;
+let attitude, ratio=1, active=false, time=0, diveTime=0, intro=0, lampOn=true, muted=false;
+let records={}, goal=5, discoveries=new Set(), hull=100, eligible=null;
 let message='', messageUntil=0, audio, droneMode=false, subPosition=null, lastAttack=-100, goalShown=false;
 const keys=new Set(), mobileKeys=new Map();
-const radar=$('radar').getContext('2d');
 const storage='deep-sea-log-v1';
 try{
   const saved=JSON.parse(localStorage.getItem(storage) || '{}');
@@ -630,12 +702,6 @@ function refreshCounts(){
 }
 function say(text, seconds=3){message=text;messageUntil=time+seconds;}
 function setLamp(value){lampOn=value;$('lamp').setAttribute('aria-pressed',String(value));}
-function setSonar(value){
-  sonarOpen=value;
-  $('sonarToggle').setAttribute('aria-expanded',String(value));
-  $('scanBody').hidden=!value;
-  if(value) nextPing=0;
-}
 function play(frequency=740,duration=.2, volume=.035,to=frequency*.83){
   if(muted || !audio || audio.state!=='running')return;
   const tone=audio.createOscillator(), gain=audio.createGain();
@@ -657,9 +723,9 @@ function begin(){
     if(Audio){audio ||= new Audio(); audio.resume().catch(()=>{});}
   }catch{}
   discoveries=new Set();destination=null;active=true;diveTime=0;intro=0;hull=100;goalShown=false;droneMode=false;subPosition=null;
-  nextPing=0;lastAttack=-100;eligible=null;target=null;
+  lastAttack=-100;eligible=null;$('photoGuide').hidden=true;
   camera.pos=[0,-.1,15];camera.yaw=0;camera.pitch=-.12;camera.vel=[0,0,0];
-  setLamp(true);setSonar(true);refreshCounts();resetInput();
+  setLamp(true);refreshCounts();resetInput();
   $('drone').setAttribute('aria-pressed','false');$('drone').textContent='ドローン';
   $('start').hidden=true;$('hud').hidden=false;$('mission').hidden=false;$('home').hidden=false;
   say('潜航中',2.5);play(110,1,.055,65);
@@ -673,7 +739,7 @@ function visitSite(site){
   }
   intro=1;diveTime=Math.max(diveTime,8.55);
   camera.pos=[site.x,site.y,site.z];camera.yaw=site.yaw;camera.pitch=site.pitch??-.10;camera.vel=[0,0,0];
-  droneMode=false;subPosition=null;target=null;eligible=null;nextPing=0;
+  droneMode=false;subPosition=null;eligible=null;
   $('drone').setAttribute('aria-pressed','false');$('drone').textContent='ドローン';
   resetInput();
   say(site.name+'に到着',2.6);
@@ -721,7 +787,7 @@ function returnHome(){
   $('start').hidden=false;$('hud').hidden=true;$('mission').hidden=true;$('home').hidden=true;
   $('zone').textContent='調査船';
   $('startStatus').textContent='図鑑 '+recordCount()+' / '+totalSpecies+' · '+(discoveries.size ? '前回の記録 '+discoveries.size+' 種類':'このブラウザーに保存');
-  camera.pos=[238,-3.6,18];camera.yaw=.04;camera.pitch=-.13;camera.vel=[0,0,0];
+  camera.pos=[238,-2.30,16];camera.yaw=.05;camera.pitch=-.32;camera.vel=[0,0,0];
   $('launch').focus();
 }
 function result(kind){
@@ -789,6 +855,7 @@ function draw(){
   gl.uniform2f(uniforms.lens,f/ratio,f);
   gl.uniform1f(uniforms.lamp,lampOn?1:0);
   displayMesh(worldMesh);
+  if(camera.pos[0]>75&&camera.pos[2]>-232)displayMesh(reefMesh,[0,0,0],0,1,0,5);
   displayMesh(dustMesh,[.3*sin(time*.20),.32*sin(time*.31),0],0,1,0,1);
   let best=null;
   const visibleJellies=[];
@@ -835,39 +902,44 @@ function drawJellies(visible){
   gl.blendFunc(gl.SRC_ALPHA,gl.ONE_MINUS_SRC_ALPHA);
   gl.depthMask(true);
 }
-function updateSonar(){
-  let distance=Infinity;
-  target=null;
-  if(intro>=1&&diveTime>=8.5){
-    for(const a of species){
-      if(discoveries.has(a.id)) continue;
-      const d=length(...sub(a.pos,camera.pos));
-      if(d<distance){distance=d;target=a;}
-    }
+function updatePhotoGuide(){
+  const guide=$('photoGuide');
+  if(intro<1||diveTime<8.5){
+    guide.hidden=true;
+    return;
   }
-  const cx=84,cy=84;
-  radar.clearRect(0,0,168,168);
-  radar.fillStyle='#061923';
-  radar.beginPath();radar.arc(cx,cy,77,0,tau);radar.fill();
-  radar.strokeStyle='#3b726f';radar.lineWidth=1;
-  for(const r of [25,50,76]){radar.beginPath();radar.arc(cx,cy,r,0,tau);radar.stroke();}
-  radar.strokeStyle='#31514e';radar.beginPath();radar.moveTo(8,84);radar.lineTo(160,84);radar.moveTo(84,8);radar.lineTo(84,160);radar.stroke();
-  radar.strokeStyle='#79e4c3';radar.lineWidth=1;
-  radar.beginPath();radar.moveTo(cx,cy-6);radar.lineTo(cx-4,cy+4);radar.lineTo(cx+4,cy+4);radar.closePath();radar.stroke();
-  radar.strokeStyle='rgba(94,239,191,'+Math.max(0,(1-pingRing)*.63)+')';
-  radar.beginPath();radar.arc(cx,cy,Math.max(1,pingRing*76),0,tau);radar.stroke();
-  if(!target){$('reading').textContent=discoveries.size===totalSpecies?'全種類を観察':'周囲を走査中';return;}
-  const d=sub(target.pos,camera.pos);
-  const forward=dot(d,[sin(camera.yaw),0,-cos(camera.yaw)]), side=dot(d,[cos(camera.yaw),0,sin(camera.yaw)]);
+  let nearest=null, best=Infinity;
+  for(const animal of species){
+    if(records[animal.id]?.image)continue;
+    const delta=sub(animal.pos,camera.pos);
+    const distance=length(...delta);
+    if(distance<best){nearest=delta;best=distance;}
+  }
+  guide.hidden=!nearest;
+  if(!nearest)return;
+  const {ahead,right,up}=attitude||getAttitude();
+  const forward=dot(nearest,ahead);
+  const side=dot(nearest,right);
+  const height=dot(nearest,up);
+  const scale=(ratio<1?1.13:1.45)/Math.max(forward,1);
+  const nx=side*scale/ratio, ny=height*scale;
+  const inFrame=forward>0&&Math.abs(nx)<.69&&Math.abs(ny)<.61;
   const bearing=Math.atan2(side,forward);
-  const rr=clamp(length(forward,side)*1.63,8,70), xx=cx+sin(bearing)*rr, yy=cy-cos(bearing)*rr;
-  const halo=radar.createRadialGradient(xx,yy,0,xx,yy,14);
-  halo.addColorStop(0,'#a9ffe0');halo.addColorStop(.27,'#54e8bca3');halo.addColorStop(1,'#54e8bc00');
-  radar.fillStyle=halo;radar.fillRect(xx-14,yy-14,28,28);
-  const dir=forward<0&&Math.abs(side)<-forward*.82?'後方':Math.abs(side)<3||Math.abs(bearing)<.28?'正面':side>0?'右':'左';
-  const vertical=Math.abs(d[1])<2?'同じ高さ':d[1]>0?'上':'下';
-  $('reading').textContent=dir+'・'+vertical+' 約 '+Math.max(1,Math.round(distance))+' m';
+  const dx=forward>0?nx:Math.sign(side||1)*Math.max(.85,Math.abs(nx));
+  const dy=forward>0?ny:clamp(height/best,-.6,.6);
+  const t=Math.max(1,Math.abs(dx)/.68,Math.abs(dy)/.59);
+  const x=dx/t,y=dy/t;
+  guide.style.left=(50+46*x)+'%';
+  guide.style.top=(50-46*y)+'%';
+  guide.classList.toggle('on-target',inFrame);
+  const indicator=$('guideArrow');
+  indicator.style.transform=inFrame?'none':'rotate('+Math.atan2(dx,-dy)+'rad)';
+  const dir=forward<=0?'後方':Math.abs(bearing)<.18?'正面':side>0?'右':'左';
+  const vertical=Math.abs(height)<Math.max(.8,best*.085)?'':height>0?'・上':'・下';
+  const hint='未撮影 '+dir+vertical+' 約 '+Math.max(1,Math.round(best))+' m';
+  if($('guideText').textContent!==hint)$('guideText').textContent=hint;
 }
+
 function flash(){
   const el=$('flash');
   el.style.transition='none';el.style.opacity='.65';
@@ -884,7 +956,7 @@ function photograph(){
   output.getContext('2d').drawImage(sea,clamp(cx-w/2,0,sea.width-w),clamp(cy-h/2,0,sea.height-h),w,h,0,0,360,202);
   records[a.id]={image:output.toDataURL('image/jpeg',.73)};
   const first=!discoveries.has(a.id);
-  discoveries.add(a.id);refreshCounts();
+  discoveries.add(a.id);refreshCounts();updatePhotoGuide();
   $('flash').style.background='#dfffff';flash();
   play(900,.12,.08,390);
   say(first?'撮影：'+a.name+' · '+discoveries.size+' / '+goal:'写真を更新：'+a.name,3);
@@ -938,17 +1010,14 @@ function updateDive(dt){
     if(droneMode&&length(...sub(pos,subPosition))>35){
       for(let i=0;i<3;i++)pos[i]=subPosition[i]+(pos[i]-subPosition[i])*.98;
     }
-    pos[1]=clamp(pos[1],floorAt(pos[0],pos[2])+(droneMode?.6:1.3),-.36);
+    pos[1]=clamp(pos[1],droneMode?floorAt(pos[0],pos[2])+.6:seabedClearance(pos[0],pos[2]),-.36);
   }
   $('zone').textContent=droneMode?'観察ドローン':siteName(pos[0],pos[2]);
   showCourse();
   $('depth').textContent=Math.round(-pos[1]*(mix(11,2,clamp((pos[0]-70)/140,0,1)*clamp((pos[2]+207)/128,0,1))));
   $('integrity').textContent=hull<100?'艇体 '+hull+'%':'';
   $('drone').hidden=!droneMode&&length(pos[0]-1,pos[2]+143)>33;
-  if(sonarOpen&&target&&diveTime>=nextPing){
-    pingRing=.01;nextPing=diveTime+3.8;play(672,.28,.037,512);
-  }
-  pingRing=Math.min(1,pingRing+dt*.73);
+
 }
 function toggleDrone(){
   if($('drone').hidden||!active||intro<1)return;
@@ -990,7 +1059,6 @@ document.addEventListener('keydown',event=>{
   if('wasdqz'.includes(k)&&k.length===1){event.preventDefault();keys.add(k);}
   if(event.repeat)return;
   if(k==='f')setLamp(!lampOn);
-  if(k==='r')setSonar(!sonarOpen);
   if(k==='e')photograph();
   if(k==='m')showChart();
 });
@@ -999,7 +1067,6 @@ $('launch').addEventListener('click',begin);
 $('lamp').addEventListener('click',()=>setLamp(!lampOn));
 $('snap').addEventListener('click',photograph);
 $('drone').addEventListener('click',toggleDrone);
-$('sonarToggle').addEventListener('click',()=>setSonar(!sonarOpen));
 $('openbook').addEventListener('click',()=>{resetInput();updateBook();$('book').showModal();});
 $('home').addEventListener('click',()=>result('manual'));
 $('map').addEventListener('click',showChart);
@@ -1025,7 +1092,7 @@ function frame(now){
     cadence+=dt;
     if(cadence>.11){
       cadence=0;
-      if(sonarOpen)updateSonar();
+      updatePhotoGuide();
       $('reticle').classList.toggle('ready',Boolean(eligible)&&intro>=1);
       $('cue').textContent=time<messageUntil?message:eligible&&intro>=1?'撮影できます':'';
     }
