@@ -1,12 +1,15 @@
 <!doctype html>
 <html lang="ja"><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><title>深海観測</title><style>:root{color-scheme:dark;font:16px/1.5 "Yu Gothic UI","Meiryo",sans-serif;color:#e4f4f6;background:#04141e;--border:#83bed248;--muted:#aecad4;--accent:#8decdf}*{box-sizing:border-box}body{margin:0;overflow:hidden}button,input{font:inherit}button{color:inherit;background:#09232ddb;border:1px solid var(--border);border-radius:8px;padding:.55rem .8rem;cursor:pointer}button:hover,button:focus-visible{border-color:var(--accent);background:#123c47}button:disabled{opacity:.45;cursor:default}button span,kbd,small{color:var(--muted)}[hidden]{display:none!important}#sea,#viewport,#flash{position:fixed;inset:0;width:100%;height:100%;display:block}#sea{touch-action:none;cursor:grab}#sea:active{cursor:grabbing}#viewport{pointer-events:none;border:solid #031018;border-width:8px 10px 28px;border-radius:78px / 52px;box-shadow:inset 0 0 38px 12px #01080d,inset 0 -20px 35px #05141a;z-index:1}#flash{z-index:5;pointer-events:none;background:#dcffff;opacity:0;transition:opacity .32s}header,footer,aside,#cue,#touch{z-index:3;position:fixed}header{top:24px;left:30px;right:30px;display:flex;align-items:start;justify-content:space-between;gap:12px;pointer-events:none}nav,header button{pointer-events:auto}nav{display:flex;gap:8px;flex-wrap:wrap;justify-content:flex-end}.brand{display:flex;align-items:center;gap:12px;text-shadow:0 2px 8px #000}.mark{font-size:26px;color:var(--accent)}h1,h2,p{margin:0}h1{font-size:1.18rem;letter-spacing:.11em}#zone{font-size:.88rem;color:var(--muted)}#mission{padding:5px 12px;text-align:center;border:1px solid var(--border);border-radius:8px;background:#04151ec9}#mission span{display:block;font-size:.8rem;color:var(--muted)}#mission strong{color:var(--accent);font-variant-numeric:tabular-nums}#scanner{right:30px;top:100px;width:188px;background:#031720e9;border:1px solid var(--border);border-radius:12px;overflow:hidden}#sonarToggle{display:flex;width:100%;justify-content:space-between;border:0;border-radius:0;text-align:left;background:#0d2834}#scanBody{padding:9px;text-align:center}#radar{width:100%;display:block}#reading{font-size:.87rem;color:#b9eadf;min-height:24px}#reticle{position:fixed;width:44px;height:35px;top:50%;left:50%;transform:translate(-50%,-50%);border:1px solid #bde0e77d;border-radius:8px;z-index:2;pointer-events:none}#reticle.ready{border:2px solid var(--accent);box-shadow:0 0 15px #63f6d45e}#cue{top:calc(50% + 32px);left:50%;transform:translateX(-50%);padding:4px 10px;border-radius:7px;text-align:center;background:#071b25dc;white-space:nowrap;pointer-events:none}#cue:empty{display:none}footer{bottom:30px;left:24px;right:24px;display:grid;grid-template-columns:1fr auto 1fr;align-items:center;padding:12px 16px;background:#041822e8;border:1px solid var(--border);border-radius:10px;gap:10px}footer p{text-align:right;color:var(--muted);font-size:.86rem}.depth strong{font-size:1.4rem;color:var(--accent);font-variant-numeric:tabular-nums}.depth small{margin-right:.4rem}#integrity{display:block;font-size:.8rem;color:#ffcbad}kbd{padding-left:4px}.controls{display:flex;gap:8px}#lamp[aria-pressed=false]{color:#a2b1b6}.overlay{position:fixed;inset:0;z-index:4;display:grid;place-items:center;background:radial-gradient(ellipse at 68% 45%,transparent,#03121c8c 68%);padding:20px;pointer-events:none}.card{pointer-events:auto;text-align:left;width:min(420px,100%);padding:30px;border:1px solid var(--border);border-radius:18px;background:linear-gradient(130deg,#092936f5,#051922ed);box-shadow:0 18px 70px #0008;backdrop-filter:blur(7px)}.card h2{font-weight:650;font-size:clamp(2.35rem,7vw,4rem);letter-spacing:.10em;line-height:1.15;margin-bottom:16px}.card p,dialog p{color:var(--muted)}label{display:flex;align-items:center;justify-content:space-between;margin:24px 0 14px}input{width:4rem;color:#e4f4f6;background:#07202c;border:1px solid var(--border);border-radius:6px;text-align:center;padding:5px}.primary{background:#8ce8dc;color:#06252c;border-color:#aef1e9;font-weight:bold}.primary:hover,.primary:focus-visible{background:#b9fff2;color:#06252c}.card .primary{width:100%;margin-bottom:12px}.card small{display:block;text-align:center}dialog{color:inherit;background:#071d28;border:1px solid var(--border);border-radius:14px;padding:20px;width:min(740px,calc(100% - 28px));max-height:84dvh;z-index:10}dialog::backdrop{background:#010a12b8;backdrop-filter:blur(3px)}.dialog-title{display:flex;justify-content:space-between;align-items:start;gap:16px;margin-bottom:16px}#species{display:grid;grid-template-columns:repeat(auto-fill,minmax(142px,1fr));gap:10px}.specimen{min-height:96px;padding:9px;display:flex;align-items:center;justify-content:center;flex-direction:column;gap:6px;background:#10303d;border:1px solid #7098a22e;border-radius:8px;text-align:center;overflow:hidden}.specimen img{width:100%;aspect-ratio:16/9;object-fit:cover;border-radius:4px}.specimen small{font-size:.78rem}#photo{margin-top:12px;display:block;width:100%;border-radius:6px}#detail button{float:right}#result{width:min(420px,calc(100% - 28px))}.result-buttons{display:flex;flex-wrap:wrap;gap:10px;margin-top:14px}#touch{display:none;bottom:133px;left:24px;gap:4px;max-width:230px;flex-wrap:wrap}#touch button{touch-action:none}@media(pointer:coarse){#touch{display:flex}}@media(max-width:740px){header{top:14px;left:12px;right:12px}nav{gap:4px}nav button{font-size:.8rem;padding:.35rem .45rem}.brand{gap:4px}.mark{display:none}h1{font-size:1rem}#scanner{top:81px;right:12px;width:118px}#scanBody{padding:4px}#reading{font-size:.7rem}footer{left:12px;right:12px;bottom:15px;grid-template-columns:1fr auto;padding:7px}footer p{grid-column:span 2;text-align:center}#viewport{border-radius:37px / 29px}#touch{bottom:110px;left:12px}}
 @media(pointer:coarse){#touch button{min-width:46px;min-height:46px;padding:.42rem .65rem;background:#092c3be8}footer p{display:none}footer{grid-template-columns:1fr auto}#touch{bottom:95px}kbd,#sonarToggle span{display:none}#snap,#lamp,#drone{min-height:44px}#mission span{display:none}#mission{padding:6px 9px}}@media(pointer:coarse) and (orientation:landscape){#touch{bottom:20px;left:24px}footer{left:auto;min-width:210px;bottom:17px;right:24px}#scanner{width:128px;top:65px}}@media(max-width:440px){.card{padding:21px}#cue{max-width:96%;white-space:normal;width:max-content;font-size:.84rem}#reticle{width:37px;height:29px}}button{touch-action:manipulation}#sea{background:radial-gradient(ellipse at 55% 30%,#123544,#04141e 80%)}body{overscroll-behavior:none}
-@media(any-pointer:coarse),(max-width:740px){#touch{display:flex;left:max(12px,env(safe-area-inset-left));bottom:calc(83px + env(safe-area-inset-bottom))}#touch button{min-width:46px;min-height:46px;padding:.42rem .60rem;background:#092c3bef;touch-action:none;user-select:none;-webkit-user-select:none}#touch button:active{border-color:#8decdf;background:#165261}footer p,kbd,#sonarToggle span{display:none}footer{grid-template-columns:1fr auto;bottom:max(15px,env(safe-area-inset-bottom))}#snap,#lamp,#drone{min-height:44px}#mission span{display:none}#mission{padding:6px 9px}}@media(any-pointer:coarse) and (orientation:landscape),(max-height:550px) and (orientation:landscape){#touch{bottom:max(18px,env(safe-area-inset-bottom));max-width:none}footer{left:auto;min-width:195px;bottom:max(16px,env(safe-area-inset-bottom));right:max(18px,env(safe-area-inset-right))}#scanner{width:128px;top:65px}}.yard-link{display:block;text-align:center;color:#a6dedc;margin:0 0 .45rem;font-size:.88rem}</style>
+@media(any-pointer:coarse),(max-width:740px){#touch{display:flex;left:max(12px,env(safe-area-inset-left));bottom:calc(83px + env(safe-area-inset-bottom))}#touch button{min-width:46px;min-height:46px;padding:.42rem .60rem;background:#092c3bef;touch-action:none;user-select:none;-webkit-user-select:none}#touch button:active{border-color:#8decdf;background:#165261}footer p,kbd,#sonarToggle span{display:none}footer{grid-template-columns:1fr auto;bottom:max(15px,env(safe-area-inset-bottom))}#snap,#lamp,#drone{min-height:44px}#mission span{display:none}#mission{padding:6px 9px}}@media(any-pointer:coarse) and (orientation:landscape),(max-height:550px) and (orientation:landscape){#touch{bottom:max(18px,env(safe-area-inset-bottom));max-width:none}footer{left:auto;min-width:195px;bottom:max(16px,env(safe-area-inset-bottom));right:max(18px,env(safe-area-inset-right))}#scanner{width:128px;top:65px}}
+#chart{width:min(665px,calc(100% - 24px))}#chartSites{display:grid;grid-template-columns:1fr 1fr;gap:9px}#chartSites article{background:#102d39;border:1px solid var(--border);border-radius:10px;padding:11px}#chartSites h3{margin:0 0 4px;color:#b8eee5;font-size:1rem}#chartSites p{font-size:.88rem;margin-bottom:9px}#chartSites button{font-size:.88rem;margin:0 6px 5px 0;min-height:40px}#course{position:fixed;z-index:3;left:30px;top:103px;text-align:left;max-width:57vw;font-size:.88rem}#courseArrow{color:var(--accent);display:inline-block;margin-right:6px}#chart .dialog-title{position:sticky;top:0;background:#071d28;z-index:1}@media(max-width:740px){header{display:grid;grid-template-columns:minmax(72px,1fr) auto}header nav{grid-row:1;grid-column:2}#mission{grid-column:1;grid-row:2;justify-self:start;margin-top:-4px}#course{left:12px;top:117px}#scanner{top:69px}#chartSites{grid-template-columns:1fr}#chart{padding:14px}.card h2{font-size:2.4rem}}@media(max-width:370px){nav button{font-size:.73rem;padding:.27rem .36rem}}
+
+.yard-link{display:block;text-align:center;color:#a6dedc;margin:0 0 .45rem;font-size:.88rem}</style>
 <body><canvas id="sea" aria-label="潜水艇の窓から見た3Dの海底"></canvas><div id="viewport"></div><div id="flash"></div>
-<header><div class="brand"><span class="mark">◈</span><div><h1>深海観測</h1><div id="zone">調査船</div></div></div><div id="mission" hidden><span>今回の記録</span><strong id="count">0 / 5</strong></div><nav><button id="openbook">図鑑 <span id="total">0 / 50</span></button><button id="mute" aria-pressed="false">音あり</button><button id="home" hidden>帰港</button></nav></header>
-<div id="hud" hidden><div id="reticle"></div><div id="cue" role="status"></div><aside id="scanner"><button id="sonarToggle" aria-expanded="true">ソナー <span>R</span></button><div id="scanBody"><canvas id="radar" width="168" height="168" aria-label="進行方向基準のソナー"></canvas><p id="reading">観測中</p></div></aside><footer><div class="depth"><small>深度</small><strong id="depth">0</strong> m <span id="integrity"></span></div><div class="controls"><button id="lamp" aria-pressed="true">ライト <kbd>F</kbd></button><button id="drone" hidden aria-pressed="false">ドローン</button><button id="snap">撮影 <kbd>E</kbd></button></div><p>ドラッグで見回す · WASD 移動 · Q / Z 上下</p></footer><div id="touch"><button data-key="a" aria-label="左に移動">←</button><button data-key="w" aria-label="前進">↑</button><button data-key="s" aria-label="後退">↓</button><button data-key="d" aria-label="右に移動">→</button><button data-key="q">浮上</button><button data-key="z">潜降</button></div></div>
-<main id="start" class="overlay"><section class="card start-card"><h2>深海観測</h2><p>潜水艇に乗り、海底を巡る。<br>ソナーの反応をたどり、生き物を撮影する。</p><label for="goal">今回の目標 <span><input id="goal" type="number" value="5" min="1" max="50" inputmode="numeric"> 種類</span></label><button class="primary" id="launch">潜航する</button><a class="yard-link" href="../#games">あそびのにわへ戻る</a><small id="startStatus">図鑑はこのブラウザーに保存されます</small></section></main>
-<dialog id="book"><div class="dialog-title"><div><h2>観察図鑑</h2><p id="bookProgress"></p></div><button data-close="book" autofocus>閉じる</button></div><div id="species"></div></dialog>
+<header><div class="brand"><span class="mark">◈</span><div><h1>深海観測</h1><div id="zone">調査船</div></div></div><div id="mission" hidden><span>今回の記録</span><strong id="count">0 / 5</strong></div><nav><button id="map">海域マップ</button><button id="openbook">図鑑 <span id="total">0 / 60</span></button><button id="mute" aria-pressed="false">音あり</button><button id="home" hidden>帰港</button></nav></header>
+<div id="hud" hidden><div id="reticle"></div><div id="cue" role="status"></div><button id="course" hidden title="案内を終了"><span id="courseArrow">▲</span><span id="courseText"></span></button><aside id="scanner"><button id="sonarToggle" aria-expanded="true">ソナー <span>R</span></button><div id="scanBody"><canvas id="radar" width="168" height="168" aria-label="進行方向基準のソナー"></canvas><p id="reading">観測中</p></div></aside><footer><div class="depth"><small>深度</small><strong id="depth">0</strong> m <span id="integrity"></span></div><div class="controls"><button id="lamp" aria-pressed="true">ライト <kbd>F</kbd></button><button id="drone" hidden aria-pressed="false">ドローン</button><button id="snap">撮影 <kbd>E</kbd></button></div><p>ドラッグで見回す · WASD 移動 · Q / Z 上下</p></footer><div id="touch"><button data-key="a" aria-label="左に移動">←</button><button data-key="w" aria-label="前進">↑</button><button data-key="s" aria-label="後退">↓</button><button data-key="d" aria-label="右に移動">→</button><button data-key="q">浮上</button><button data-key="z">潜降</button></div></div>
+<main id="start" class="overlay"><section class="card start-card"><h2>深海観測</h2><p>潜水艇に乗り、海底を巡る。<br>ソナーの反応をたどり、生き物を撮影する。</p><label for="goal">今回の目標 <span><input id="goal" type="number" value="5" min="1" max="60" inputmode="numeric"> 種類</span></label><button class="primary" id="launch">潜航する</button><a class="yard-link" href="../#games">あそびのにわへ戻る</a><small id="startStatus">図鑑はこのブラウザーに保存されます</small></section></main>
+<dialog id="chart"><div class="dialog-title"><div><h2>海域マップ</h2><p>海域を選んで潜航できます。</p></div><button data-close="chart" autofocus>閉じる</button></div><div id="chartSites"></div></dialog><dialog id="book"><div class="dialog-title"><div><h2>観察図鑑</h2><p id="bookProgress"></p></div><button data-close="book" autofocus>閉じる</button></div><div id="species"></div></dialog>
 <dialog id="result"><h2 id="resultTitle"></h2><p id="resultText"></p><div class="result-buttons"><button id="continue">探索を続ける</button><button id="dock" class="primary">帰港する</button></div></dialog>
 <dialog id="detail"><button data-close="detail">閉じる</button><h2 id="detailTitle"></h2><img id="photo" alt=""></dialog>
 <noscript>このゲームにはJavaScriptが必要です。</noscript><script>'use strict';
@@ -56,10 +59,45 @@ const species = fauna.flatMap((group, area) => group.map(([name, type, size, tin
   ];
   return { id, area, name, type, size, tint, base: [p[0], floorAt(p[0],p[2])+p[1]*-1,p[2]], pos: [0,0,0], yaw: 0 };
 }));
+
+const surveySites = [
+  {name:'サンゴ礁', x:238, z:18, y:-3.55, yaw:0, text:'浅く明るい海。サンゴの周りに色鮮やかな魚が集まります。'},
+  {name:'沖合のドロップオフ', x:134, z:-60, y:-14, yaw:0, text:'青く開けた沖合。岩棚の先には深い海が広がります。'},
+  {name:'砂紋の斜面', x:0, z:-9, y:-11.15, yaw:0, text:'細かな砂紋を横切り、沖合や沈没船へ向かえます。'},
+  {name:'沈没貨物船', x:17, z:-115, y:-30, yaw:-.40, text:'砂紋の斜面から沖の南側。錨の鎖の先に船首、奥に船橋があります。'},
+  {name:'発光クラゲの谷', x:9, z:-234, y:-37, yaw:0, text:'谷の縁でライトを消すと、青白い発光が見えてきます。'},
+  {name:'熱水の岩場', x:8, z:-357, y:-57, yaw:0, text:'噴出口が立ち並ぶ岩場。底の近くでエビやカニを探せます。'},
+  {name:'大海溝', x:8, z:-482, y:-66, yaw:0, text:'水深が一気に増す海域。ときどき大型の生き物が横切ります。'}
+];
+const newFauna = [
+  ['カクレクマノミ','reef',1.10,0xee6a21,235,-3,3],['ナンヨウハギ','reef',1.26,0x2853bf,246,-13,6],
+  ['チョウチョウウオ','reef',1.19,0xefb845,222,-18,3],['モンガラカワハギ','reef',1.40,0x47625d,254,-24,4],
+  ['デバスズメダイ','school',.69,0x66beb5,220,-29,6],['ハタタテダイ','reef',1.20,0xe9d5a0,261,-32,5],
+  ['アオウミガメ','turtle',3.65,0x708653,151,-74,11],['オニイトマキエイ','ray',5.75,0x5a7785,127,-89,17],
+  ['バラクーダ','eel',2.35,0x829c9e,161,-100,14],['カマスサワラ','school',1.27,0x699da6,110,-112,13]
+];
+for(const [name,type,size,tint,x,z,height] of newFauna){
+  const id=species.length;
+  species.push({id,name,type,size,tint,area:x>200?5:6,base:[x,floorAt(x,z)+height,z],pos:[0,0,0],yaw:0});
+}
+const areaNames=[...zones.map(z=>z[0]),'サンゴ礁','沖合のドロップオフ'];
+const totalSpecies=species.length;
+function siteName(x,z){
+  if(x>186&&z>-180)return areaNames[5];
+  if(x>70&&z>-220)return areaNames[6];
+  return zones[clamp(Math.floor((-z+17)/120),0,4)][0];
+}
+function daylight(x,z,y){
+  const shallow=clamp((x-59)/154,0,1)*clamp((z+215)/128,0,1);
+  return shallow*clamp((y+43)/33,0,1);
+}
+
 function floorAt(x,z) {
   const descent = Math.max(0,-z) * .135;
   const ravine = 9 * Math.exp(-((x-31)*(x-31))/190) * Math.exp(-((z+212)*(z+212))/8500);
-  return -17-descent-ravine + 1.25*sin(x*.12+z*.115)+.45*cos(z*.31-x*.27)+.48*sin(x*.28+z*.23);
+  const blend=clamp((x-85)/120,0,1)*clamp((z+215)/125,0,1);
+  const shelf=blend*(8.9+descent*.76+4*Math.exp(-((x-238)**2)/1800));
+  return -17-descent-ravine+shelf + 1.25*sin(x*.12+z*.115)+.45*cos(z*.31-x*.27)+.48*sin(x*.28+z*.23);
 }
 function compile(type, source) {
   const shader = gl.createShader(type);
@@ -71,17 +109,22 @@ function compile(type, source) {
 const vert = `#version 300 es
 layout(location=0) in vec3 shape;
 layout(location=1) in vec4 ink;
+layout(location=2) in vec3 meshNormal;
 uniform vec3 eye, ahead, right, up, origin;
 uniform vec2 lens;
 uniform float turn, size, time, motion;
+out vec3 smoothed; out vec3 skin;
 out vec3 world; out vec4 pigment; out float depth;
 void main(){
   vec3 p=shape;
+  skin=shape;
   if(motion==1.) p.z+=sin(time*6.+p.x*4.)*.22*max(0.,-p.x);
   if(motion==2.) p.y+=sin(time*2.+p.x*2.)*.19*max(0.,-p.x);
   if(motion==3.) p.xz*=1.+.15*sin(time*2.65+p.y);
   if(motion==4.) {p.z+=sin(time*5.+p.x*5.)*.15; p.y+=.11*sin(time*7.+p.x*7.);}
+  if(motion==5.) p.y+=sin(time*2.2+abs(p.z)*2.)*abs(p.z)*.34;
   float c=cos(turn), s=sin(turn);
+  smoothed=vec3(c*meshNormal.x+s*meshNormal.z,meshNormal.y,-s*meshNormal.x+c*meshNormal.z);
   world=origin+vec3(c*p.x+s*p.z,p.y,-s*p.x+c*p.z)*size;
   vec3 d=world-eye;
   depth=dot(d,ahead);
@@ -92,24 +135,31 @@ void main(){
 const frag = `#version 300 es
 precision highp float;
 in vec3 world; in vec4 pigment; in float depth;
+in vec3 smoothed; in vec3 skin;
 uniform vec3 eye,ahead;
-uniform float lamp,time,mode;
+uniform float lamp,time,mode,sunlight;
 out vec4 pixel;
 void main(){
   float d=length(world-eye);
   vec3 dir=normalize(world-eye);
-  float beam=smoothstep(.73,.995,dot(dir,ahead))*exp(-d*.036)*lamp;
+  float beam=smoothstep(.72,.985,dot(dir,ahead))*exp(-d*.036)*lamp*(1.-sunlight*.65);
   float attenuation=exp(-d*.027);
-  vec3 fog=vec3(.014,.068,.101);
+  vec3 fog=mix(vec3(.014,.068,.101),vec3(.043,.285,.383),sunlight);
   vec3 normal=normalize(cross(dFdx(world),dFdy(world)));
   if(!gl_FrontFacing) normal=-normal;
+  if(mode>=2.&&length(smoothed)>.4) normal=normalize(smoothed);
   float light=max(.0,dot(normal,normalize(vec3(-.35,1.,.42))));
-  float spec=pow(max(dot(normal,-dir),0.),4.)*beam;
+  vec3 halfway=normalize(normalize(vec3(-.38,.86,.52))-dir);
+  float spec=pow(max(dot(normal,halfway),0.),15.)*(beam+sunlight*.69);
   float ripple=sin(world.x*.59+world.z*.78+time*.47+sin(world.z*.49))*sin(world.z*.42-time*.51+sin(world.x*.59));
   float grit=fract(sin(dot(floor(world*20.),vec3(12.9898,78.233,36.59)))*43758.5453);
   float sand=sin(world.z*4.8+world.x*.95+sin(world.x*.44)*1.7)*smoothstep(.62,.95,normal.y);
-  vec3 base=pigment.rgb*(.24+.32*light+beam*.80+beam*.14*ripple)*(.93+.12*grit+sand*.10);
-  base+=pigment.rgb*pigment.a*1.45+vec3(.10,.20,.23)*spec;
+  float scales=sin(skin.x*136.+sin(skin.y*95.)*.8)*sin(skin.y*115.+skin.x*46.);
+  float pores=sin(skin.x*61.+skin.z*47.)*sin(skin.y*77.+sin(skin.x*91.));
+  float detail=mode==3.?.065*scales+.041*pores:0.;
+  float caustics=pow(max(0.,1.-abs(ripple)),8.)*sunlight*.23;
+  vec3 base=pigment.rgb*(.20+.37*light+beam*.91+sunlight*(.51+.39*light)+caustics+beam*.13*ripple)*(.94+.11*grit+sand*.10+detail);
+  base+=pigment.rgb*pigment.a*1.45+vec3(.16,.27,.31)*spec;
   if(mode==1.) {vec2 p=gl_PointCoord-.5;if(dot(p,p)>.25) discard;base=pigment.rgb*(.12+beam*.8+pigment.a); }
   float jellyEdge=pow(1.-abs(dot(normal,dir)),1.55);
   float alpha=mode==2.?clamp(.20+pigment.a*.52+jellyEdge*.43,.18,.88):1.;
@@ -124,15 +174,31 @@ function init() {
   gl.linkProgram(program);
   if (!gl.getProgramParameter(program,gl.LINK_STATUS)) throw new Error(gl.getProgramInfoLog(program));
   gl.useProgram(program);
-  for (const key of ['eye','ahead','right','up','origin','lens','turn','size','time','motion','lamp','mode']) uniforms[key]=gl.getUniformLocation(program,key);
+  for (const key of ['eye','ahead','right','up','origin','lens','turn','size','time','motion','lamp','mode','sunlight']) uniforms[key]=gl.getUniformLocation(program,key);
   gl.enable(gl.DEPTH_TEST);
   gl.enable(gl.BLEND);gl.blendFunc(gl.SRC_ALPHA,gl.ONE_MINUS_SRC_ALPHA);
   gl.clearColor(.014,.068,.101,1);
   worldMesh = upload(buildWorld());
   dustMesh = upload(buildDust(),gl.POINTS);
-  for (const animal of species) animal.mesh = upload(buildCreature(animal));
+  for (const animal of species) animal.mesh = upload(buildCreature(animal),gl.TRIANGLES,true);
 }
-function upload(data, mode=gl.TRIANGLES) {
+function smoothNormals(data) {
+  const index=new Map(), vertices=[];
+  for(let i=0;i<data.length;i+=7){
+    const k=data.slice(i,i+3).map(v=>Math.round(v*50000)).join(',');
+    if(!index.has(k))index.set(k,[0,0,0]);
+    vertices.push(index.get(k));
+  }
+  for(let i=0;i<data.length;i+=21){
+    const p=data.slice(i,i+3),u=sub(data.slice(i+7,i+10),p),v=sub(data.slice(i+14,i+17),p);
+    const n=[u[1]*v[2]-u[2]*v[1],u[2]*v[0]-u[0]*v[2],u[0]*v[1]-u[1]*v[0]];
+    for(let j=0;j<3;j++) for(let k=0;k<3;k++) vertices[i/7+j][k]-=n[k];
+  }
+  const result=new Float32Array(vertices.length*3);
+  vertices.forEach((n,i)=>{const l=length(...n)||1;for(let k=0;k<3;k++)result[i*3+k]=n[k]/l;});
+  return result;
+}
+function upload(data, mode=gl.TRIANGLES, smooth=false) {
   const vao=gl.createVertexArray();
   gl.bindVertexArray(vao);
   const buf=gl.createBuffer();
@@ -142,6 +208,10 @@ function upload(data, mode=gl.TRIANGLES) {
   gl.vertexAttribPointer(0,3,gl.FLOAT,false,28,0);
   gl.enableVertexAttribArray(1);
   gl.vertexAttribPointer(1,4,gl.FLOAT,false,28,12);
+  if(smooth){
+    const normalBuffer=gl.createBuffer();gl.bindBuffer(gl.ARRAY_BUFFER,normalBuffer);gl.bufferData(gl.ARRAY_BUFFER,smoothNormals(data),gl.STATIC_DRAW);
+    gl.enableVertexAttribArray(2);gl.vertexAttribPointer(2,3,gl.FLOAT,false,12,0);
+  }
   gl.bindVertexArray(null);
   return {vao,length:data.length/7,mode};
 }
@@ -176,11 +246,11 @@ function shapes() {
 }
 function buildWorld(){
   const m=shapes();
-  for(let z=26;z>-640;z-=3) for(let x=-132;x<132;x+=3){
+  for(let z=77;z>-720;z-=4) for(let x=-160;x<355;x+=4){
     const area=clamp(Math.floor((-z+17)/120),0,4);
-    const tint=color(zones[area][2]).map(v=>v*(.94+.06*rand(x+1201*z)));
+    const tint=color(x>174&&z>-188?0x9a9980:x>85&&z>-216?0x718486:zones[area][2]).map(v=>v*(.94+.06*rand(x+1201*z)));
     const p=(a,b)=>[a,floorAt(a,b),b];
-    m.quad(p(x,z),p(x+3,z),p(x+3,z-3),p(x,z-3),tint);
+    m.quad(p(x,z),p(x+4,z),p(x+4,z-4),p(x,z-4),tint);
   }
   for(let i=0;i<360;i++){
     const x=(rand(i*3)-.5)*176,z=16-rand(i*3+1)*626;
@@ -198,6 +268,7 @@ function buildWorld(){
     const z=-48+i*4,x=-18+sin(i)*2;
     m.ell(x,floorAt(x,z)+1,z,4,4.1,3.1,color(0x415565),0,9,6,.23);
   }
+  reefLandscape(m);
   wreck(m);
   for(let i=0;i<15;i++){
     const x=7+rand(400+i)*23,z=-360-rand(i+222)*43,h=1.2+rand(i+985)*7;
@@ -206,6 +277,53 @@ function buildWorld(){
   }
   return m.data;
 }
+
+function reefLandscape(m){
+  const sandy=color(0xad9c7b);
+  const hues=[0xc97569,0xc69756,0xb26589,0x8571ad,0xd8a482,0xa3af72,0xe3887b].map(color);
+  for(let i=0;i<180;i++){
+    const close=i<32;
+    const x=close ? 228+i%8*2.9+rand(i+112) : 91+rand(221+i*5)*233;
+    const z=close ? -3-Math.floor(i/8)*5.8+rand(i+998)*2.7 : 38-rand(401+i*7)*184;
+    const reef=x>191&&z>-85;
+    if(Math.abs(x-238)<6&&z>-11&&z<19)continue;
+    const k=hues[i%hues.length],y=floorAt(x,z);
+    const radius=(.6+rand(i+78)*2.15)*(reef?1.18:1);
+    const elevation=close ? .71 : 1;
+    m.ell(x,y-.25,z,radius*1.38,radius*.38,radius*1.08,reef?sandy:color(0x627160),0,15,8,.19);
+    if(!reef&&i%4)continue;
+    if(i%3===0){
+      for(let j=0;j<6;j++){
+        const a=j*tau/6+rand(i),w=.75+rand(j*23+i)*1.36;
+        const xx=x+cos(a)*radius*.65,zz=z+sin(a)*radius*.67;
+        const base=[xx,y+.15,zz],parent=[xx+cos(a)*w*.32,y+w*.68,zz+sin(a)*w*.3];
+        const top=[parent[0]+cos(a)*w*.22,Math.min(-.42,y+w*elevation),parent[2]+sin(a)*w*.4];
+        m.limb(base,parent,.098+w*.045,k);m.limb(parent,top,.082,k);
+        for(const s of [-1,1]){
+          const bud=[parent[0]+cos(a+s*.87)*w*.36,parent[1]+w*.22,parent[2]+sin(a+s*.87)*w*.32];
+          m.limb(parent,bud,.065,k);m.ell(...bud,.075,.16,.068,k,0,7,4);
+        }
+      }
+    }else if(i%3===1){
+      for(let j=0;j<5;j++){
+        const a=j*tau/5, xx=x+radius*.33*cos(a),zz=z+radius*.32*sin(a);
+        m.ell(xx,y+.44+j*.12,zz,radius*.6,.12+j*.024,radius*.54,k,.025,12,6,.18);
+      }
+    }else{
+      for(let j=0;j<7;j++){
+        const a=j*tau/7, r=.21+rand(i+j)*.63;
+        m.ell(x+cos(a)*radius*.49,y+.3,z+sin(a)*radius*.42,r,r*.82,r,k,0,10,6,.21);
+      }
+    }
+  }
+  // Darker ledges mark the edge of the reef and keep the open-water route legible.
+  for(let i=0;i<23;i++){
+    const x=170+sin(i*.43)*12,z=13-i*6.3;
+    const y=floorAt(x,z), h=1.1+rand(89+i)*2.4;
+    m.ell(x,y-.7,z,h*2.0,h,h*1.32,color(0x7e8879),0,10,6,.28);
+  }
+}
+
 function wreck(m){
   const cx=1,cz=-143,cy=floorAt(cx,cz)+3;
   const rust=color(0x69514a), dark=color(0x303b42), deck=color(0x4a6866);
@@ -228,6 +346,15 @@ function wreck(m){
   m.box(cx-12,cy+5.06,cz,8.4,.5,8.1,deck);
   for(const z of [cz-3.5,cz+3.5]) for(let i=0;i<5;i++) m.box(cx-16+i*1.83,cy+3.65,z,.36,3.12,.32,rust);
   for(const x of [cx-16,cx-8]) for(let i=0;i<4;i++) m.box(x,cy+3.65,cz-3.45+i*2.3,.32,3.12,.32,rust);
+  for(let i=0;i<16;i++){
+    const xx=cx-20+i*2.2, yy=cy+.77+sin(i*.29)*.24;
+    for(const s of [-1,1]){
+      const zz=cz+s*(xx>cx+10?4.82-(xx-cx-10)*.084:5.01);
+      m.ell(xx,yy,zz,.21,.174,.063,rust,0,12,6);
+      m.ell(xx,yy,zz+s*.049,.142,.11,.037,dark,0,12,6);
+      if(i%3===0)m.box(xx,cy+2.19,cz+s*1.81,1.35,.74,.82,rust);
+    }
+  }
   m.box(cx-14,cy+6.7,cz,2.3,3.2,2.3,dark);
   m.box(cx-14,cy+8.25,cz,2.65,.30,2.6,rust);
   m.limb([cx+6,cy+1.9,cz],[cx+8,cy+12,cz+.8],.33,rust);
@@ -246,7 +373,7 @@ function wreck(m){
 function buildDust(){
   const m=shapes();
   for(let i=0;i<3600;i++){
-    const x=(rand(i*3+7000)-.5)*154,z=25-rand(i*3+7001)*645,y=mix(floorAt(x,z),-2,rand(i*3+7002));
+    const x=-105+rand(i*3+7000)*414,z=45-rand(i*3+7001)*702,y=mix(floorAt(x,z),-2,rand(i*3+7002));
     m.point([x,y,z],color(0x65a9ac),.17+rand(i+7)*.13);
   }
   return m.data;
@@ -296,36 +423,95 @@ function buildCreature(a){
       const r=[i>7?-1.13:-.72,-.12+.21*sin(i*tau/10),.26*cos(i*tau/10)];
       m.limb(p,q,.035,k,.11);m.limb(q,r,.025,pale,.18);
     }
+  } else if(type==='turtle'||type==='ray'){
+    if(type==='turtle'){
+      m.ell(-.04,.015,0,.49,.206,.34,k,0,27,16);
+      m.ell(-.035,-.11,0,.45,.09,.31,pale,0,24,11);
+      m.ell(.40,.003,0,.24,.105,.117,k,0,20,12);
+      for(const s of [-1,1]){
+        m.ell(.53,.028,s*.09,.029,.028,.022,eye,.12,10,7);
+        m.ell(.20,-.04,s*.30,.28,.057,.20,k,0,18,8);
+        m.ell(-.34,-.063,s*.26,.16,.049,.12,k,0,15,8);
+      }
+      for(let j=0;j<11;j++){
+        const b=j*tau/11,x=cos(b)*.30,z=sin(b)*.22;
+        m.ell(x,.177-Math.abs(x)*.10,z,.085,.013,.052,dark,0,10,5);
+      }
+    } else {
+      m.ell(.05,0,0,.43,.094,.34,k,0,28,15);
+      m.ell(.065,-.043,0,.38,.05,.32,pale,0,24,12);
+      for(const s of [-1,1]){
+        const c=[.21,.027,s*.22],b=[-.17,-.008,s*.26],tip=[-.20,.09,s*.91],edge=[.12,.033,s*.52];
+        m.tri(c,edge,tip,k);m.tri(c,tip,b,k);m.tri(c,b,tip,pale);m.tri(c,tip,edge,pale);
+        m.ell(.34,.024,s*.24,.17,.036,.051,k,0,13,8);
+        m.ell(.34,.056,s*.255,.024,.021,.019,eye,.11,10,7);
+      }
+      m.limb([-.36,0,0],[-.88,.01,.05],.023,dark);m.limb([-.88,.01,.05],[-1.12,.012,.09],.008,k);
+    }
   } else {
-    const whale=type==='whale', shark=type==='shark', eel=type==='eel', flat=type==='flat';
-    const fullness=whale?.22:shark?.18:eel?.08:flat?.29:.23+((id%7)-3)*.013;
-    const width=whale?.21:shark?.13:eel?.075:flat?.10:.15;
-    const sections=[[-.67,.13],[-.48,.32],[-.30,.57],[-.08,.88],[.16,1],[.33,whale?.96:.79],[.49,whale?.78:.30],[.53,.05]];
-    const p=(j,i)=>{const [x,s]=sections[j],angle=i*tau/22;return [x,fullness*s*cos(angle),width*s*sin(angle)];};
-    for(let j=0;j<sections.length-1;j++) for(let i=0;i<22;i++){
-      const tint=(cos((i+.5)*tau/22)<-.35?pale:k).map(v=>v*(.88+.12*sin(i*1.2+j)));
-      m.quad(p(j,i),p(j+1,i),p(j+1,i+1),p(j,i+1),tint);
+    const whale=type==='whale', shark=type==='shark', eel=type==='eel', reef=type==='reef', flat=type==='flat';
+    const fullness=whale?.23:shark?.16:eel?.082:reef?.29:flat?.28:.153+((id%7)-3)*.011;
+    const width=whale?.23:shark?.14:eel?.067:reef?.082:flat?.082:.122;
+    const sections=whale?[[-.67,.12],[-.52,.28],[-.26,.74],[-.07,.96],[.19,1],[.40,.97],[.49,.88],[.55,.55],[.558,.10]]:
+      [[-.70,.11],[-.59,.18],[-.44,.31],[-.29,.59],[-.10,.91],[.11,1],[.24,.92],[.35,.73],[.46,.48],[.53,.055]];
+    const steps=36, rings=sections.length*3-2;
+    const p=(j,i)=>{
+      const t=j*(sections.length-1)/(rings-1),idx=Math.min(sections.length-2,Math.floor(t)),a=sections[idx],b=sections[idx+1];
+      const c=sections[Math.max(0,idx-1)],d=sections[Math.min(sections.length-1,idx+2)],f=t-idx;
+      const s=.5*((2*a[1])+(-c[1]+b[1])*f+(2*c[1]-5*a[1]+4*b[1]-d[1])*f*f+(-c[1]+3*a[1]-3*b[1]+d[1])*f*f*f);
+      const x=mix(a[0],b[0],f), ang=i*tau/steps;
+      return [x,fullness*s*cos(ang) - (eel?.05:0)*x*x,width*s*sin(ang)];
+    };
+    for(let j=0;j<rings-1;j++) for(let i=0;i<steps;i++){
+      const v=cos((i+.5)*tau/steps),x=p(j,i)[0];
+      const whiteBand=reef&&[50,53,55].includes(id)&&[.23,-.05,-.42].some(center=>Math.abs(x-center)<.043);
+      const stripe=id===51&&v>-.25&&v<.22;
+      const silver=type==='school'||id===58||id===59;
+      const body=k.map((value,n)=>{
+        if(whiteBand)return [.93,.92,.76][n];
+        if(stripe)return value*.40;
+        const back=mix(value*.71,pale[n]*(silver?1.35:.91),clamp((.48-v)*.73,0,1));
+        return clamp(back*(.95+.05*sin(i*.78+j*.92)),0,1);
+      });
+      m.quad(p(j,i),p(j+1,i),p(j+1,i+1),p(j,i+1),body);
+    }
+    function curvedFin(points,tint){
+      const center=points[0].map((_,i)=>points.reduce((v,p)=>v+p[i],0)/points.length);
+      for(let i=0;i<points.length;i++){
+        const from=points[i],to=points[(i+1)%points.length];
+        m.tri(from,to,center,tint);
+      }
     }
     if(whale){
-      for(const s of [-1,1]) fin([-.64,0,0],[-.99,.04,s*.37],[-.88,.008,s*.098],k);
-      for(const s of [-1,1]) fin([.22,-.12,s*.13],[-.12,-.16,s*.35],[-.18,-.14,s*.14],k);
+      for(const s of [-1,1]){
+        curvedFin([[-.65,0,0],[-.71,.018,s*.16],[-.81,.029,s*.32],[-.96,.039,s*.43],[-.88,.012,s*.19],[-.90,0,0]],dark);
+        curvedFin([[.20,-.10,s*.14],[.06,-.22,s*.34],[-.14,-.23,s*.34],[-.17,-.13,s*.18]],k);
+      }
+      curvedFin([[-.14,.17,0],[-.26,.23,0],[-.39,.16,0]],k);
     } else {
-      fin([-.61,.035,0],[-.96,.30,0],[-.83,.012,.012],k);
-      fin([-.61,-.035,0],[-.95,shark?-.18:-.24,0],[-.83,.012,-.012],dark);
-      const high=shark?.43:eel?.12:flat?.39:.31;
-      fin([.10,fullness*.87,0],[-.12,high,0],[-.33,fullness*.55,0],k);
-      for(const s of [-1,1]) fin([.25,-.06,s*width],[-.17,-.19,s*(shark?.37:.28)],[-.10,-.095,s*(width+.01)],k);
+      const tail=shark?.31:reef?.25:eel?.11:.205;
+      curvedFin([[-.62,.016,.004],[-.83,tail*.53,.017],[-.99,tail,.034],[-.92,tail*.40,.014],[-.85,.014,0],[-.94,-tail*.43,-.011],[-.99,-tail*(shark?.65:.97),-.035],[-.83,-tail*.48,-.014],[-.63,-.02,-.008]],k);
+      const high=shark?.42:eel?.103:id===55?.62:reef?.41:.245;
+      curvedFin([[.10,fullness*.87,0],[.00,high*.88,.005],[-.11,high,0],[-.22,high*.68,-.006],[-.40,fullness*.56,0]],dark);
+      for(const s of [-1,1]){
+        curvedFin([[.22,-.055,s*width],[.04,-.093,s*width*1.48],[-.22,-.17,s*(shark?.39:.23)],[-.21,-.11,s*width*1.14],[-.022,-.068,s*width]],k);
+        curvedFin([[-.13,-fullness*.83,s*.043],[-.32,-fullness*1.19,s*.119],[-.42,-fullness*.52,s*.07]],dark);
+      }
     }
     for(const s of [-1,1]){
-      const x=whale?.27:.34, ey=fullness*.30, ez=s*width*.79;
-      m.ell(x,ey,ez,.073*(eel?.64:1),.065*(eel?.70:1),.039,pale,.05,10,7);
-      m.ell(x+.015,ey,ez+s*.018,.048*(eel?.64:1),.048*(eel?.70:1),.031,eye,.18,10,7);
-      if(type==='school'||id===20||id===34) for(let i=0;i<6;i++){
-        m.ell(.27-i*.105,-fullness*.42,s*width*(.73-i*.065),.017,.023,.024,color(0x5dccf2),1.1,7,5);
+      const x=whale?.18:reef?.30:.32, ey=fullness*.29, ez=s*width*(whale?.98:.78);
+      const r=whale?.020:shark?.029:reef?.049:eel?.034:.044;
+      m.ell(x,ey,ez,r,r,r*.40,pale,0,14,9);
+      m.ell(x+.009,ey,ez+s*r*.25,r*.75,r*.75,r*.53,eye,.035,14,9);
+      m.ell(x+.017,ey+r*.30,ez+s*r*.64,r*.16,r*.15,r*.16,[.7,.78,.82],.23,8,5);
+      const jaw=whale?.43:.42;
+      m.limb([.49,-fullness*.33,s*width*.27],[jaw-.12,-fullness*.48,s*width*.78],.0055,dark);
+      if(!whale)for(let i=0;i<(shark?5:1);i++){
+        const g=.12+i*.029;
+        m.limb([g,fullness*.25,s*width*.985],[g-.026,-fullness*.33,s*width*.91],shark?.0058:.0065,dark);
       }
-      if(shark||whale) for(let i=0;i<(shark?5:1);i++){
-        const x=.13+i*.038;
-        m.limb([x,fullness*.32,s*width*.97],[x-.015,-fullness*.38,s*width*.97],.009,dark);
+      if(type==='school'||id===20||id===34) for(let i=0;i<7;i++){
+        m.ell(.23-i*.09,-fullness*.47,s*width*(.79-i*.063),.016,.018,.018,color(0x57b6db),.82,7,5);
       }
     }
     if(id===34){
@@ -347,7 +533,7 @@ const storage='deep-sea-log-v1';
 try{
   const saved=JSON.parse(localStorage.getItem(storage) || '{}');
   records=saved.records && typeof saved.records==='object'?saved.records:{};
-  $('goal').value=clamp(Number(saved.goal)||5,1,50);
+  $('goal').value=clamp(Number(saved.goal)||5,1,totalSpecies);
 }catch{}
 function checkpoint(){
   try{localStorage.setItem(storage,JSON.stringify({records,goal:Number($('goal').value)||5}));return true;}
@@ -356,7 +542,7 @@ function checkpoint(){
 function recordCount(){return species.filter(a=>records[a.id]?.image).length;}
 function refreshCounts(){
   $('count').textContent=discoveries.size+' / '+goal;
-  $('total').textContent=recordCount()+' / 50';
+  $('total').textContent=recordCount()+' / '+totalSpecies;
 }
 function say(text, seconds=3){message=text;messageUntil=time+seconds;}
 function setLamp(value){lampOn=value;$('lamp').setAttribute('aria-pressed',String(value));}
@@ -380,13 +566,13 @@ function play(frequency=740,duration=.2, volume=.035,to=frequency*.83){
 function begin(){
   if(bootError) return;
   const raw=Math.trunc(Number($('goal').value));
-  goal=clamp(Number.isFinite(raw)&&raw>0?raw:5,1,50);
+  goal=clamp(Number.isFinite(raw)&&raw>0?raw:5,1,totalSpecies);
   $('goal').value=goal;checkpoint();
   try{
     const Audio=window.AudioContext||window.webkitAudioContext;
     if(Audio){audio ||= new Audio(); audio.resume().catch(()=>{});}
   }catch{}
-  discoveries=new Set();active=true;diveTime=0;intro=0;hull=100;goalShown=false;droneMode=false;subPosition=null;
+  discoveries=new Set();destination=null;active=true;diveTime=0;intro=0;hull=100;goalShown=false;droneMode=false;subPosition=null;
   nextPing=0;lastAttack=-100;eligible=null;target=null;
   camera.pos=[0,-.1,15];camera.yaw=0;camera.pitch=-.12;camera.vel=[0,0,0];
   setLamp(true);setSonar(true);refreshCounts();resetInput();
@@ -394,13 +580,64 @@ function begin(){
   $('start').hidden=true;$('hud').hidden=false;$('mission').hidden=false;$('home').hidden=false;
   say('潜航中',2.5);play(110,1,.055,65);
 }
+
+let destination=null;
+function visitSite(site){
+  if(!active){
+    begin();
+    if(site===surveySites[2])return;
+  }
+  intro=1;diveTime=Math.max(diveTime,8.55);
+  camera.pos=[site.x,site.y,site.z];camera.yaw=site.yaw;camera.pitch=-.10;camera.vel=[0,0,0];
+  droneMode=false;subPosition=null;target=null;eligible=null;nextPing=0;
+  $('drone').setAttribute('aria-pressed','false');$('drone').textContent='ドローン';
+  resetInput();
+  say(site.name+'に到着',2.6);
+}
+function showChart(){
+  resetInput();
+  const list=$('chartSites');
+  list.replaceChildren();
+  for(const site of surveySites){
+    const row=document.createElement('article');
+    const title=document.createElement('h3');title.textContent=site.name;
+    const info=document.createElement('p');info.textContent=site.text;
+    const action=document.createElement('button');
+    action.textContent=active?'ここへ移動':'ここから潜航';
+    action.addEventListener('click',()=>{
+      $('chart').close();
+      destination=null;visitSite(site);
+    });
+    row.append(title,info,action);
+    if(active){
+      const guide=document.createElement('button');
+      guide.textContent='案内表示';
+      guide.addEventListener('click',()=>{destination=site;$('chart').close();showCourse();});
+      row.append(guide);
+    }
+    list.append(row);
+  }
+  $('chart').showModal();
+}
+function showCourse(){
+  const el=$('course');
+  el.hidden=!active||!destination;
+  if(el.hidden)return;
+  const d=[destination.x-camera.pos[0],destination.y-camera.pos[1],destination.z-camera.pos[2]];
+  const ahead=dot(d,[sin(camera.yaw),0,-cos(camera.yaw)]),right=dot(d,[cos(camera.yaw),0,sin(camera.yaw)]);
+  const angle=Math.atan2(right,ahead), dist=length(...d);
+  const bearing=dist<8?'付近に到着':Math.abs(angle)<.28?'正面':Math.abs(angle)>2.45?'後方':angle>0?'右':'左';
+  $('courseArrow').style.transform='rotate('+angle+'rad)';
+  $('courseText').textContent=destination.name+' · '+bearing+(dist<8?'':' 約 '+Math.round(dist)+' m');
+}
+
 function returnHome(){
   if($('result').open)$('result').close();
   active=false;resetInput();
   $('start').hidden=false;$('hud').hidden=true;$('mission').hidden=true;$('home').hidden=true;
   $('zone').textContent='調査船';
-  $('startStatus').textContent='図鑑 '+recordCount()+' / 50 · '+(discoveries.size ? '前回の記録 '+discoveries.size+' 種類':'このブラウザーに保存');
-  camera.pos=[2,-10,-107];camera.yaw=-.03;camera.pitch=-.08;camera.vel=[0,0,0];
+  $('startStatus').textContent='図鑑 '+recordCount()+' / '+totalSpecies+' · '+(discoveries.size ? '前回の記録 '+discoveries.size+' 種類':'このブラウザーに保存');
+  camera.pos=[238,-3.6,18];camera.yaw=.04;camera.pitch=-.13;camera.vel=[0,0,0];
   $('launch').focus();
 }
 function result(kind){
@@ -409,7 +646,7 @@ function result(kind){
   $('continue').hidden=emergency;
   $('resultTitle').textContent=emergency?'緊急浮上':kind==='goal'?'目標達成':'帰港しますか？';
   $('resultText').textContent=emergency?'サメの接触で艇が損傷しました。今回の写真は図鑑に残ります。':
-    '今回の観察 '+discoveries.size+' / '+goal+' 種類。図鑑 '+recordCount()+' / 50。';
+    '今回の観察 '+discoveries.size+' / '+goal+' 種類。図鑑 '+recordCount()+' / '+totalSpecies+'。';
   if(!$('result').open)$('result').showModal();
 }
 function updateAnimals(t){
@@ -420,8 +657,8 @@ function updateAnimals(t){
     const z1=z+cos(p)*cruise*.64;
     let y1=y+.58*sin(p*1.71);
     if(a.type==='crab') y1=floorAt(x1,z1)+.50;
-    a.pos=[x1,y1,z1];
-    a.yaw=Math.atan2(sin(p)*.64,cos(p));
+    a.pos=[x1,Math.min(-.83,y1),z1];
+    a.yaw=-Math.atan2(-sin(p)*.64,cos(p));
     if(active&&intro>=1&&a.id===11&&hull>0&&!droneMode){
       const delta=sub(camera.pos,a.pos), range=length(...delta);
       if(lampOn&&range<15&&diveTime-lastAttack>2.2){
@@ -457,12 +694,14 @@ function draw(){
   ratio=w/h;
   const clearDepth=clamp((-camera.pos[1]-1)/25,0,1);
   const fogSurface=(1-clearDepth)*.051;
-  gl.clearColor(.014,.068+fogSurface,.101+fogSurface*1.25,1);
+  const sun=daylight(camera.pos[0],camera.pos[2],camera.pos[1]);
+  gl.uniform1f(uniforms.sunlight,sun);
+  gl.clearColor(mix(.014,.043,sun),mix(.068+fogSurface,.285,sun),mix(.101+fogSurface*1.25,.383,sun),1);
   gl.clear(gl.COLOR_BUFFER_BIT|gl.DEPTH_BUFFER_BIT);
   const {ahead,right,up}=attitude=getAttitude();
   gl.uniform3fv(uniforms.eye,camera.pos);
   gl.uniform3fv(uniforms.ahead,ahead);gl.uniform3fv(uniforms.right,right);gl.uniform3fv(uniforms.up,up);
-  const f=ratio<1?1.25:1.53;
+  const f=ratio<1?1.13:1.45;
   gl.uniform2f(uniforms.lens,f/ratio,f);
   gl.uniform1f(uniforms.lamp,lampOn?1:0);
   displayMesh(worldMesh);
@@ -471,11 +710,11 @@ function draw(){
   for(const a of species){
     const local=sub(a.pos,camera.pos),distance=length(...local),drift=dot(local,ahead);
     if(distance>103 || drift<-a.size)continue;
-    const motion=a.type==='whale'?2:a.type==='jelly'?3:['shrimp','crab','squid'].includes(a.type)?4:1;
-    displayMesh(a.mesh,a.pos,a.yaw,a.size,motion,a.type==='jelly'?2:0,time+a.id);
+    const motion=['ray','turtle'].includes(a.type)?5:a.type==='whale'?2:a.type==='jelly'?3:['shrimp','crab','squid'].includes(a.type)?4:1;
+    displayMesh(a.mesh,a.pos,a.yaw,a.size,motion,a.type==='jelly'?2:3,time+a.id);
     if(a.type==='school') for(let i=1;i<=7;i++){
       const s=sin(i*2.25+time*1.12), p=[a.pos[0]+s*1.8,a.pos[1]+.32*cos(i*2.9+time*.8)+i*.11,a.pos[2]+1.08*sin(i*5)+i*.31];
-      displayMesh(a.mesh,p,a.yaw+.14*s,a.size*(.7+rand(i+77)*.25),motion,0,time+i);
+      displayMesh(a.mesh,p,a.yaw+.14*s,a.size*(.7+rand(i+77)*.25),motion,3,time+i);
     }
     const screenX=dot(local,right)*f/ratio/Math.max(drift,.1);
     const screenY=dot(local,up)*f/Math.max(drift,.1);
@@ -483,7 +722,7 @@ function draw(){
     const glow=['jelly','squid','school'].includes(a.type);
     const clearLine=[.25,.5,.75].every(step=>{const [x,y,z]=camera.pos.map((v,i)=>v+local[i]*step);return y>floorAt(x,z)+.06;});
     const range=Math.min(26,8+a.size*1.9);
-    if(drift> .6&&distance<range&&center<Math.min(.33,.23+a.size*.015)&&clearLine&&(lampOn||glow) && (a.area!==0||!active||intro>=1)){
+    if(drift> .6&&distance<range&&center<Math.min(.33,.23+a.size*.015)&&clearLine&&(lampOn||glow||sun>.26) && (a.area!==0||!active||intro>=1)){
       const score=center+distance*.008;
       if(!best||score<best.score)best={a,screenX,screenY,score};
     }
@@ -511,7 +750,7 @@ function updateSonar(){
   radar.beginPath();radar.moveTo(cx,cy-6);radar.lineTo(cx-4,cy+4);radar.lineTo(cx+4,cy+4);radar.closePath();radar.stroke();
   radar.strokeStyle='rgba(94,239,191,'+Math.max(0,(1-pingRing)*.63)+')';
   radar.beginPath();radar.arc(cx,cy,Math.max(1,pingRing*76),0,tau);radar.stroke();
-  if(!target){$('reading').textContent=discoveries.size===50?'全種類を観察':'周囲を走査中';return;}
+  if(!target){$('reading').textContent=discoveries.size===totalSpecies?'全種類を観察':'周囲を走査中';return;}
   const d=sub(target.pos,camera.pos);
   const forward=dot(d,[sin(camera.yaw),0,-cos(camera.yaw)]), side=dot(d,[cos(camera.yaw),0,sin(camera.yaw)]);
   const bearing=Math.atan2(side,forward);
@@ -549,7 +788,7 @@ function photograph(){
   }
 }
 function updateBook(){
-  $('bookProgress').textContent=recordCount()+' / 50 種類';
+  $('bookProgress').textContent=recordCount()+' / '+totalSpecies+' 種類';
   const root=$('species');root.replaceChildren();
   for(const a of species){
     const photo=records[a.id]?.image;
@@ -564,7 +803,7 @@ function updateBook(){
     }
     const name=document.createElement('span');
     name.textContent=photo?a.name:'未発見';
-    const area=document.createElement('small');area.textContent=zones[a.area][0];
+    const area=document.createElement('small');area.textContent=areaNames[a.area];
     el.append(name,area);root.append(el);
   }
 }
@@ -582,19 +821,19 @@ function updateDive(dt){
     const throttle=Number(isDown('w'))-Number(isDown('s')), lateral=Number(isDown('d'))-Number(isDown('a'));
     const ascent=Number(isDown('q'))-Number(isDown('z'));
     const bearing=sin(camera.yaw), cross=cos(camera.yaw);
-    const speed=droneMode?8.2:13.9;
+    const speed=droneMode?8.2:19.5;
     const scale=speed/(throttle&&lateral?Math.SQRT2:1);
     const want=[(bearing*throttle+cross*lateral)*scale,throttle*sin(camera.pitch)*7+ascent*8.8,(-cross*throttle+bearing*lateral)*scale];
     for(let i=0;i<3;i++) {camera.vel[i]=mix(camera.vel[i],want[i],1-Math.exp(-dt*4.2));pos[i]+=camera.vel[i]*dt;}
-    pos[0]=clamp(pos[0],-92,92);pos[2]=clamp(pos[2],-570,16);
+    pos[0]=clamp(pos[0],-120,327);pos[2]=clamp(pos[2],-670,53);
     if(droneMode&&length(...sub(pos,subPosition))>35){
       for(let i=0;i<3;i++)pos[i]=subPosition[i]+(pos[i]-subPosition[i])*.98;
     }
     pos[1]=clamp(pos[1],floorAt(pos[0],pos[2])+(droneMode?.6:1.3),-.36);
   }
-  const area=clamp(Math.floor((-pos[2]+17)/120),0,4);
-  $('zone').textContent=droneMode?'観察ドローン':zones[area][0];
-  $('depth').textContent=Math.round(-pos[1]*11);
+  $('zone').textContent=droneMode?'観察ドローン':siteName(pos[0],pos[2]);
+  showCourse();
+  $('depth').textContent=Math.round(-pos[1]*(mix(11,2,clamp((pos[0]-70)/140,0,1)*clamp((pos[2]+207)/128,0,1))));
   $('integrity').textContent=hull<100?'艇体 '+hull+'%':'';
   $('drone').hidden=!droneMode&&length(pos[0]-1,pos[2]+143)>33;
   if(sonarOpen&&target&&diveTime>=nextPing){
@@ -632,13 +871,14 @@ document.querySelectorAll('#touch button').forEach(button=>{
 window.addEventListener('blur',resetInput);
 document.addEventListener('visibilitychange',()=>{if(document.hidden)resetInput();});
 document.addEventListener('keydown',event=>{
-  if(!active||$('book').open||$('result').open||$('detail').open||event.ctrlKey||event.metaKey||event.altKey)return;
+  if(!active||$('book').open||$('result').open||$('detail').open||$('chart').open||event.ctrlKey||event.metaKey||event.altKey)return;
   const k=event.key.toLowerCase();
   if('wasdqz'.includes(k)&&k.length===1){event.preventDefault();keys.add(k);}
   if(event.repeat)return;
   if(k==='f')setLamp(!lampOn);
   if(k==='r')setSonar(!sonarOpen);
   if(k==='e')photograph();
+  if(k==='m')showChart();
 });
 document.addEventListener('keyup',event=>keys.delete(event.key.toLowerCase()));
 $('launch').addEventListener('click',begin);
@@ -648,6 +888,8 @@ $('drone').addEventListener('click',toggleDrone);
 $('sonarToggle').addEventListener('click',()=>setSonar(!sonarOpen));
 $('openbook').addEventListener('click',()=>{resetInput();updateBook();$('book').showModal();});
 $('home').addEventListener('click',()=>result('manual'));
+$('map').addEventListener('click',showChart);
+$('course').addEventListener('click',()=>{destination=null;showCourse();});
 $('dock').addEventListener('click',returnHome);
 $('continue').addEventListener('click',()=>$('result').close());
 $('result').addEventListener('cancel',event=>{if(hull===0)event.preventDefault();});
@@ -658,7 +900,7 @@ for(const el of document.querySelectorAll('[data-close]'))el.addEventListener('c
 let before=performance.now(), cadence=0;
 function frame(now){
   const dt=clamp((now-before)/1000,0,.045);before=now;
-  const paused=$('book').open||$('result').open||$('detail').open;
+  const paused=$('book').open||$('result').open||$('detail').open||$('chart').open;
   if(!paused){
     time+=dt;
     if(active)updateDive(dt);
